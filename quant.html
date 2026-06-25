@@ -148,7 +148,10 @@ if(document.getElementById("pitch").value === "Spin Friendly"){
 
    } 
     let result = "";
+let total = scoreA + scoreB;
 
+let probA = ((scoreA / total) * 100).toFixed(1);
+let probB = ((scoreB / total) * 100).toFixed(1);
     if (opp >= 70 && risk <= 30 && trust >= 70) {
 
         if (scoreA > scoreB) {
@@ -164,9 +167,11 @@ if(document.getElementById("pitch").value === "Spin Friendly"){
     }
 
     document.getElementById("result").innerHTML =
-        "<h3>" + result + "</h3>" +
-        "<p>Team A Score: " + scoreA + "</p>" +
-        "<p>Team B Score: " + scoreB + "</p>";
+    "<h3>" + result + "</h3>" +
+    "<p>Team A Score: " + scoreA.toFixed(1) + "</p>" +
+    "<p>Team B Score: " + scoreB.toFixed(1) + "</p>" +
+    "<p>Team A Win Probability: " + probA + "%</p>" +
+    "<p>Team B Win Probability: " + probB + "%</p>";
 }
 </script>
 
