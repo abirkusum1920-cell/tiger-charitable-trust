@@ -95,26 +95,43 @@ font-weight:bold;
 </div>
 
 <script>
-function analyze(){
+function analyze() {
 
-let opp=parseInt(document.getElementById("opp").value);
-let risk=parseInt(document.getElementById("risk").value);
-let trust=parseInt(document.getElementById("trust").value);
+    let batA = Number(document.getElementById("batA").value);
+    let bowlA = Number(document.getElementById("bowlA").value);
+    let allA = Number(document.getElementById("allA").value);
 
-let decision="";
+    let batB = Number(document.getElementById("batB").value);
+    let bowlB = Number(document.getElementById("bowlB").value);
+    let allB = Number(document.getElementById("allB").value);
 
-if(opp>=75 && risk<35 && trust>=75){
-decision="✅ BET";
-}
-else if(opp<65 || risk>60 || trust<60){
-decision="❌ NO BET";
-}
-else{
-decision="👀 WATCHLIST";
-}
+    let opp = Number(document.getElementById("opp").value);
+    let risk = Number(document.getElementById("risk").value);
+    let trust = Number(document.getElementById("trust").value);
 
-document.getElementById("result").innerHTML=
-"Recommendation: " + decision;
+    let scoreA = batA + bowlA + allA;
+    let scoreB = batB + bowlB + allB;
+
+    let result = "";
+
+    if (opp >= 70 && risk <= 30 && trust >= 70) {
+
+        if (scoreA > scoreB) {
+            result = "✅ BET ON TEAM A";
+        } else if (scoreB > scoreA) {
+            result = "✅ BET ON TEAM B";
+        } else {
+            result = "⚠️ NO BET (Teams Equal)";
+        }
+
+    } else {
+        result = "❌ NO BET";
+    }
+
+    document.getElementById("result").innerHTML =
+        "<h3>" + result + "</h3>" +
+        "<p>Team A Score: " + scoreA + "</p>" +
+        "<p>Team B Score: " + scoreB + "</p>";
 }
 </script>
 
