@@ -323,6 +323,20 @@ function forceValidate(){
 </button>
 `;
 }
+function analyzeExtraScreenshots(){
+
+    const toss = document.getElementById("tossFile").files[0];
+    const xi = document.getElementById("xiFile").files[0];
+    const pitch = document.getElementById("pitchFile").files[0];
+    const odds = document.getElementById("oddsFile").files[0];
+
+    if(!toss || !xi || !pitch || !odds){
+        alert("❌ Please upload all 4 screenshots");
+        return;
+    }
+
+    alert("✅ All screenshots uploaded successfully!");
+}
 </script>
 
 </body>
