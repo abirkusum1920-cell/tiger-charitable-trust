@@ -100,39 +100,50 @@ if (!file) {
 
 document.getElementById("ocrText").innerHTML =
 "⏳ Image যাচাই করা হচ্ছে...";
-document.getElementById("result").innerHTML = `
+Tesseract.recognize(
+    file,
+    'eng'
+).then(({ data: { text } }) => {
 
-<h3>🤖 AI Pre-Match Research</h3>
+    document.getElementById("ocrText").innerHTML =
+    "<h3>📄 OCR Text</h3><pre>" + text + "</pre>";
 
-✅ Weather + Dew<br><br>
+    let lowerText = text.toLowerCase();
 
-✅ Venue Stats<br><br>
+    if (
+        !lowerText.includes("vs") &&
+        !lowerText.includes("match") &&
+        !lowerText.includes("toss")
+    ) {
 
-✅ Recent Form<br><br>
+        document.getElementById("result").innerHTML =
+        "❌ Invalid Cricket Screenshot!";
 
-✅ Head-to-Head (H2H)<br><br>
+        return;
+    }
 
-✅ Team News / Injury Update<br><br>
+    document.getElementById("result").innerHTML = `
+    <h3>🤖 AI Pre-Match Research</h3>
 
-✅ Historical Pitch Behaviour<br><br>
+    ✅ Weather + Dew<br><br>
+    ✅ Venue Stats<br><br>
+    ✅ Recent Form<br><br>
+    ✅ Head-to-Head (H2H)<br><br>
+    ✅ Team News / Injury Update<br><br>
+    ✅ Historical Pitch Behaviour<br><br>
+    ✅ Player Statistics<br><br>
+    ✅ Team Strength Analysis<br><br>
 
-✅ Player Statistics<br><br>
+    <hr>
 
-✅ Team Strength Analysis<br><br>
+    📸 Please Upload<br><br>
 
-<hr>
-
-<h3>📸 Please Upload</h3>
-
-1️⃣ Toss Result Screenshot<br><br>
-
-2️⃣ Confirmed Playing XI Screenshot<br><br>
-
-3️⃣ Final Pitch Report Screenshot<br><br>
-
-4️⃣ Live Odds Screenshot
-
-`;
+    1️⃣ Toss Result Screenshot<br><br>
+    2️⃣ Confirmed Playing XI Screenshot<br><br>
+    3️⃣ Final Pitch Report Screenshot<br><br>
+    4️⃣ Live Odds Screenshot
+    `;
+});
 
 }
 
