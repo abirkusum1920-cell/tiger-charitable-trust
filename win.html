@@ -110,17 +110,33 @@ Tesseract.recognize(
 
     let lowerText = text.toLowerCase();
 
-    if (
-        !lowerText.includes("vs") &&
-        !lowerText.includes("match") &&
-        !lowerText.includes("toss")
-    ) {
+    
 
-        document.getElementById("result").innerHTML =
-        "❌ Invalid Cricket Screenshot!";
+let cricketKeywords = [
+  "vs",
+  "innings",
+  "over",
+  "score",
+  "wicket",
+  "toss",
+  "crr",
+  "rrr",
+  "batting",
+  "bowling",
+  "run",
+  "team"
+];
 
-        return;
-    }
+let found = cricketKeywords.some(word =>
+    lowerText.includes(word)
+);
+
+if (!found) {
+    document.getElementById("result").innerHTML =
+    "❌ Invalid Cricket Screenshot!";
+
+    return;
+}
 
     document.getElementById("result").innerHTML = `
     <h3>🤖 AI Pre-Match Research</h3>
