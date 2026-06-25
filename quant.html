@@ -91,7 +91,9 @@ font-weight:bold;
 <input type="number" id="risk" placeholder="Risk Score">
 
 <input type="number" id="trust" placeholder="Trust Score">
+<input type="number" id="oddsA" placeholder="Market Odds Team A (e.g. 1.80)">
 
+<input type="number" id="oddsB" placeholder="Market Odds Team B (e.g. 2.20)">
 <button onclick="analyze()">ANALYZE</button>
 
 <div id="result"></div>
@@ -113,7 +115,8 @@ let winnerB = Number(document.getElementById("winnerB").value);
     let opp = Number(document.getElementById("opp").value);
     let risk = Number(document.getElementById("risk").value);
     let trust = Number(document.getElementById("trust").value);
-
+let oddsA = Number(document.getElementById("oddsA").value);
+let oddsB = Number(document.getElementById("oddsB").value);
     let scoreA = batA + bowlA + allA + expA + winnerA;
 let scoreB = batB + bowlB + allB + expB + winnerB;
 if(document.getElementById("toss").value === "Team A"){
@@ -145,7 +148,11 @@ if(document.getElementById("pitch").value === "Spin Friendly"){
     else if(document.getElementById("toss").value === "Team B"){
         scoreB += 1.5;
     }
+let marketProbA = (1 / oddsA) * 100;
+let marketProbB = (1 / oddsB) * 100;
 
+let valueEdgeA = (probA - marketProbA).toFixed(1);
+let valueEdgeB = (probB - marketProbB).toFixed(1);
    } 
     let result = "";
 let total = scoreA + scoreB;
@@ -174,12 +181,14 @@ let probB = ((scoreB / total) * 100).toFixed(1);
     }
 
     document.getElementById("result").innerHTML =
-    "<h3>" + result + "</h3>" +
-    "<p>Team A Score: " + scoreA.toFixed(1) + "</p>" +
-    "<p>Team B Score: " + scoreB.toFixed(1) + "</p>" +
-    "<p>Team A Win Probability: " + probA + "%</p>" +
-    "<p>Team B Win Probability: " + probB + "%</p>" +
-"<p>Confidence Score: " + confidence + "%</p>";
+"<h3>" + result + "</h3>" +
+"<p>Team A Score: " + scoreA.toFixed(1) + "</p>" +
+"<p>Team B Score: " + scoreB.toFixed(1) + "</p>" +
+"<p>Team A Win Probability: " + probA + "%</p>" +
+"<p>Team B Win Probability: " + probB + "%</p>" +
+"<p>Confidence Score: " + confidence + "%</p>" +
+"<p>Team A Value Edge: " + valueEdgeA + "%</p>" +
+"<p>Team B Value Edge: " + valueEdgeB + "%</p>";
 }
 </script>
 
