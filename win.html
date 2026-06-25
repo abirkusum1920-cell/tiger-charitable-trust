@@ -109,7 +109,83 @@ Tesseract.recognize(
 // "<h3>📄 OCR Text</h3><pre>" + text + "</pre>";
 
     let lowerText = text.toLowerCase();
+// Team vs Team চেক
+// Team vs Team চেক
+let hasTeams = (
+    lowerText.includes(" vs ") ||
+    lowerText.includes(" v ") ||
+    lowerText.includes("vs ") ||
+    lowerText.includes(" vs") ||
+    lowerText.includes("ind") ||
+    lowerText.includes("india") ||
+    lowerText.includes("aus") ||
+    lowerText.includes("australia") ||
+    lowerText.includes("eng") ||
+    lowerText.includes("england") ||
+    lowerText.includes("pak") ||
+    lowerText.includes("pakistan") ||
+    lowerText.includes("sa") ||
+    lowerText.includes("south africa") ||
+    lowerText.includes("nz") ||
+    lowerText.includes("new zealand") ||
+    lowerText.includes("ban") ||
+    lowerText.includes("bangladesh") ||
+    lowerText.includes("sl") ||
+    lowerText.includes("sri lanka") ||
+    lowerText.includes("wi") ||
+    lowerText.includes("west indies")
+);
 
+// League চেক
+let hasLeague = (
+    lowerText.includes("league") ||
+    lowerText.includes("premier") ||
+    lowerText.includes("cup") ||
+    lowerText.includes("t20") ||
+    lowerText.includes("odi") ||
+    lowerText.includes("test")
+);
+
+// তারিখ চেক
+let hasDate = /\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(lowerText);
+
+// সময় চেক
+let hasTime = (
+    lowerText.includes("am") ||
+    lowerText.includes("pm") ||
+    /\b\d{1,2}:\d{2}\b/.test(lowerText)
+);
+
+// ভেন্যু/মাঠ চেক
+let hasVenue = (
+    lowerText.includes("stadium") ||
+    lowerText.includes("ground") ||
+    lowerText.includes("venue") ||
+    lowerText.includes("park") ||
+    lowerText.includes("oval") ||
+    lowerText.includes("arena")
+);
+
+// কয়টি শর্ত পূরণ হয়েছে গণনা
+let score = 0;
+
+if (hasTeams) score++;
+if (hasLeague) score++;
+if (hasDate) score++;
+if (hasTime) score++;
+if (hasVenue) score++;
+
+// ৫টির মধ্যে সব ৫টি না থাকলে Invalid
+if (score < 5) {
+
+    document.getElementById("ocrText").innerHTML =
+    "❌ Invalid Cricket Screenshot!";
+
+    document.getElementById("result").innerHTML =
+    "❌ Invalid Cricket Screenshot!";
+
+    return;
+}
     
 
 let cricketKeywords = [
