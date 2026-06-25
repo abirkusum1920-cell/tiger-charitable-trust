@@ -101,6 +101,10 @@ font-weight:bold;
 
 <script>
 function analyze() {
+    if (document.getElementById("toss").value === "") {
+    alert("Please select Toss Winner");
+    return;
+}
 
     let batA = Number(document.getElementById("batA").value);
     let bowlA = Number(document.getElementById("bowlA").value);
