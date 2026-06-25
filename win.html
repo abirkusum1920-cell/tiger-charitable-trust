@@ -304,13 +304,23 @@ function forceValidate(){
 
 <h3>📸 Please Upload</h3>
 
-1️⃣ Toss Result Screenshot<br><br>
+<h4>1️⃣ Toss Result Screenshot</h4>
+<input type="file" id="tossFile" accept="image/*">
 
-2️⃣ Confirmed Playing XI Screenshot<br><br>
+<h4>2️⃣ Confirmed Playing XI Screenshot</h4>
+<input type="file" id="xiFile" accept="image/*">
 
-3️⃣ Final Pitch Report Screenshot<br><br>
+<h4>3️⃣ Final Pitch Report Screenshot</h4>
+<input type="file" id="pitchFile" accept="image/*">
 
-4️⃣ Live Odds Screenshot<br><br>
+<h4>4️⃣ Live Odds Screenshot</h4>
+<input type="file" id="oddsFile" accept="image/*">
+
+<br><br>
+
+<button onclick="analyzeExtraScreenshots()">
+🤖 Analyze All Screenshots
+</button>
 `;
 }
 </script>
