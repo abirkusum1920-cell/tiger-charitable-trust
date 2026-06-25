@@ -47,7 +47,7 @@ padding:15px;
 border-radius:10px;
 }
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 </head>
 
 <body>
@@ -67,7 +67,7 @@ border-radius:10px;
 <button onclick="research()">
 🔍 Research Match
 </button>
-
+<div id="ocrText"></div>
 <div id="result"></div>
 
 </div>
@@ -91,7 +91,15 @@ reader.readAsDataURL(event.target.files[0]);
 
   }
 function research(){
+const file = document.querySelector('input[type="file"]').files[0];
 
+if (!file) {
+    alert("❌ প্রথমে Screenshot Upload করুন");
+    return;
+}
+
+document.getElementById("ocrText").innerHTML =
+"⏳ Image যাচাই করা হচ্ছে...";
 document.getElementById("result").innerHTML = `
 
 <h3>🤖 AI Pre-Match Research</h3>
