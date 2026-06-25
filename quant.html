@@ -155,20 +155,23 @@ let probB = ((scoreB / total) * 100).toFixed(1);
    let confidence = Math.abs(probA - probB).toFixed(1);
     if (opp >= 70 && risk <= 30 && trust >= 70 && confidence >= 10) {
 
-        if (scoreA > scoreB) {
-            result = "✅ BET ON TEAM A";
-        } else if (scoreB > scoreA) {
-            result = "✅ BET ON TEAM B";
-        } else {
-            result = "⚠️ NO BET (Teams Equal)";
-        }
+    if (scoreA > scoreB) {
+        result = "✅ BET ON TEAM A";
+    } else if (scoreB > scoreA) {
+        result = "✅ BET ON TEAM B";
+    } else {
+        result = "⚠️ NO BET (Teams Equal)";
+    }
 
-    else if(confidence < 10){
+} else if (confidence < 10) {
+
     result = "👀 WATCHLIST";
-}
-else{
+
+} else {
+
     result = "❌ NO BET";
-}
+
+    }
 
     document.getElementById("result").innerHTML =
     "<h3>" + result + "</h3>" +
