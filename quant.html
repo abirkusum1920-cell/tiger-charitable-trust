@@ -122,6 +122,31 @@ if(document.getElementById("toss").value === "Team A"){
 else if(document.getElementById("toss").value === "Team B"){
     scoreB += 2;
 }
+   if(document.getElementById("pitch").value === "Batting Friendly"){
+    scoreA += batA * 0.2;
+    scoreB += batB * 0.2;
+}
+
+if(document.getElementById("pitch").value === "Bowling Friendly"){
+    scoreA += bowlA * 0.2;
+    scoreB += bowlB * 0.2;
+}
+
+if(document.getElementById("pitch").value === "Spin Friendly"){
+    scoreA += allA * 0.1;
+    scoreB += allB * 0.1;
+}
+   if(document.getElementById("dew").value === "High"){
+
+    if(document.getElementById("toss").value === "Team A"){
+        scoreA += 1.5;
+    }
+
+    else if(document.getElementById("toss").value === "Team B"){
+        scoreB += 1.5;
+    }
+
+   } 
     let result = "";
 
     if (opp >= 70 && risk <= 30 && trust >= 70) {
