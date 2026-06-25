@@ -116,7 +116,12 @@ let winnerB = Number(document.getElementById("winnerB").value);
 
     let scoreA = batA + bowlA + allA + expA + winnerA;
 let scoreB = batB + bowlB + allB + expB + winnerB;
-
+if(document.getElementById("toss").value === "Team A"){
+    scoreA += 2;
+}
+else if(document.getElementById("toss").value === "Team B"){
+    scoreB += 2;
+}
     let result = "";
 
     if (opp >= 70 && risk <= 30 && trust >= 70) {
