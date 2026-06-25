@@ -337,6 +337,17 @@ function analyzeExtraScreenshots(){
 
     document.getElementById("result").innerHTML =
 "⏳ Reading screenshots... Please wait...";
+Tesseract.recognize(
+    toss,
+    'eng'
+).then(({ data: { text } }) => {
+
+    document.getElementById("result").innerHTML = `
+    <h2>🏏 Toss Screenshot OCR</h2>
+    <pre>${text}</pre>
+    `;
+
+});
 }
 </script>
 
