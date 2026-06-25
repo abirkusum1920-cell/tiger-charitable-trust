@@ -105,8 +105,8 @@ Tesseract.recognize(
     'eng'
 ).then(({ data: { text } }) => {
 
-    document.getElementById("ocrText").innerHTML =
-    "<h3>📄 OCR Text</h3><pre>" + text + "</pre>";
+    // document.getElementById("ocrText").innerHTML =
+// "<h3>📄 OCR Text</h3><pre>" + text + "</pre>";
 
     let lowerText = text.toLowerCase();
 
@@ -137,7 +137,8 @@ if (!found) {
 
     return;
 }
-
+document.getElementById("ocrText").innerHTML =
+"✅ Cricket Screenshot Detected";
     document.getElementById("result").innerHTML = `
     <h3>🤖 AI Pre-Match Research</h3>
 
