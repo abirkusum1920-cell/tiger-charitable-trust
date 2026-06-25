@@ -67,8 +67,29 @@ border-radius:10px;
 <button onclick="research()">
 🔍 Research Match
 </button>
+<button onclick="research()">
+🔍 Research Match
+</button>
+
+<div id="forceBox" style="display:none; margin-top:15px;">
+  <button onclick="forceValidate()"
+    style="
+      background:#28a745;
+      color:white;
+      border:none;
+      padding:12px 20px;
+      border-radius:10px;
+      font-size:16px;
+      width:100%;
+      cursor:pointer;">
+
+      ✅ Continue Anyway (User Responsibility)
+  </button>
+</div>
+
 <div id="ocrText"></div>
 <div id="result"></div>
+  
 
 </div>
 
@@ -178,13 +199,15 @@ if (hasVenue) score++;
 // ৫টির মধ্যে সব ৫টি না থাকলে Invalid
 if (score < 5) {
 
-    document.getElementById("ocrText").innerHTML =
-    "❌ Invalid Cricket Screenshot!";
+document.getElementById("ocrText").innerHTML =
+"❌ Invalid Cricket Screenshot!";
 
-    document.getElementById("result").innerHTML =
-    "❌ Invalid Cricket Screenshot!";
+document.getElementById("result").innerHTML =
+"❌ Invalid Cricket Screenshot!";
 
-    return;
+document.getElementById("forceBox").style.display = "block";
+
+return;
 }
     
 
@@ -239,7 +262,31 @@ document.getElementById("ocrText").innerHTML =
 });
 
 }
+function forceValidate(){
 
+    document.getElementById("forceBox").style.display = "none";
+
+    document.getElementById("ocrText").innerHTML =
+    "✅ User Approved Screenshot";
+
+    document.getElementById("result").innerHTML = `
+<h3>⚠ User Approved Screenshot</h3>
+    <p>AI Validation failed, but user chose to continue.</p>
+
+    <hr>
+
+    <h3>🤖 AI Pre-Match Research</h3>
+
+    ✅ Weather + Dew<br><br>
+    ✅ Venue Stats<br><br>
+    ✅ Recent Form<br><br>
+    ✅ Head-to-Head (H2H)<br><br>
+    ✅ Team News / Injury Update<br><br>
+    ✅ Historical Pitch Behaviour<br><br>
+    ✅ Player Statistics<br><br>
+    ✅ Team Strength Analysis
+    `;
+}
 </script>
 
 </body>
