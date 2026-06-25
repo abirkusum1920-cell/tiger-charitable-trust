@@ -250,12 +250,27 @@ document.getElementById("ocrText").innerHTML =
 
     <hr>
 
-    📸 Please Upload<br><br>
+    <hr>
 
-    1️⃣ Toss Result Screenshot<br><br>
-    2️⃣ Confirmed Playing XI Screenshot<br><br>
-    3️⃣ Final Pitch Report Screenshot<br><br>
-    4️⃣ Live Odds Screenshot
+<h3>📸 Please Upload</h3>
+
+<h4>1️⃣ Toss Result Screenshot</h4>
+<input type="file" id="tossFile" accept="image/*">
+
+<h4>2️⃣ Confirmed Playing XI Screenshot</h4>
+<input type="file" id="xiFile" accept="image/*">
+
+<h4>3️⃣ Final Pitch Report Screenshot</h4>
+<input type="file" id="pitchFile" accept="image/*">
+
+<h4>4️⃣ Live Odds Screenshot</h4>
+<input type="file" id="oddsFile" accept="image/*">
+
+<br><br>
+
+<button onclick="analyzeExtraScreenshots()">
+🤖 Analyze All Screenshots
+</button>
     `;
 });
 
