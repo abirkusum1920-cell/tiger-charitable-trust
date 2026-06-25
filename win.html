@@ -344,22 +344,52 @@ Tesseract.recognize(
 
     let tossDecision = "Unknown";
 
-if(text.toLowerCase().includes("opt to bowl") ||
-   text.toLowerCase().includes("elected to bowl")){
+let lower = text.toLowerCase();
+
+let tossWinner = "Unknown";
+let tossDecision = "Unknown";
+
+// Toss Winner
+
+if(lower.includes("toss: sfu")){
+    tossWinner = "San Francisco Unicorns";
+}
+
+else if(lower.includes("toss: tsk")){
+    tossWinner = "Texas Super Kings";
+}
+
+// Toss Decision
+
+if(
+    lower.includes("opt to bowl") ||
+    lower.includes("elected to bowl") ||
+    lower.includes("bowl")
+){
     tossDecision = "Bowl First";
 }
 
-if(text.toLowerCase().includes("opt to bat") ||
-   text.toLowerCase().includes("elected to bat")){
+else if(
+    lower.includes("opt to bat") ||
+    lower.includes("elected to bat") ||
+    lower.includes("bat")
+){
     tossDecision = "Bat First";
 }
+
+// Show Result
 
 document.getElementById("result").innerHTML = `
 <h2>🏏 Toss Analysis</h2>
 
-<b>Toss Decision:</b> ${tossDecision}<br><br>
+<b>🏆 Toss Winner:</b> ${tossWinner}<br><br>
+
+<b>🎯 Toss Decision:</b> ${tossDecision}<br><br>
+
+<hr>
 
 <h3>📄 OCR Text</h3>
+
 <pre>${text}</pre>
 
 <hr>
