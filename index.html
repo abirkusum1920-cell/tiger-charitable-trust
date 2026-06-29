@@ -1,235 +1,267 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html>  <html lang="bn">  
+<head>  
+<meta charset="UTF-8">  
+<meta name="viewport" content="width=device-width, initial-scale=1.0">  <title>T.I.G.E.R The Charitable Trust</title>  <style>  
+body{  
+    font-family: Arial, sans-serif;  
+    margin:0;  
+    padding:0;  
+    background:#f5f5f5;  
+    text-align:center;  
+}  
+  
+/* Header */  
+header{  
+    background:linear-gradient(45deg,#FFD700,#008000);  
+    color:white;  
+    padding:40px 20px;  
+    border-radius:0 0 25px 25px;  
+    box-shadow:0 4px 10px rgba(0,0,0,0.3);  
+}  
+  
+header h1{  
+    margin:0;  
+    font-size:40px;  
+}  
+  
+header p{  
+    font-size:22px;  
+}  
+  
+/* সাধারণ বক্স */  
+.box{  
+    background:white;  
+    margin:20px;  
+    padding:25px;  
+    border-radius:15px;  
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);  
+}  
+  
+/* আমাদের সেবা বক্স */  
+.service-box{  
+    background:linear-gradient(45deg, red, blue) !important;  
+    color:white !important;  
+    cursor:pointer;  
+    transition:0.3s;  
+}  
+  
+.service-box:hover{  
+    transform:scale(1.03);  
+}  
+  
+.service-box h2,  
+.service-box p{  
+    color:white !important;  
+}  
+  
+/* সদস্য বক্স */  
+.member-box{  
+    background:linear-gradient(45deg, #ff1493, #8000ff) !important;  
+    color:white !important;  
+}  
+  
+.member-box h2,  
+.member-box p{  
+    color:white !important;  
+}  
+  
+/* WhatsApp বক্স */  
+.whatsapp-box{  
+    background:linear-gradient(45deg, red, blue) !important;  
+    color:white !important;  
+}  
+  
+.whatsapp-box h2,  
+.whatsapp-box p{  
+    color:white !important;  
+}  
+  
+/* দান বক্স */  
+.donation-box{  
+    background:linear-gradient(45deg, #ff1493, #8000ff) !important;  
+    color:white !important;  
+}  
+  
+.donation-box h2,  
+.donation-box p,  
+.donation-box b{  
+    color:white !important;  
+}  
+  
+/* অর্জন বক্স */  
+.achievement-box{  
+    background:linear-gradient(45deg, red, blue) !important;  
+    color:white !important;  
+}  
+  
+.achievement-box h2,  
+.achievement-box p{  
+    color:white !important;  
+}  
+  
+/* যোগাযোগ বক্স */  
+.contact-box{  
+    background:linear-gradient(45deg, #ff1493, #8000ff) !important;  
+    color:white !important;  
+}  
+  
+.contact-box h2,  
+.contact-box p{  
+    color:white !important;  
+}  
+  
+/* সোশ্যাল মিডিয়া বক্স */  
+.social-box{  
+    background:linear-gradient(45deg, black, red) !important;  
+    color:white !important;  
+}  
+  
+.social-box h2{  
+    color:white !important;  
+}  
+  
+.btn{  
+    display:inline-block;  
+    background:orange;  
+    color:white;  
+    padding:12px 25px;  
+    text-decoration:none;  
+    border-radius:8px;  
+    margin-top:15px;  
+    font-size:18px;  
+}  
+  
+.btn:hover{  
+    background:#e69500;  
+}  
+  
+.qr{  
+    width:250px;  
+    max-width:100%;  
+    border-radius:10px;  
+}  
+  
+footer{  
+    background:#222;  
+    color:white;  
+    padding:20px;  
+    margin-top:30px;  
+}  
+</style>  </head>  <body>  <header>  
+    <h1>T.I.G.E.R The Charitable Trust</h1>  
+    <p>মানুষের পাশে, মানুষের জন্য</p>  
+</header>  <!-- আমাদের সেবা -->  <div class="box service-box"  
+onclick="toggleService()">  <h2>🍚 আমাদের সেবা</h2>  
 
-<title>T.I.G.E.R The Charitable Trust</title>
+<p>  
+    প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায়  
+    দুস্থ ও অসহায় মানুষদের ভোজন করানো হয়।  
+</p>  
 
-<style>
-body{
-    font-family: Arial, sans-serif;
-    margin:0;
-    padding:0;
-    background:#f5f5f5;
-    text-align:center;
-}
+<p><b>বিস্তারিত দেখতে এখানে ক্লিক করুন 👆</b></p>
 
-/* Header */
-header{
-    background:linear-gradient(45deg,#FFD700,#008000);
-    color:white;
-    padding:40px 20px;
-    border-radius:0 0 25px 25px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.3);
-    cursor:pointer;
-}
+</div>  <!-- লুকানো বিস্তারিত -->  <div class="box"  
+     id="service-details"  
+     style="display:none;">  <h2>আমাদের সেবাসমূহ</h2>  
 
-header h1{
-    margin:0;
-    font-size:40px;
-}
+<p>🍚 প্রতি শুক্রবার সিউড়িতে খাদ্য বিতরণ</p>  
 
-header p{
-    font-size:22px;
-}
+<p>🍚 প্রতি রবিবার সাঁইথিয়ায় খাদ্য বিতরণ</p>  
 
-/* সাধারণ বক্স */
-.box{
-    background:white;
-    margin:20px;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.15);
-}
+<p>🤝 অসহায় ও দুস্থ মানুষের পাশে দাঁড়ানো</p>  
 
-/* আমাদের সেবা বক্স */
-.service-box{
-    background:linear-gradient(45deg, red, blue) !important;
-    color:white !important;
-    cursor:pointer;
-}
+<p>❤️ মানবিক সহায়তা প্রদান</p>
 
-.service-box h2,
-.service-box p{
-    color:white !important;
-}
+</div>  <!-- সদস্য বিভাগ -->  <div class="box member-box">  
+    <h2>সদস্য হোন</h2>  <p>  
+    T.I.G.E.R The Charitable Trust-এর মানবতার  
+    পরিবারের সদস্য হয়ে নিয়মিত সেবাকাজে অংশ নিন।  
+</p>  
 
-/* সদস্য বক্স */
-.member-box{
-    background:linear-gradient(45deg,#ff1493,#8000ff) !important;
-    color:white !important;
-}
+<a class="btn"  
+   href="https://form.svhrt.com/6a4108bfa1ff98e3452915b4"  
+   target="_blank">  
+   সদস্য আবেদন করুন  
+</a>
 
-.member-box h2,
-.member-box p{
-    color:white !important;
-}
+</div>  <!-- WhatsApp -->  <div class="box whatsapp-box">  
+    <h2>WhatsApp Community</h2>  <p>  
+    আমাদের মানবতার পরিবারের সাথে যুক্ত থাকুন এবং  
+    সকল আপডেট পান।  
+</p>  
 
-/* WhatsApp বক্স */
-.whatsapp-box{
-    background:linear-gradient(45deg,red,blue) !important;
-    color:white !important;
-}
+<a class="btn"  
+   href="YOUR_WHATSAPP_LINK"  
+   target="_blank">  
+   WhatsApp গ্রুপে যোগ দিন  
+</a>
 
-.whatsapp-box h2,
-.whatsapp-box p{
-    color:white !important;
-}
+</div>  <!-- দান বিভাগ -->  <div class="box donation-box">  
+    <h2>দান করুন</h2>  <p>  
+    আপনার সামান্য সহযোগিতা বহু মানুষের মুখে হাসি ফোটাতে পারে।  
+</p>  
 
-/* দান বক্স */
-.donation-box{
-    background:linear-gradient(45deg,#ff1493,#8000ff) !important;
-    color:white !important;
-}
+<img src="qr.jpg"  
+     alt="Donation QR"  
+     class="qr">  
 
-.donation-box h2,
-.donation-box p,
-.donation-box b{
-    color:white !important;
-}
+<p><b>UPI:</b> 9832899309@ybl</p>  
 
-/* অর্জন বক্স */
-.achievement-box{
-    background:linear-gradient(45deg,red,blue) !important;
-    color:white !important;
-}
+<a class="btn" href="tel:9832899309">  
+    যোগাযোগ করুন  
+</a>
 
-.achievement-box h2,
-.achievement-box p{
-    color:white !important;
-}
+</div>  <!-- অর্জন -->  <div class="box achievement-box">  
+    <h2>আমাদের অর্জন</h2>  <p>🍚 প্রতি শুক্রবার ও রবিবার খাদ্য বিতরণ</p>  
 
-/* যোগাযোগ বক্স */
-.contact-box{
-    background:linear-gradient(45deg,#ff1493,#8000ff) !important;
-    color:white !important;
-}
+<p>❤️ শত শত অসহায় মানুষের মুখে অন্ন</p>  
 
-.contact-box h2,
-.contact-box p{
-    color:white !important;
-}
+<p>🤝 বহু দাতা ও স্বেচ্ছাসেবীর সহযোগিতা</p>
 
-/* সোশ্যাল মিডিয়া বক্স */
-.social-box{
-    background:linear-gradient(45deg,black,red) !important;
-    color:white !important;
-}
+</div>  <!-- যোগাযোগ -->  <div class="box contact-box">  
+    <h2>যোগাযোগ</h2>  <p>পার্থ সারথি দাস</p>  
 
-.social-box h2{
-    color:white !important;
-}
+<p>📞 মোবাইল: 9832899309</p>  
 
-.btn{
-    display:inline-block;
-    background:orange;
-    color:white;
-    padding:12px 25px;
-    text-decoration:none;
-    border-radius:8px;
-    margin-top:15px;
-    font-size:18px;
-}
+<p>  
+    📍 ঠিকানা: বেণীমাধব মোড় সংলগ্ন,  
+    সিউড়ি, বীরভূম  
+</p>
 
-.qr{
-    width:250px;
-    max-width:100%;
-    border-radius:10px;
-}
+</div>  <!-- সোশ্যাল মিডিয়া -->  <div class="box social-box">  
+    <h2>আমাদের সাথে যুক্ত থাকুন</h2>  <a class="btn"  
+   href="YOUR_FACEBOOK_LINK"  
+   target="_blank">  
+   Facebook  
+</a>  
 
-footer{
-    background:#222;
-    color:white;
-    padding:20px;
-    margin-top:30px;
-}
-</style>
-</head>
+<br><br>  
 
-<body>
+<a class="btn"  
+   href="YOUR_YOUTUBE_LINK"  
+   target="_blank">  
+   YouTube  
+</a>  
 
-<header onclick="toggleTeam()">
-    <h1>T.I.G.E.R The Charitable Trust</h1>
-    <p>মানুষের পাশে, মানুষের জন্য</p>
-    <p><b>আমাদের টিম দেখতে এখানে ক্লিক করুন 👇</b></p>
-</header>
+<br><br>  
 
-<div class="box" id="team-details" style="display:none;">
-    <h2>আমাদের টিম</h2>
+<a class="btn"  
+   href="YOUR_INSTAGRAM_LINK"  
+   target="_blank">  
+   Instagram  
+</a>
 
-    <p><b>পার্থ সারথি দাস</b><br>📞 9832899309</p>
-
-    <p><b>উজ্জ্বল পাল</b><br>📞 7001494982</p>
-
-    <p><b>জয়ন্ত দাস</b><br>📞 7718376676</p>
-
-    <p><b>রামচন্দ্র দাস</b><br>📞 9635275061</p>
-
-    <p><b>মানস কুমার দাস</b><br>📞 9933340824</p>
-</div>
-
-<!-- আমাদের সেবা -->
-<div class="box service-box" onclick="toggleService()">
-    <h2>🍚 আমাদের সেবা</h2>
-
-    <p>
-        প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায়
-        দুস্থ ও অসহায় মানুষদের ভোজন করানো হয়।
-    </p>
-
-    <p><b>বিস্তারিত দেখতে এখানে ক্লিক করুন 👆</b></p>
-</div>
-
-<div class="box" id="service-details" style="display:none;">
-    <h2>আমাদের সেবাসমূহ</h2>
-
-    <p>🍚 প্রতি শুক্রবার সিউড়িতে খাদ্য বিতরণ</p>
-    <p>🍚 প্রতি রবিবার সাঁইথিয়ায় খাদ্য বিতরণ</p>
-    <p>🤝 অসহায় ও দুস্থ মানুষের পাশে দাঁড়ানো</p>
-    <p>❤️ মানবিক সহায়তা প্রদান</p>
-</div>
-
-<!-- সদস্য বিভাগ -->
-<div class="box member-box">
-    <h2>সদস্য হোন</h2>
-
-    <p>
-        T.I.G.E.R The Charitable Trust-এর মানবতার পরিবারের সদস্য হয়ে নিয়মিত সেবাকাজে অংশ নিন।
-    </p>
-
-    <a class="btn"
-       href="https://form.svhrt.com/6a4108bfa1ff98e3452915b4"
-       target="_blank">
-       সদস্য আবেদন করুন
-    </a>
-</div>
-
-<footer>
-    © 2026 T.I.G.E.R The Charitable Trust
-</footer>
-
-<script>
-function toggleService() {
-    var x = document.getElementById("service-details");
-
-    if (x.style.display === "none") {
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
-}
-
-function toggleTeam() {
-    var x = document.getElementById("team-details");
-
-    if (x.style.display === "none") {
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
-}
-</script>
-
-</body>
+</div>  <footer>  
+    © 2026 T.I.G.E.R The Charitable Trust  
+</footer>  <script>  
+function toggleService() {  
+    var x = document.getElementById("service-details");  
+  
+    if (x.style.display === "none") {  
+        x.style.display = "block";  
+    } else {  
+        x.style.display = "none";  
+    }  
+}  
+</script>  </body>  
 </html>
