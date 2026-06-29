@@ -1,38 +1,77 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-    <title>T.I.G.E.R The Charitable Trust</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <style>
-        body{
-            font-family: Arial, sans-serif;
-            margin:0;
-            padding:0;
-            background:#f5f5f5;
-            text-align:center;
-        }
-        header{
-            background:green;
-            color:white;
-            padding:20px;
-        }
-        .box{
-            background:white;
-            margin:20px;
-            padding:20px;
-            border-radius:10px;
-            box-shadow:0 2px 5px rgba(0,0,0,0.2);
-        }
-        .btn{
-            display:inline-block;
-            background:orange;
-            color:white;
-            padding:10px 20px;
-            text-decoration:none;
-            border-radius:5px;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>T.I.G.E.R The Charitable Trust</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin:0;
+    padding:0;
+    background:#f5f5f5;
+    text-align:center;
+}
+
+header{
+    background:green;
+    color:white;
+    padding:40px 20px;
+}
+
+header h1{
+    margin:0;
+    font-size:40px;
+}
+
+header p{
+    font-size:22px;
+}
+
+.box{
+    background:white;
+    margin:20px;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.15);
+}
+
+.box h2{
+    color:#000;
+}
+
+.btn{
+    display:inline-block;
+    background:orange;
+    color:white;
+    padding:12px 25px;
+    text-decoration:none;
+    border-radius:8px;
+    margin-top:15px;
+    font-size:18px;
+}
+
+.btn:hover{
+    background:#e69500;
+}
+
+.qr{
+    width:250px;
+    max-width:100%;
+    border-radius:10px;
+}
+
+footer{
+    background:#222;
+    color:white;
+    padding:20px;
+    margin-top:30px;
+}
+</style>
 </head>
+
 <body>
 
 <header>
@@ -40,34 +79,22 @@
     <p>মানুষের পাশে, মানুষের জন্য</p>
 </header>
 
+<!-- আমাদের সেবা -->
 <div class="box">
     <h2>আমাদের সেবা</h2>
-    <p>প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায় দুস্থ ও অসহায় মানুষদের ভোজন করানো হয়।</p>
+    <p>
+        প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায়
+        দুস্থ ও অসহায় মানুষদের ভোজন করানো হয়।
+    </p>
 </div>
 
-<div class="box">
-    <h2>দান করুন</h2>
-    <p>আপনার সামান্য সহযোগিতা বহু মানুষের মুখে হাসি ফোটাতে পারে।</p>
-    <a class="btn" href="tel:9832899309">যোগাযোগ করুন</a>
-</div>
-
-<div class="box">
-    <h2>যোগাযোগ</h2>
-    <p>পার্থ সারথি দাস</p>
-    <p>মোবাইল: 9832899309</p>
-    <p>ঠিকানা: বেণীমাধব মোড় সংলগ্ন, সিউড়ি, বীরভূম</p>
-</div>
-<div class="box">
-    <h2>সদস্য হোন</h2>
-    <p>T.I.G.E.R The Charitable Trust-এর মানবতা পরিবারের সদস্য হয়ে নিয়মিত সেবাকাজে অংশ নিন।</p>
-    <a class="btn" href="https://form.svhrt.com/6a4108bfa1ff98e3452915b4" target="_blank">সদস্য আবেদন করুন</a>
-</div>
 <!-- সদস্য বিভাগ -->
 <div class="box">
     <h2>সদস্য হোন</h2>
+
     <p>
-        T.I.G.E.R The Charitable Trust-এর মানবতার পরিবারের সদস্য হয়ে
-        নিয়মিত সেবাকাজে অংশ নিন।
+        T.I.G.E.R The Charitable Trust-এর মানবতার
+        পরিবারের সদস্য হয়ে নিয়মিত সেবাকাজে অংশ নিন।
     </p>
 
     <a class="btn"
@@ -77,7 +104,7 @@
     </a>
 </div>
 
-<!-- WhatsApp বিভাগ -->
+<!-- WhatsApp -->
 <div class="box">
     <h2>WhatsApp Community</h2>
 
@@ -103,7 +130,7 @@
 
     <img src="qr.jpg"
          alt="Donation QR"
-         style="width:250px;max-width:100%;border-radius:10px;">
+         class="qr">
 
     <p><b>UPI:</b> 9832899309@ybl</p>
 
@@ -112,7 +139,7 @@
     </a>
 </div>
 
-<!-- অর্জন বিভাগ -->
+<!-- অর্জন -->
 <div class="box">
     <h2>আমাদের অর্জন</h2>
 
@@ -121,6 +148,20 @@
     <p>❤️ শত শত অসহায় মানুষের মুখে অন্ন</p>
 
     <p>🤝 বহু দাতা ও স্বেচ্ছাসেবীর সহযোগিতা</p>
+</div>
+
+<!-- যোগাযোগ -->
+<div class="box">
+    <h2>যোগাযোগ</h2>
+
+    <p>পার্থ সারথি দাস</p>
+
+    <p>📞 মোবাইল: 9832899309</p>
+
+    <p>
+        📍 ঠিকানা: বেণীমাধব মোড় সংলগ্ন,
+        সিউড়ি, বীরভূম
+    </p>
 </div>
 
 <!-- সোশ্যাল মিডিয়া -->
@@ -149,5 +190,10 @@
        Instagram
     </a>
 </div>
+
+<footer>
+    © 2026 T.I.G.E.R The Charitable Trust
+</footer>
+
 </body>
 </html>
