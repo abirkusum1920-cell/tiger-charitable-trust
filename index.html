@@ -46,6 +46,12 @@ header p{
 .service-box{
     background:linear-gradient(45deg, red, blue) !important;
     color:white !important;
+    cursor:pointer;
+    transition:0.3s;
+}
+
+.service-box:hover{
+    transform:scale(1.03);
 }
 
 .service-box h2,
@@ -157,13 +163,35 @@ footer{
 </header>
 
 <!-- আমাদের সেবা -->
-<div class="box service-box">
-    <h2>আমাদের সেবা</h2>
+<div class="box service-box"
+onclick="toggleService()">
+
+    <h2>🍚 আমাদের সেবা</h2>
 
     <p>
         প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায়
         দুস্থ ও অসহায় মানুষদের ভোজন করানো হয়।
     </p>
+
+    <p><b>বিস্তারিত দেখতে এখানে ক্লিক করুন 👆</b></p>
+
+</div>
+
+<!-- লুকানো বিস্তারিত -->
+<div class="box"
+     id="service-details"
+     style="display:none;">
+
+    <h2>আমাদের সেবাসমূহ</h2>
+
+    <p>🍚 প্রতি শুক্রবার সিউড়িতে খাদ্য বিতরণ</p>
+
+    <p>🍚 প্রতি রবিবার সাঁইথিয়ায় খাদ্য বিতরণ</p>
+
+    <p>🤝 অসহায় ও দুস্থ মানুষের পাশে দাঁড়ানো</p>
+
+    <p>❤️ মানবিক সহায়তা প্রদান</p>
+
 </div>
 
 <!-- সদস্য বিভাগ -->
@@ -272,6 +300,18 @@ footer{
 <footer>
     © 2026 T.I.G.E.R The Charitable Trust
 </footer>
+
+<script>
+function toggleService() {
+    var x = document.getElementById("service-details");
+
+    if (x.style.display === "none") {
+        x.style.display = "block";
+    } else {
+        x.style.display = "none";
+    }
+}
+</script>
 
 </body>
 </html>
