@@ -1,201 +1,473 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NEURAL-QUANT ANALYZER</title>
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calibration Desk — Cricket Edge Governance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=Hind+Siliguri:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 <style>
-body{
-font-family:Arial,sans-serif;
-background:#f5f5f5;
-padding:20px;
-}
+  :root{
+    --bg: #11151b;
+    --bg-grid: #171c24;
+    --panel: #1a2029;
+    --panel-2: #1f2630;
+    --border: #2b3441;
+    --border-soft: #232b35;
+    --text: #e9e7e1;
+    --text-muted: #8b95a6;
+    --text-dim: #5c6773;
+    --teal: #4fd1c5;
+    --teal-dim: #2e5a56;
+    --amber: #e8a33d;
+    --amber-dim: #5e4a26;
+    --red: #e5636a;
+    --red-dim: #5c3234;
+    --mono: 'IBM Plex Mono', monospace;
+    --sans: 'IBM Plex Sans', sans-serif;
+    --display: 'Space Grotesk', sans-serif;
+    --bn: 'Hind Siliguri', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0/100% 34px,
+      linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0/34px 100%,
+      var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px; margin:0 auto; padding:28px 20px 80px;}
 
-.card{
-background:white;
-padding:20px;
-border-radius:15px;
-box-shadow:0 0 10px rgba(0,0,0,0.1);
-}
+  /* ---------- header ---------- */
+  header{
+    display:flex; align-items:flex-end; justify-content:space-between;
+    gap:16px; flex-wrap:wrap;
+    border-bottom:1px solid var(--border);
+    padding-bottom:18px; margin-bottom:26px;
+  }
+  .brand-eyebrow{
+    font-family:var(--mono); font-size:11px; letter-spacing:.18em;
+    color:var(--teal); text-transform:uppercase; margin-bottom:6px;
+  }
+  h1{
+    font-family:var(--display); font-weight:600; font-size:28px; margin:0;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    font-family:var(--bn); color:var(--text-muted); font-size:14px; margin:6px 0 0;
+    max-width:480px; line-height:1.6;
+  }
+  .status-chip{
+    font-family:var(--mono); font-size:11px; color:var(--text-muted);
+    border:1px solid var(--border); border-radius:3px; padding:6px 10px;
+    display:flex; align-items:center; gap:8px; white-space:nowrap;
+  }
+  .status-chip .dot{width:6px;height:6px;border-radius:50%;background:var(--teal); box-shadow:0 0 8px var(--teal);}
 
-input{
-width:100%;
-padding:12px;
-margin:10px 0;
-}
+  /* ---------- tabs ---------- */
+  .tabs{
+    display:flex; gap:2px; margin-bottom:22px;
+    border:1px solid var(--border); border-radius:6px; overflow:hidden;
+    width:fit-content;
+  }
+  .tab-btn{
+    font-family:var(--mono); font-size:12px; letter-spacing:.04em;
+    background:var(--panel); color:var(--text-muted);
+    border:none; padding:11px 18px; cursor:pointer;
+    border-right:1px solid var(--border);
+    transition:background .15s, color .15s;
+  }
+  .tab-btn:last-child{border-right:none;}
+  .tab-btn:hover{color:var(--text);}
+  .tab-btn.active{background:var(--panel-2); color:var(--teal);}
+  .tab-num{opacity:.5; margin-right:6px;}
 
-button{
-width:100%;
-padding:15px;
-background:#28a745;
-color:white;
-border:none;
-border-radius:10px;
-font-size:18px;
-}
+  .panel{display:none;}
+  .panel.active{display:block; animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
 
-#result{
-margin-top:20px;
-font-size:20px;
-font-weight:bold;
-}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:20px;}
+  @media(max-width:760px){.grid2{grid-template-columns:1fr;}}
+
+  .card{
+    background:var(--panel); border:1px solid var(--border); border-radius:8px;
+    padding:22px;
+  }
+  .card h2{
+    font-family:var(--display); font-size:15px; font-weight:600; margin:0 0 4px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .card h2 .idx{font-family:var(--mono); color:var(--teal); font-size:12px;}
+  .card .sub{font-family:var(--bn); font-size:12.5px; color:var(--text-muted); margin:0 0 18px; line-height:1.6;}
+
+  label{
+    display:block; font-family:var(--mono); font-size:10.5px; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; margin-top:14px;
+  }
+  label:first-of-type{margin-top:0;}
+  input[type=number], input[type=text], select{
+    width:100%; background:var(--bg); border:1px solid var(--border);
+    color:var(--text); font-family:var(--mono); font-size:14px;
+    padding:10px 11px; border-radius:5px; outline:none;
+    transition:border-color .15s;
+  }
+  input:focus, select:focus{border-color:var(--teal);}
+  .row2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+
+  .btn{
+    font-family:var(--mono); font-size:12px; letter-spacing:.05em;
+    background:var(--teal-dim); color:var(--teal); border:1px solid var(--teal);
+    padding:10px 16px; border-radius:5px; cursor:pointer; margin-top:18px;
+    transition:filter .15s;
+  }
+  .btn:hover{filter:brightness(1.15);}
+  .btn.secondary{
+    background:transparent; color:var(--text-muted); border:1px solid var(--border);
+  }
+
+  /* ---------- output ledger ---------- */
+  .ledger{font-family:var(--mono); font-size:13px;}
+  .ledger-row{
+    display:flex; justify-content:space-between; padding:9px 0;
+    border-bottom:1px solid var(--border-soft);
+  }
+  .ledger-row:last-child{border-bottom:none;}
+  .ledger-row .k{color:var(--text-muted);}
+  .ledger-row .v{color:var(--text); font-weight:600;}
+  .v.pos{color:var(--teal);}
+  .v.neg{color:var(--red);}
+  .v.warn{color:var(--amber);}
+
+  /* ---------- verdict stamp ---------- */
+  .stamp{
+    display:inline-block; font-family:var(--mono); font-weight:700;
+    font-size:13px; letter-spacing:.12em; text-transform:uppercase;
+    padding:10px 18px; border:2px dashed; border-radius:4px;
+    transform:rotate(-2deg); margin:16px 0 6px;
+  }
+  .stamp.no-bet{color:var(--amber); border-color:var(--amber); background:rgba(232,163,61,.06);}
+  .stamp.confirmed{color:var(--teal); border-color:var(--teal); background:rgba(79,209,197,.06);}
+  .stamp.reject{color:var(--red); border-color:var(--red); background:rgba(229,99,106,.06);}
+  .rationale{font-family:var(--bn); font-size:13px; color:var(--text-muted); line-height:1.7; margin-top:10px;}
+
+  /* ---------- probability tick scale ---------- */
+  .scale-wrap{margin-top:20px;}
+  .scale{
+    position:relative; height:38px; background:var(--bg);
+    border:1px solid var(--border); border-radius:4px; margin-top:8px;
+  }
+  .scale .tick{position:absolute; top:0; bottom:0; width:1px; background:var(--border-soft);}
+  .scale .marker{
+    position:absolute; top:-6px; width:2px; height:50px;
+    transform:translateX(-1px);
+  }
+  .scale .marker .label{
+    position:absolute; top:-20px; left:50%; transform:translateX(-50%);
+    font-family:var(--mono); font-size:10px; white-space:nowrap;
+  }
+  .scale .marker.market{background:var(--text-muted);}
+  .scale .marker.model{background:var(--teal);}
+  .scale .marker.model .label{color:var(--teal);}
+  .scale .marker.market .label{color:var(--text-muted); top:24px;}
+  .legend{display:flex; gap:18px; margin-top:10px; font-family:var(--mono); font-size:11px; color:var(--text-muted);}
+  .legend span{display:inline-flex; align-items:center; gap:6px;}
+  .legend .sw{width:8px;height:8px;border-radius:50%;}
+
+  /* ---------- csv drop / table ---------- */
+  .dropzone{
+    border:1.5px dashed var(--border); border-radius:6px; padding:26px;
+    text-align:center; font-family:var(--mono); font-size:12px; color:var(--text-muted);
+    cursor:pointer; transition:border-color .15s, background .15s;
+  }
+  .dropzone:hover, .dropzone.drag{border-color:var(--teal); background:rgba(79,209,197,.04); color:var(--teal);}
+  .dropzone input{display:none;}
+  table{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:11.5px; margin-top:14px;}
+  th{text-align:left; color:var(--text-muted); font-weight:500; padding:8px 10px; border-bottom:1px solid var(--border); font-size:10.5px; text-transform:uppercase; letter-spacing:.05em;}
+  td{padding:7px 10px; border-bottom:1px solid var(--border-soft);}
+  .table-scroll{max-height:220px; overflow-y:auto; border:1px solid var(--border-soft); border-radius:6px; margin-top:14px;}
+
+  canvas{width:100%; height:180px; display:block; margin-top:10px;}
+
+  .foot-note{
+    font-family:var(--bn); font-size:12px; color:var(--text-dim); margin-top:34px;
+    padding-top:18px; border-top:1px solid var(--border); line-height:1.7;
+  }
+  code{font-family:var(--mono); background:var(--bg); padding:1px 5px; border-radius:3px; font-size:11.5px; color:var(--teal);}
+  .hint{font-family:var(--bn); font-size:11.5px; color:var(--text-dim); margin-top:6px;}
 </style>
 </head>
-
 <body>
+<div class="wrap">
 
-<div class="card">
-<h2>🏏 NEURAL-QUANT ANALYZER</h2>
-<input type="text" id="match" placeholder="Match Name (IND vs AUS)">
+  <header>
+    <div>
+      <div class="brand-eyebrow">Risk Governance Instrument</div>
+      <h1>Calibration Desk</h1>
+      <p>মনগড়া weight নয় — শুধু গাণিতিক সূত্র। সব হিসাব আপনার ব্রাউজারে হয়, কোথাও পাঠানো হয় না।</p>
+    </div>
+    <div class="status-chip"><span class="dot"></span> Client-side · no data leaves this page</div>
+  </header>
 
-<input type="text" id="league" placeholder="League Name">
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="vig"><span class="tab-num">01</span>Vig Removal</button>
+    <button class="tab-btn" data-tab="kelly"><span class="tab-num">02</span>Kelly Sizing</button>
+    <button class="tab-btn" data-tab="backtest"><span class="tab-num">03</span>Backtest Validator</button>
+  </div>
 
-<input type="text" id="teamA" placeholder="Team A Name">
+  <!-- ============ TAB 1: VIG REMOVAL ============ -->
+  <div class="panel active" id="panel-vig">
+    <div class="grid2">
+      <div class="card">
+        <h2><span class="idx">01</span> Odds Input</h2>
+        <p class="sub">দুই দলের decimal closing odds দিন। Proportional ও Shin's method — দুটোই পাশাপাশি দেখানো হবে।</p>
+        <div class="row2">
+          <div>
+            <label>Team A — Decimal Odds</label>
+            <input type="number" id="vig-oa" step="0.01" value="1.90">
+          </div>
+          <div>
+            <label>Team B — Decimal Odds</label>
+            <input type="number" id="vig-ob" step="0.01" value="2.05">
+          </div>
+        </div>
+        <button class="btn" onclick="computeVig()">Calculate fair probability</button>
+      </div>
 
-<input type="text" id="teamB" placeholder="Team B Name">
-<h3>Team A Strength (0-10)</h3>
+      <div class="card">
+        <h2><span class="idx">02</span> Fair Probability Ledger</h2>
+        <p class="sub">Overround সরিয়ে প্রকৃত সম্ভাবনা — দুই পদ্ধতি একসাথে তুলনা করুন।</p>
+        <div id="vig-output">
+          <p class="hint">উপরে odds দিয়ে Calculate চাপুন।</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<input type="number" id="batA" placeholder="Batting">
-<input type="number" id="bowlA" placeholder="Bowling">
-<input type="number" id="allA" placeholder="All-Rounder">
-<input type="number" id="expA" placeholder="Experience">
-<input type="number" id="winnerA" placeholder="Match Winner">
-<h3>Team B Strength (0-10)</h3>
+  <!-- ============ TAB 2: KELLY SIZING ============ -->
+  <div class="panel" id="panel-kelly">
+    <div class="grid2">
+      <div class="card">
+        <h2><span class="idx">01</span> Position Input</h2>
+        <p class="sub">আপনার model probability, market odds, এবং validated sample size দিন।</p>
+        <label>Your Model's P(Team A wins)</label>
+        <input type="number" id="k-modelp" step="0.01" min="0" max="1" value="0.58">
+        <label>Decimal Odds (Team A)</label>
+        <input type="number" id="k-odds" step="0.01" value="1.90">
+        <label>Vig-Free Market P(Team A wins)</label>
+        <input type="number" id="k-marketp" step="0.01" min="0" max="1" value="0.53">
+        <div class="hint">Tab 01 থেকে fair probability কপি করে এখানে বসাতে পারেন।</div>
+        <label># Validated Out-of-Sample Predictions</label>
+        <input type="number" id="k-n" step="1" value="600">
+        <button class="btn" onclick="computeKelly()">Size the position</button>
+      </div>
 
-<input type="number" id="batB" placeholder="Batting">
-<input type="number" id="bowlB" placeholder="Bowling">
-<input type="number" id="allB" placeholder="All-Rounder">
-<input type="number" id="expB" placeholder="Experience">
-<input type="number" id="winnerB" placeholder="Match Winner">
-    <select id="toss">
-<option value="">Toss Winner</option>
-<option>Team A</option>
-<option>Team B</option>
-</select>
+      <div class="card">
+        <h2><span class="idx">02</span> Governance Verdict</h2>
+        <p class="sub">Quarter-Kelly cap, sample-size gate, এবং automatic NO BET rules প্রয়োগ করা হয়।</p>
+        <div id="kelly-output">
+          <p class="hint">উপরে ইনপুট দিয়ে Size the position চাপুন।</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<select id="pitch">
-<option value="">Pitch Type</option>
-<option>Batting Friendly</option>
-<option>Bowling Friendly</option>
-<option>Spin Friendly</option>
-</select>
+  <!-- ============ TAB 3: BACKTEST VALIDATOR ============ -->
+  <div class="panel" id="panel-backtest">
+    <div class="card" style="margin-bottom:20px;">
+      <h2><span class="idx">01</span> Upload Match Log</h2>
+      <p class="sub">
+        প্রয়োজনীয় কলাম: <code>match_id, team_a, team_b, winner, odds_a_close, odds_b_close, model_prob</code>.
+        <br><code>model_prob</code> = আপনার নিজের মডেল যে probability দিয়েছিল যে team_a জিতবে (আপনাকেই সরবরাহ করতে হবে — এই টুল কোনো মডেল অনুমান করে না)।
+        <code>winner</code> কলামে team_a অথবা team_b-এর নাম বসবে।
+      </p>
+      <label class="dropzone" id="dropzone">
+        <span id="dz-text">CSV ফাইল টেনে আনুন অথবা ক্লিক করে বেছে নিন</span>
+        <input type="file" id="csv-input" accept=".csv">
+      </label>
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <button class="btn secondary" onclick="loadSampleCsv()">Load sample data (demo)</button>
+        <button class="btn secondary" onclick="downloadTemplate()">Download CSV template</button>
+      </div>
+    </div>
 
-<select id="dew">
-<option value="">Dew Level</option>
-<option>Low</option>
-<option>Medium</option>
-<option>High</option>
-</select>
-<input type="number" id="opp" placeholder="Opportunity Score">
+    <div id="backtest-results" style="display:none;">
+      <div class="grid2">
+        <div class="card">
+          <h2><span class="idx">02</span> Accuracy & Calibration</h2>
+          <p class="sub">Brier score ও log-loss পুরো prediction set-এর উপর হিসাব করা হয়েছে।</p>
+          <div id="bt-metrics" class="ledger"></div>
+          <canvas id="calib-canvas"></canvas>
+          <div class="legend">
+            <span><span class="sw" style="background:var(--teal)"></span>Actual win rate</span>
+            <span><span class="sw" style="background:var(--text-muted)"></span>Predicted probability</span>
+          </div>
+        </div>
 
-<input type="number" id="risk" placeholder="Risk Score">
+        <div class="card">
+          <h2><span class="idx">03</span> Edge vs. Closing Market</h2>
+          <p class="sub">শুধুমাত্র closing odds-এর বিরুদ্ধে সত্যিকারের পরীক্ষা — এটাই আসল বার।</p>
+          <div id="bt-edge" class="ledger"></div>
+          <div id="bt-stamp"></div>
+        </div>
+      </div>
 
-<input type="number" id="trust" placeholder="Trust Score">
-<input type="number" id="oddsA" placeholder="Market Odds Team A (e.g. 1.80)">
+      <div class="card" style="margin-top:20px;">
+        <h2><span class="idx">04</span> Row-Level Detail</h2>
+        <div class="table-scroll">
+          <table id="bt-table">
+            <thead><tr>
+              <th>Match</th><th>Model P</th><th>Market P (Shin)</th><th>Edge</th><th>Outcome</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<input type="number" id="oddsB" placeholder="Market Odds Team B (e.g. 2.20)">
-<button onclick="analyze()">ANALYZE</button>
+  <div class="foot-note">
+    Governance note: এই টুল কোনো weight, coefficient, বা "sure edge" দাবি করে না। Tab 03-এর CLV proxy negative এলে সেটাকেই honest সিগন্যাল হিসেবে ধরুন — মডেল বদলান, stake নয়।
+    কোনো মডেলের উপর সম্পূর্ণ নির্ভর করা উচিত নয়।
+  </div>
 
-<div id="result"></div>
 </div>
 
 <script>
-function analyze() {
-    if (document.getElementById("toss").value == "") {
-    alert("Please select Toss Winner");
-    return;
-    }
+/* ============================================================
+   TAB SWITCHING
+   ============================================================ */
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-'+btn.dataset.tab).classList.add('active');
+  });
+});
 
-    let batA = Number(document.getElementById("batA").value);
-    let bowlA = Number(document.getElementById("bowlA").value);
-    let allA = Number(document.getElementById("allA").value);
-let expA = Number(document.getElementById("expA").value);
-let winnerA = Number(document.getElementById("winnerA").value);
-    let batB = Number(document.getElementById("batB").value);
-    let bowlB = Number(document.getElementById("bowlB").value);
-    let allB = Number(document.getElementById("allB").value);
-let expB = Number(document.getElementById("expB").value);
-let winnerB = Number(document.getElementById("winnerB").value);
-    let opp = Number(document.getElementById("opp").value);
-    let risk = Number(document.getElementById("risk").value);
-    let trust = Number(document.getElementById("trust").value);
-let oddsA = Number(document.getElementById("oddsA").value);
-let oddsB = Number(document.getElementById("oddsB").value);
-    let scoreA = batA + bowlA + allA + expA + winnerA;
-let scoreB = batB + bowlB + allB + expB + winnerB;
-if(document.getElementById("toss").value === "Team A"){
-    scoreA += 2;
-}
-else if(document.getElementById("toss").value === "Team B"){
-    scoreB += 2;
-}
-   if(document.getElementById("pitch").value === "Batting Friendly"){
-    scoreA += batA * 0.2;
-    scoreB += batB * 0.2;
+/* ============================================================
+   CORE MATH — mirrors the Python library exactly
+   ============================================================ */
+function impliedProbs(oa, ob){
+  if(oa<=1 || ob<=1) throw new Error('Decimal odds must be > 1.0');
+  const pa = 1/oa, pb = 1/ob;
+  return {pa, pb, overround: pa+pb-1};
 }
 
-if(document.getElementById("pitch").value === "Bowling Friendly"){
-    scoreA += bowlA * 0.2;
-    scoreB += bowlB * 0.2;
+function proportionalMethod(oa, ob){
+  const {pa, pb, overround} = impliedProbs(oa, ob);
+  const total = pa+pb;
+  return {probA: pa/total, probB: pb/total, overround, method:'proportional'};
 }
 
-if(document.getElementById("pitch").value === "Spin Friendly"){
-    scoreA += allA * 0.1;
-    scoreB += allB * 0.1;
+function shinProbFromZ(pi, z){
+  const inside = z*z + 4*(1-z)*pi*pi;
+  return (Math.sqrt(inside) - z) / (2*(1-z));
 }
-   if(document.getElementById("dew").value === "High"){
 
-    if(document.getElementById("toss").value === "Team A"){
-        scoreA += 1.5;
-    }
-
-    else if(document.getElementById("toss").value === "Team B"){
-        scoreB += 1.5;
-    }
-
-   } 
-    let result = "";
-let total = scoreA + scoreB;
-
-let probA = ((scoreA / total) * 100).toFixed(1);
-let probB = ((scoreB / total) * 100).toFixed(1);
-   let confidence = Math.abs(probA - probB).toFixed(1);
-   let marketProbA = (1 / oddsA) * 100;
-let marketProbB = (1 / oddsB) * 100;
-
-let valueEdgeA = (probA - marketProbA).toFixed(1);
-let valueEdgeB = (probB - marketProbB).toFixed(1);
-    if (opp >= 70 && risk <= 30 && trust >= 70 && confidence >= 10) {
-
-    if (scoreA > scoreB) {
-        result = "✅ BET ON TEAM A";
-    } else if (scoreB > scoreA) {
-        result = "✅ BET ON TEAM B";
-    } else {
-        result = "⚠️ NO BET (Teams Equal)";
-    }
-
-} else if (confidence < 10) {
-
-    result = "👀 WATCHLIST";
-
-} else {
-
-    result = "❌ NO BET";
-
-    }
-
-    document.getElementById("result").innerHTML =
-"<h3>" + result + "</h3>" +
-"<p>Team A Score: " + scoreA.toFixed(1) + "</p>" +
-"<p>Team B Score: " + scoreB.toFixed(1) + "</p>" +
-"<p>Team A Win Probability: " + probA + "%</p>" +
-"<p>Team B Win Probability: " + probB + "%</p>" +
-"<p>Confidence Score: " + confidence + "%</p>" +
-"<p>Team A Value Edge: " + valueEdgeA + "%</p>" +
-"<p>Team B Value Edge: " + valueEdgeB + "%</p>";
+function shinMethod(oa, ob){
+  const {pa, pb, overround} = impliedProbs(oa, ob);
+  if(overround<=0) return {probA:pa, probB:pb, overround, method:'shin (degenerate)', z:0};
+  const f = z => (shinProbFromZ(pa,z)+shinProbFromZ(pb,z)) - 1;
+  let lo=1e-9, hi=0.5-1e-9, flo=f(lo), fhi=f(hi);
+  if(flo*fhi>0){ // fallback if not bracketed
+    return {...proportionalMethod(oa,ob), method:'proportional (shin fallback)'};
+  }
+  let z=lo;
+  for(let i=0;i<80;i++){
+    z=(lo+hi)/2;
+    const fz=f(z);
+    if(Math.abs(fz)<1e-12) break;
+    if(flo*fz<0){hi=z;} else {lo=z; flo=fz;}
+  }
+  const paF=shinProbFromZ(pa,z), pbF=shinProbFromZ(pb,z);
+  const norm=paF+pbF;
+  return {probA:paF/norm, probB:pbF/norm, overround, method:'shin', z};
 }
-</script>
 
-</body>
-</html>
+function kellyFraction(p, odds){
+  const b=odds-1, q=1-p;
+  return (b*p-q)/b;
+}
+
+function conservativeKelly(p, odds, n, marketP){
+  const fStar = kellyFraction(p, odds);
+  const edge = p - marketP;
+  if(fStar<=0 || edge<=0){
+    return {edge, fStar, mult:0, stake:0, verdict:'no-bet', rationale:'কোনো positive edge নেই — NO BET.'};
+  }
+  if(n<500){
+    return {edge, fStar, mult:0, stake:0, verdict:'no-bet',
+      rationale:`মাত্র ${n}টি validated prediction — 500-এর কম। এই sample size-এ calibration কাকতালীয়ভাবেও ভালো দেখাতে পারে, তাই stake=0.`};
+  }
+  let mult = n<2000 ? 0.10 : 0.25;
+  const stake = fStar*mult;
+  return {edge, fStar, mult, stake, verdict:'confirmed',
+    rationale:`${n}টি validated prediction-এর ভিত্তিতে ${mult}x Kelly multiplier প্রয়োগ করা হলো (quarter-Kelly cap সর্বোচ্চ 0.25x)।`};
+}
+
+function brierScore(preds, outs){
+  let s=0; for(let i=0;i<preds.length;i++) s+=(preds[i]-outs[i])**2;
+  return s/preds.length;
+}
+function logLoss(preds, outs){
+  const eps=1e-15; let s=0;
+  for(let i=0;i<preds.length;i++){
+    const p=Math.min(Math.max(preds[i],eps),1-eps);
+    s += outs[i]*Math.log(p) + (1-outs[i])*Math.log(1-p);
+  }
+  return -s/preds.length;
+}
+function calibrationTable(preds, outs, nBins=10){
+  const bins=Array.from({length:nBins},()=>({n:0,sumP:0,sumO:0}));
+  for(let i=0;i<preds.length;i++){
+    let idx=Math.min(nBins-1, Math.floor(preds[i]*nBins));
+    bins[idx].n++; bins[idx].sumP+=preds[i]; bins[idx].sumO+=outs[i];
+  }
+  return bins.map((b,i)=>({
+    range:[i/nBins,(i+1)/nBins],
+    n:b.n,
+    meanPred: b.n? b.sumP/b.n : null,
+    actualRate: b.n? b.sumO/b.n : null,
+  }));
+}
+function calibrationError(table){
+  let totalN=0, weighted=0;
+  table.forEach(b=>{
+    if(b.n>0){ totalN+=b.n; weighted += Math.abs(b.actualRate-b.meanPred)*b.n; }
+  });
+  return totalN? weighted/totalN : NaN;
+}
+
+/* ============================================================
+   TAB 1: VIG REMOVAL
+   ============================================================ */
+function computeVig(){
+  const oa=parseFloat(document.getElementById('vig-oa').value);
+  const ob=parseFloat(document.getElementById('vig-ob').value);
+  const out=document.getElementById('vig-output');
+  try{
+    const prop=proportionalMethod(oa,ob);
+    const shin=shinMethod(oa,ob);
+    const diff=Math.abs(prop.probA-shin.probA)*100;
+    out.innerHTML = `
+      <div class="ledger">
+        <div class="ledger-row"><span class="k">Overround (vig)</span><span class="v warn">${(prop.overround*100).toFixed(2)}%</span></div>
+        <div class="ledger-row"><span class="k">Proportional — P(A)</span><span class="v">${(prop.probA*100).toFixed(2)}%</span></div>
+        <div class="ledger-row"><span class="k">Proportional — P(B)</span><span class="v">${(prop.probB*100).toFixed(2)}%</span></div>
+        <div class="ledger-row"><span class="k">Shin — P(A)</span><span class="v pos">${(shin.probA*100).toFixed(2)}%</span></div>
+        <div class="ledger-row"><span class="k">Shin — P(B)</span><span class="v pos">${(shin.probB*100).toFixed(2)}%</span></div>
+        <div class="ledger-row"><span class="k">Method divergence</span><span class="v ${diff>1?'warn':''}">${diff.toFixed(2)} pts</span></div>
+      </div>
+      <div class="rationale">${diff>1
+        ? 'দুই method-এর ফলাফল ১ percentage point-এর বেশি আলাদা — এই ম্যাচের edge নিয়ে বাড়তি সতর্ক থাকুন।'
+        : 'দুই method প্রায় একমত — এই fair probability তুলনামূলক নির্ভরযোগ্য।'}</div>
+    `;
+    lastVigResult = {probA: shin.probA, probB: shin.probB};
+  }catch(e){
+    out.innerHTML = `<p class="hint" style="color:var(--red)">${
