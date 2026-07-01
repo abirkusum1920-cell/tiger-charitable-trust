@@ -214,13 +214,82 @@
   </header>
 
   <div class="tabs">
-    <button class="tab-btn active" data-tab="vig"><span class="tab-num">01</span>Vig Removal</button>
-    <button class="tab-btn" data-tab="kelly"><span class="tab-num">02</span>Kelly Sizing</button>
-    <button class="tab-btn" data-tab="backtest"><span class="tab-num">03</span>Backtest Validator</button>
+    <button class="tab-btn active" data-tab="predict"><span class="tab-num">01</span>Generate Predictions</button>
+    <button class="tab-btn" data-tab="vig"><span class="tab-num">02</span>Vig Removal</button>
+    <button class="tab-btn" data-tab="kelly"><span class="tab-num">03</span>Kelly Sizing</button>
+    <button class="tab-btn" data-tab="backtest"><span class="tab-num">04</span>Backtest Validator</button>
+  </div>
+
+  <!-- ============ TAB 0: GENERATE PREDICTIONS ============ -->
+  <div class="panel active" id="panel-predict">
+    <div class="card" style="margin-bottom:20px;">
+      <h2><span class="idx">01</span> Upload Raw Match History</h2>
+      <p class="sub">
+        শুধু কলাম লাগবে: <code>date, team_a, team_b, winner</code> (chronological না হলেও চলবে — টুল নিজে date অনুযায়ী সাজাবে)।
+        যদি আপনার কাছে <code>odds_a_close, odds_b_close</code>-ও থাকে, সেগুলো রেখে দিন — automatically পাস-থ্রু হয়ে যাবে এবং সরাসরি Tab 04-এ পাঠানো যাবে।
+        <br>এই ধাপ ম্যাচ শুরুর <b>আগের</b> ফর্ম দিয়ে সম্ভাবনা বের করে — কোনো ম্যাচের ফলাফল সেই ম্যাচের নিজের prediction-এ leak হয় না।
+      </p>
+      <label class="dropzone" id="dropzone-predict">
+        <span id="dz-predict-text">Raw match history CSV টেনে আনুন বা ক্লিক করুন</span>
+        <input type="file" id="csv-input-predict" accept=".csv">
+      </label>
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <button class="btn secondary" onclick="loadSampleHistory()">Load sample history (demo)</button>
+        <button class="btn secondary" onclick="downloadHistoryTemplate()">Download CSV template</button>
+      </div>
+    </div>
+
+    <div id="predict-config" style="display:none;">
+      <div class="grid2">
+        <div class="card">
+          <h2><span class="idx">02</span> Method 1 — Recent Form Win-Rate</h2>
+          <p class="sub">প্রতিটা ম্যাচের ঠিক আগের অবস্থা অনুযায়ী, দুই দলের শেষ N ম্যাচের win-rate থেকে সম্ভাবনা বের করে। সহজ, কিন্তু কম matches থাকলে noisy।</p>
+          <label>Rolling Window (N matches)</label>
+          <input type="number" id="pred-window" value="10" min="2" max="50">
+          <label>Minimum matches needed (else 0.50, low confidence)</label>
+          <input type="number" id="pred-min" value="3" min="1" max="20">
+        </div>
+        <div class="card">
+          <h2><span class="idx">03</span> Method 2 — Elo Rating</h2>
+          <p class="sub">প্রতিটা দলের একটা চলমান rating থাকে যেটা প্রতি ম্যাচের পর আপডেট হয়। Small sample-এও সাধারণত বেশি স্থিতিশীল।</p>
+          <label>Starting Rating</label>
+          <input type="number" id="elo-start" value="1500">
+          <label>K-factor (update speed)</label>
+          <input type="number" id="elo-k" value="24" min="4" max="64">
+        </div>
+      </div>
+      <button class="btn" onclick="runPredictionGenerator()" style="margin-top:20px;">Generate model_prob columns</button>
+    </div>
+
+    <div id="predict-results" style="display:none; margin-top:20px;">
+      <div class="card">
+        <h2><span class="idx">04</span> Preview</h2>
+        <p class="sub">দুই method পাশাপাশি — যেটা backtest-এ ভালো করে (Tab 04-এ Brier score কম) সেটাই ব্যবহার করুন। একসাথে দুটোই বদলাবেন না ফলাফল দেখে দেখে — সেটা নিজেই একটা bias তৈরি করে।</p>
+        <div class="table-scroll">
+          <table id="predict-table">
+            <thead><tr>
+              <th>Date</th><th>Team A</th><th>Team B</th><th>Winner</th>
+              <th>Form P(A)</th><th>Elo P(A)</th><th>Note</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <label style="margin-top:16px;">Use which method for the model_prob column?</label>
+        <select id="predict-method-choice">
+          <option value="form">Recent Form Win-Rate</option>
+          <option value="elo">Elo Rating</option>
+        </select>
+        <div style="display:flex; gap:10px; margin-top:16px;">
+          <button class="btn secondary" onclick="downloadPredictions()">Download CSV with model_prob</button>
+          <button class="btn" onclick="sendPredictionsToBacktest()">Send to Backtest Validator →</button>
+        </div>
+        <div class="hint" id="predict-odds-hint" style="margin-top:10px;"></div>
+      </div>
+    </div>
   </div>
 
   <!-- ============ TAB 1: VIG REMOVAL ============ -->
-  <div class="panel active" id="panel-vig">
+  <div class="panel" id="panel-vig">
     <div class="grid2">
       <div class="card">
         <h2><span class="idx">01</span> Odds Input</h2>
@@ -378,96 +447,4 @@ function shinMethod(oa, ob){
   if(flo*fhi>0){ // fallback if not bracketed
     return {...proportionalMethod(oa,ob), method:'proportional (shin fallback)'};
   }
-  let z=lo;
-  for(let i=0;i<80;i++){
-    z=(lo+hi)/2;
-    const fz=f(z);
-    if(Math.abs(fz)<1e-12) break;
-    if(flo*fz<0){hi=z;} else {lo=z; flo=fz;}
-  }
-  const paF=shinProbFromZ(pa,z), pbF=shinProbFromZ(pb,z);
-  const norm=paF+pbF;
-  return {probA:paF/norm, probB:pbF/norm, overround, method:'shin', z};
-}
-
-function kellyFraction(p, odds){
-  const b=odds-1, q=1-p;
-  return (b*p-q)/b;
-}
-
-function conservativeKelly(p, odds, n, marketP){
-  const fStar = kellyFraction(p, odds);
-  const edge = p - marketP;
-  if(fStar<=0 || edge<=0){
-    return {edge, fStar, mult:0, stake:0, verdict:'no-bet', rationale:'কোনো positive edge নেই — NO BET.'};
-  }
-  if(n<500){
-    return {edge, fStar, mult:0, stake:0, verdict:'no-bet',
-      rationale:`মাত্র ${n}টি validated prediction — 500-এর কম। এই sample size-এ calibration কাকতালীয়ভাবেও ভালো দেখাতে পারে, তাই stake=0.`};
-  }
-  let mult = n<2000 ? 0.10 : 0.25;
-  const stake = fStar*mult;
-  return {edge, fStar, mult, stake, verdict:'confirmed',
-    rationale:`${n}টি validated prediction-এর ভিত্তিতে ${mult}x Kelly multiplier প্রয়োগ করা হলো (quarter-Kelly cap সর্বোচ্চ 0.25x)।`};
-}
-
-function brierScore(preds, outs){
-  let s=0; for(let i=0;i<preds.length;i++) s+=(preds[i]-outs[i])**2;
-  return s/preds.length;
-}
-function logLoss(preds, outs){
-  const eps=1e-15; let s=0;
-  for(let i=0;i<preds.length;i++){
-    const p=Math.min(Math.max(preds[i],eps),1-eps);
-    s += outs[i]*Math.log(p) + (1-outs[i])*Math.log(1-p);
-  }
-  return -s/preds.length;
-}
-function calibrationTable(preds, outs, nBins=10){
-  const bins=Array.from({length:nBins},()=>({n:0,sumP:0,sumO:0}));
-  for(let i=0;i<preds.length;i++){
-    let idx=Math.min(nBins-1, Math.floor(preds[i]*nBins));
-    bins[idx].n++; bins[idx].sumP+=preds[i]; bins[idx].sumO+=outs[i];
-  }
-  return bins.map((b,i)=>({
-    range:[i/nBins,(i+1)/nBins],
-    n:b.n,
-    meanPred: b.n? b.sumP/b.n : null,
-    actualRate: b.n? b.sumO/b.n : null,
-  }));
-}
-function calibrationError(table){
-  let totalN=0, weighted=0;
-  table.forEach(b=>{
-    if(b.n>0){ totalN+=b.n; weighted += Math.abs(b.actualRate-b.meanPred)*b.n; }
-  });
-  return totalN? weighted/totalN : NaN;
-}
-
-/* ============================================================
-   TAB 1: VIG REMOVAL
-   ============================================================ */
-function computeVig(){
-  const oa=parseFloat(document.getElementById('vig-oa').value);
-  const ob=parseFloat(document.getElementById('vig-ob').value);
-  const out=document.getElementById('vig-output');
-  try{
-    const prop=proportionalMethod(oa,ob);
-    const shin=shinMethod(oa,ob);
-    const diff=Math.abs(prop.probA-shin.probA)*100;
-    out.innerHTML = `
-      <div class="ledger">
-        <div class="ledger-row"><span class="k">Overround (vig)</span><span class="v warn">${(prop.overround*100).toFixed(2)}%</span></div>
-        <div class="ledger-row"><span class="k">Proportional — P(A)</span><span class="v">${(prop.probA*100).toFixed(2)}%</span></div>
-        <div class="ledger-row"><span class="k">Proportional — P(B)</span><span class="v">${(prop.probB*100).toFixed(2)}%</span></div>
-        <div class="ledger-row"><span class="k">Shin — P(A)</span><span class="v pos">${(shin.probA*100).toFixed(2)}%</span></div>
-        <div class="ledger-row"><span class="k">Shin — P(B)</span><span class="v pos">${(shin.probB*100).toFixed(2)}%</span></div>
-        <div class="ledger-row"><span class="k">Method divergence</span><span class="v ${diff>1?'warn':''}">${diff.toFixed(2)} pts</span></div>
-      </div>
-      <div class="rationale">${diff>1
-        ? 'দুই method-এর ফলাফল ১ percentage point-এর বেশি আলাদা — এই ম্যাচের edge নিয়ে বাড়তি সতর্ক থাকুন।'
-        : 'দুই method প্রায় একমত — এই fair probability তুলনামূলক নির্ভরযোগ্য।'}</div>
-    `;
-    lastVigResult = {probA: shin.probA, probB: shin.probB};
-  }catch(e){
-    out.innerHTML = `<p class="hint" style="color:var(--red)">${
+          
