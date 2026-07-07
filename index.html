@@ -3,351 +3,256 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>T.I.G.E.R The Charitable Trust</title>
-
+<title>T.I.G.E.R The Charitable Trust — মানুষের পাশে, মানুষের জন্য</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-body{
-    font-family: Arial, sans-serif;
-    margin:0;
-    padding:0;
-    background:#f5f5f5;
+  :root{
+    --rice:#FAF5E9;
+    --rice-deep:#F1E7D2;
+    --marigold:#C8792A;
+    --marigold-deep:#A85F1B;
+    --leaf:#4A5D3A;
+    --clay:#A63D2F;
+    --ink:#2B2620;
+    --ink-soft:#5C5347;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--rice);
+    color:var(--ink);
+    font-family:'Hind Siliguri',sans-serif;
+    line-height:1.7;
     text-align:center;
-}
+  }
+  h1,h2,h3,.display{font-family:'Tiro Bangla',serif;font-weight:400;color:var(--ink);}
+  a{color:inherit;}
+  img{max-width:100%;display:block;margin:0 auto;}
+  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
 
-/* Header */
-header{
-    background:linear-gradient(45deg,#FFD700,#008000);
-    color:white;
-    padding:40px 20px;
-    border-radius:0 0 25px 25px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.3);
-    cursor:pointer;
-}
+  /* Garland divider — signature element */
+  .garland{display:flex;justify-content:center;align-items:flex-end;gap:14px;padding:22px 0;overflow:hidden;}
+  .garland span{width:14px;height:14px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%, #E8A44D, var(--marigold-deep));
+    animation:sway 3.2s ease-in-out infinite;box-shadow:0 3px 6px rgba(168,95,27,0.25);}
+  .garland span:nth-child(odd){animation-delay:.4s;}
+  .garland span:nth-child(3n){animation-delay:.9s;}
+  @keyframes sway{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(6px) rotate(3deg);}}
+  @media (prefers-reduced-motion: reduce){.garland span{animation:none;}}
 
-header h1{
-    margin:0;
-    font-size:40px;
-}
+  /* Sticky nav */
+  nav{position:sticky;top:0;z-index:50;background:rgba(250,245,233,0.94);
+    backdrop-filter:blur(6px);border-bottom:1px solid rgba(43,38,32,0.08);
+    display:flex;justify-content:center;gap:6px;flex-wrap:wrap;padding:12px 16px;}
+  nav a{font-size:.88rem;font-weight:600;color:var(--ink-soft);text-decoration:none;
+    padding:8px 14px;border-radius:999px;transition:background .2s ease,color .2s ease;}
+  nav a:hover{background:var(--rice-deep);color:var(--marigold-deep);}
 
-header p{
-    font-size:22px;
-}
+  /* Hero */
+  header.hero{padding:56px 20px 44px;position:relative;}
+  .hero-plate{width:150px;height:150px;margin:0 auto 22px;border-radius:50%;
+    background:radial-gradient(circle at 50% 50%, #fff 0%, #fff 42%, transparent 43%),
+      conic-gradient(from 0deg, var(--marigold), #E8A44D, var(--marigold), var(--clay), var(--marigold));
+    display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(168,95,27,0.22);}
+  .hero-plate span{font-family:'Tiro Bangla',serif;font-size:2rem;color:var(--marigold-deep);}
+  header.hero h1{font-size:clamp(1.7rem,5vw,2.6rem);max-width:640px;margin:0 auto 10px;line-height:1.35;}
+  header.hero p.tagline{color:var(--ink-soft);font-size:1.1rem;margin-bottom:26px;}
+  .hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
 
-/* সাধারণ বক্স */
-.box{
-    background:white;
-    margin:20px;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 2px 8px rgba(0,0,0,0.15);
-}
+  /* Buttons */
+  .btn{display:inline-block;background:var(--clay);color:var(--rice)!important;
+    padding:13px 28px;border-radius:999px;text-decoration:none;font-weight:600;font-size:1rem;
+    box-shadow:0 8px 18px rgba(166,61,47,0.25);transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+    border:none;cursor:pointer;}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 24px rgba(166,61,47,0.32);background:var(--marigold-deep);}
+  .btn-outline{display:inline-block;padding:13px 28px;border-radius:999px;font-weight:600;font-size:1rem;
+    border:1.5px solid var(--ink);color:var(--ink)!important;text-decoration:none;transition:background .2s ease;}
+  .btn-outline:hover{background:rgba(43,38,32,0.06);}
 
-/* আমাদের সেবা বক্স */
-.service-box{
-    background:linear-gradient(45deg, red, blue) !important;
-    color:white !important;
-    cursor:pointer;
-    transition:0.3s;
-}
+  /* Section blocks */
+  section{padding:56px 20px;}
+  .card{background:var(--rice-deep);border-radius:22px;padding:38px 30px;max-width:720px;margin:0 auto;
+    border-left:5px solid var(--marigold);text-align:left;}
+  .card h2{font-size:1.5rem;margin-bottom:16px;text-align:center;}
+  .card p{color:var(--ink-soft);margin-bottom:10px;}
+  .card.centered{text-align:center;}
 
-.service-box:hover{
-    transform:scale(1.03);
-}
+  /* Team accordion */
+  #team-details{max-width:640px;margin:0 auto;overflow:hidden;max-height:0;
+    transition:max-height .4s ease;}
+  #team-details.open{max-height:900px;}
+  .team-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:24px 0;}
+  .team-member{background:var(--rice);border-radius:14px;padding:16px;text-align:center;}
+  .team-member b{display:block;margin-bottom:4px;font-family:'Tiro Bangla',serif;font-size:1.05rem;}
+  .team-member a{color:var(--marigold-deep);text-decoration:none;font-weight:600;font-size:.92rem;}
+  @media(max-width:560px){.team-grid{grid-template-columns:1fr;}}
 
-.service-box h2,
-.service-box p{
-    color:white !important;
-}
+  /* Service accordion */
+  #service-details{max-width:640px;margin:0 auto;overflow:hidden;max-height:0;transition:max-height .4s ease;}
+  #service-details.open{max-height:600px;}
+  .service-line{background:var(--rice);border-radius:12px;padding:14px 18px;margin:10px auto;
+    max-width:480px;font-weight:600;color:var(--ink);}
 
-/* সদস্য বক্স */
-.member-box{
-    background:linear-gradient(45deg,#ff1493,#8000ff) !important;
-    color:white !important;
-}
+  /* Membership */
+  .fee-badge{display:inline-block;background:var(--marigold);color:var(--rice);
+    font-weight:700;padding:8px 20px;border-radius:999px;font-size:1.15rem;margin:10px 0 16px;}
+  .upi-line{background:var(--rice);border-radius:12px;padding:12px 18px;font-family:monospace;
+    font-size:1rem;display:inline-block;margin:14px 0;}
 
-.member-box h2,
-.member-box p{
-    color:white !important;
-}
+  /* Donation */
+  .donate-flex{display:flex;gap:28px;flex-wrap:wrap;align-items:center;justify-content:center;}
+  .qr-frame{background:var(--rice);padding:14px;border-radius:16px;box-shadow:0 6px 16px rgba(43,38,32,0.1);}
+  .qr-frame img{width:190px;border-radius:8px;}
 
-/* WhatsApp বক্স */
-.whatsapp-box{
-    background:linear-gradient(45deg, red, blue) !important;
-    color:white !important;
-}
+  /* Social */
+  .social-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;}
+  .social-row .btn{padding:11px 22px;font-size:.92rem;}
 
-.whatsapp-box h2,
-.whatsapp-box p{
-    color:white !important;
-}
+  /* Transparency */
+  .transparency{background:var(--leaf);color:var(--rice);padding:48px 20px;}
+  .transparency h2{color:var(--rice);font-size:1.4rem;margin-bottom:10px;}
+  .transparency p{color:#E4E9DC;max-width:560px;margin:0 auto;}
 
-/* দান বক্স */
-.donation-box{
-    background:linear-gradient(45deg,#ff1493,#8000ff) !important;
-    color:white !important;
-}
-
-.donation-box h2,
-.donation-box p,
-.donation-box b{
-    color:white !important;
-}
-
-/* যোগাযোগ বক্স */
-.contact-box{
-    background:linear-gradient(45deg,#ff1493,#8000ff) !important;
-    color:white !important;
-}
-
-.contact-box h2,
-.contact-box p{
-    color:white !important;
-}
-
-/* সোশ্যাল মিডিয়া বক্স */
-.social-box{
-    background:linear-gradient(45deg, black, red) !important;
-    color:white !important;
-}
-
-.social-box h2{
-    color:white !important;
-}
-
-.btn{
-    display:inline-block;
-    background:orange;
-    color:white;
-    padding:12px 25px;
-    text-decoration:none;
-    border-radius:8px;
-    margin-top:15px;
-    font-size:18px;
-}
-
-.btn:hover{
-    background:#e69500;
-}
-
-.qr{
-    width:250px;
-    max-width:100%;
-    border-radius:10px;
-}
-
-footer{
-    background:#222;
-    color:white;
-    padding:20px;
-    margin-top:30px;
-}
+  footer{background:var(--ink);color:#B9AE9C;padding:30px 20px;font-size:.88rem;}
+  footer p{margin:4px 0;}
 </style>
 </head>
-
 <body>
 
-<header onclick="toggleTeam()">
-    <h1>T.I.G.E.R The Charitable Trust</h1>
-    <p>মানুষের পাশে, মানুষের জন্য</p>
-    <p><b>আমাদের টিম দেখতে এখানে ক্লিক করুন 👇</b></p>
+<nav>
+  <a href="#team">টিম</a>
+  <a href="#service">সেবা</a>
+  <a href="#membership">সদস্য হোন</a>
+  <a href="#whatsapp">WhatsApp</a>
+  <a href="#donate">দান করুন</a>
+  <a href="#contact">যোগাযোগ</a>
+  <a href="#social">সোশ্যাল</a>
+</nav>
+
+<header class="hero">
+  <div class="hero-plate"><span>অন্ন</span></div>
+  <h1>T.I.G.E.R The Charitable Trust</h1>
+  <p class="tagline">মানুষের পাশে, মানুষের জন্য</p>
+  <div class="hero-ctas">
+    <a href="#donate" class="btn">🍚 দান করুন</a>
+    <a href="#team" class="btn-outline">আমাদের টিম দেখুন</a>
+  </div>
 </header>
 
-<!-- টিম সদস্য -->
-<div class="box" id="team-details" style="display:none;">
+<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
+<section id="team">
+  <div class="card centered">
     <h2>আমাদের টিম</h2>
+    <p>যাঁরা প্রতি সপ্তাহে এই কাজ পরিচালনা করেন</p>
+    <button class="btn-outline" onclick="toggleTeam()" style="margin-top:12px;background:none;font-family:inherit;">সদস্যদের দেখুন 👇</button>
+    <div id="team-details">
+      <div class="team-grid">
+        <div class="team-member"><b>পার্থ সারথি দাস</b><a href="tel:9832899309">📞 9832899309</a></div>
+        <div class="team-member"><b>উজ্জ্বল পাল</b><a href="tel:7001494982">📞 7001494982</a></div>
+        <div class="team-member"><b>জয়ন্ত দাস</b><a href="tel:7718376676">📞 7718376676</a></div>
+        <div class="team-member"><b>রামচন্দ্র দাস</b><a href="tel:9635275061">📞 9635275061</a></div>
+        <div class="team-member"><b>মানস কুমার দাস</b><a href="tel:9933340824">📞 9933340824</a></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <p><b>পার্থ সারথি দাস</b><br>📞 9832899309</p>
-
-    <p><b>উজ্জ্বল পাল</b><br>📞 7001494982</p>
-
-    <p><b>জয়ন্ত দাস</b><br>📞 7718376676</p>
-
-    <p><b>রামচন্দ্র দাস</b><br>📞 9635275061</p>
-
-    <p><b>মানস কুমার দাস</b><br>📞 9933340824</p>
-
-</div>
-
-<!-- আমাদের সেবা -->
-<div class="box service-box" onclick="toggleService()">
-
+<section id="service">
+  <div class="card centered">
     <h2>🍚 আমাদের সেবা</h2>
+    <p>প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায় দুস্থ ও অসহায় মানুষদের ভোজন করানো হয়।</p>
+    <button class="btn-outline" onclick="toggleService()" style="margin-top:6px;background:none;font-family:inherit;">বিস্তারিত দেখুন 👇</button>
+    <div id="service-details">
+      <div class="service-line">🍚 প্রতি শুক্রবার — সিউড়ি</div>
+      <div class="service-line">🍚 প্রতি রবিবার — সাঁইথিয়া</div>
+      <div class="service-line">🤝 অসহায় ও দুস্থ মানুষের পাশে দাঁড়ানো</div>
+      <div class="service-line">❤️ মানবিক সহায়তা প্রদান</div>
+    </div>
+  </div>
+</section>
 
-    <p>
-        প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায়
-        দুস্থ ও অসহায় মানুষদের ভোজন করানো হয়।
-    </p>
+<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
-    <p><b>বিস্তারিত দেখতে এখানে ক্লিক করুন 👆</b></p>
-
-</div>
-
-<!-- লুকানো বিস্তারিত -->
-<div class="box" id="service-details" style="display:none;">
-
-    <h2>আমাদের সেবাসমূহ</h2>
-
-    <p>🍚 প্রতি শুক্রবার সিউড়িতে খাদ্য বিতরণ</p>
-    <p>🍚 প্রতি রবিবার সাঁইথিয়ায় খাদ্য বিতরণ</p>
-    <p>🤝 অসহায় ও দুস্থ মানুষের পাশে দাঁড়ানো</p>
-    <p>❤️ মানবিক সহায়তা প্রদান</p>
-
-</div>
-
-<!-- সদস্য বিভাগ -->
-<div class="box member-box">
+<section id="membership">
+  <div class="card centered">
     <h2>সদস্য হোন</h2>
-
-    <p>
-        T.I.G.E.R The Charitable Trust-এর মানবতার
-        পরিবারের সদস্য হয়ে নিয়মিত সেবাকাজে অংশ নিন।
-    </p>
-
-    <p style="font-size:20px;">
-        💰 <b>সদস্য হতে হলে ₹1000 পেমেন্ট করা বাধ্যতামূলক।</b>
-    </p>
-
-    <p>
-        প্রথমে ₹1000 পেমেন্ট করুন, তারপর সদস্য আবেদন ফর্ম পূরণ করুন।
-    </p>
-
-    <p>
-        <b>UPI ID:</b><br>
-        9832899309@ybl
-    </p>
-
-    <a class="btn"
-       href="upi://pay?pa=9832899309@ybl&pn=TIGER%20The%20Charitable%20Trust&cu=INR&am=1000">
-       💳 ₹1000 পেমেন্ট করুন
-    </a>
-
+    <p>T.I.G.E.R The Charitable Trust-এর মানবতার পরিবারের সদস্য হয়ে নিয়মিত সেবাকাজে অংশ নিন।</p>
+    <div class="fee-badge">💰 সদস্য ফি ₹১,০০০</div>
+    <p>প্রথমে পেমেন্ট করুন, তারপর সদস্য আবেদন ফর্ম পূরণ করুন।</p>
+    <div class="upi-line">UPI: 9832899309@ybl</div>
+    <br>
+    <a class="btn" href="upi://pay?pa=9832899309@ybl&pn=TIGER%20The%20Charitable%20Trust&cu=INR&am=1000">💳 ₹১০০০ পেমেন্ট করুন</a>
     <br><br>
+    <a class="btn-outline" href="https://form.svhrt.com/6a4108bfa1ff98e3452915b4" target="_blank">📝 সদস্য আবেদন করুন</a>
+  </div>
+</section>
 
-    <a class="btn"
-       href="https://form.svhrt.com/6a4108bfa1ff98e3452915b4"
-       target="_blank">
-       📝 সদস্য আবেদন করুন
-    </a>
-
-</div>
-
-<!-- WhatsApp -->
-<div class="box whatsapp-box">
+<section id="whatsapp">
+  <div class="card centered">
     <h2>WhatsApp Community</h2>
+    <p>আমাদের মানবতার পরিবারের সাথে যুক্ত থাকুন এবং সকল আপডেট পান।</p>
+    <a class="btn" href="https://chat.whatsapp.com/DwZzhOGhPKvIpRmRmwgntF?s=cl&p=a&ilr=2" target="_blank">💬 WhatsApp গ্রুপে যোগ দিন</a>
+  </div>
+</section>
 
-    <p>
-        আমাদের মানবতার পরিবারের সাথে যুক্ত থাকুন এবং
-        সকল আপডেট পান।
-    </p>
+<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
-    <a class="btn"
-       href="https://chat.whatsapp.com/DwZzhOGhPKvIpRmRmwgntF?s=cl&p=a&ilr=2"
-       target="_blank">
-       WhatsApp গ্রুপে যোগ দিন
-    </a>
-</div>
-
-<!-- দান বিভাগ -->
-<div class="box donation-box"
-onclick="window.location.href='upi://pay?pa=9832899309@ybl&pn=TIGER%20The%20Charitable%20Trust&cu=INR';"
-style="cursor:pointer;">
-
+<section id="donate">
+  <div class="card centered">
     <h2>দান করুন</h2>
+    <p>আপনার সামান্য সহযোগিতা বহু মানুষের মুখে হাসি ফোটাতে পারে।</p>
+    <div class="donate-flex">
+      <div class="qr-frame"><img src="qr.jpg" alt="Donation QR"></div>
+      <div>
+        <p style="font-weight:600;">UPI: 9832899309@ybl</p>
+        <a class="btn" href="upi://pay?pa=9832899309@ybl&pn=TIGER%20The%20Charitable%20Trust&cu=INR">🙏 এখনই দান করুন</a>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <p>
-        আপনার সামান্য সহযোগিতা বহু মানুষের মুখে হাসি ফোটাতে পারে।
-    </p>
-
-    <img src="qr.jpg"
-         alt="Donation QR"
-         class="qr">
-
-    <p><b>UPI:</b> 9832899309@ybl</p>
-
-    <p><b>দান করতে পুরো বক্সে ক্লিক করুন 👆</b></p>
-
-    <a class="btn">
-        এখনই দান করুন
-    </a>
-
-</div>
-
-<!-- যোগাযোগ -->
-<div class="box contact-box">
+<section id="contact">
+  <div class="card centered">
     <h2>যোগাযোগ</h2>
+    <p><b>পার্থ সারথি দাস</b></p>
+    <p>📍 বেণীমাধব মোড় সংলগ্ন, সিউড়ি, বীরভূম</p>
+    <a class="btn" href="tel:9832899309">📞 Call</a>
+    &nbsp;&nbsp;
+    <a class="btn-outline" href="mailto:abirkusum1920@gmail.com">📧 Email</a>
+  </div>
+</section>
 
-    <p>পার্থ সারথি দাস</p>
-    <p>📞 মোবাইল: 9832899309</p>
-
-    <p>
-        📍 ঠিকানা: বেণীমাধব মোড় সংলগ্ন,
-        সিউড়ি, বীরভূম
-    </p>
-<a class="btn" href="tel:9832899309">
-    📞 Call
-</a>
-
-<br><br>
-
-<a class="btn" href="mailto:abirkusum1920@gmail.com">
-    📧 Email
-</a>
-</div>
-
-<!-- সোশ্যাল মিডিয়া -->
-<div class="box social-box">
+<section id="social">
+  <div class="card centered">
     <h2>আমাদের সাথে যুক্ত থাকুন</h2>
+    <div class="social-row">
+      <a class="btn" href="https://www.facebook.com/share/1D7GQfyKv1/" target="_blank">Facebook</a>
+      <a class="btn" href="https://youtube.com/@t.i.g.e.r-group8881?si=5JCZgDuMhdHoiMHz" target="_blank">YouTube</a>
+      <a class="btn" href="https://www.instagram.com/das412641?igsh=MXhpdDB2djI2ODh2OA==" target="_blank">Instagram</a>
+    </div>
+  </div>
+</section>
 
-    <a class="btn"
-       href="https://www.facebook.com/share/1D7GQfyKv1/"
-       target="_blank">
-       Facebook
-    </a>
-
-    <br><br>
-
-    <a class="btn"
-       href="https://youtube.com/@t.i.g.e.r-group8881?si=5JCZgDuMhdHoiMHz"
-       target="_blank">
-       YouTube
-    </a>
-
-    <br><br>
-
-    <a class="btn"
-       href="https://www.instagram.com/das412641?igsh=MXhpdDB2djI2ODh2OA=="
-       target="_blank">
-       Instagram
-    </a>
+<div class="transparency">
+  <h2>স্বচ্ছতার প্রতিশ্রুতি</h2>
+  <p>প্রতিটি দানের হিসাব আমরা নিয়মিত প্রকাশ করি — আপনার বিশ্বাসই আমাদের কাজের ভিত্তি।</p>
 </div>
 
 <footer>
-    © 2026 T.I.G.E.R The Charitable Trust
+  <p><b>T.I.G.E.R The Charitable Trust</b> — মানুষের পাশে, মানুষের জন্য</p>
+  <p>© 2026 T.I.G.E.R The Charitable Trust</p>
 </footer>
 
 <script>
-function toggleService() {
-    var x = document.getElementById("service-details");
-
-    if (x.style.display === "none") {
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
+function toggleTeam(){
+  document.getElementById('team-details').classList.toggle('open');
 }
-
-function toggleTeam() {
-    var x = document.getElementById("team-details");
-
-    if (x.style.display === "none") {
-        x.style.display = "block";
-    } else {
-        x.style.display = "none";
-    }
+function toggleService(){
+  document.getElementById('service-details').classList.toggle('open');
 }
 </script>
 
 </body>
-</html>
+        </html>
