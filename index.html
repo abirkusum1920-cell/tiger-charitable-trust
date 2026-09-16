@@ -396,8 +396,8 @@ function loadSponsorStats(){
         document.getElementById('sp-progress-note').textContent = "তথ্য লোড করা যায়নি";
       }
     })
-    .catch(function(){
-      document.getElementById('sp-progress-note').textContent = "তথ্য লোড করা যায়নি";
+    .catch(function(err){
+      document.getElementById('sp-progress-note').textContent = "তথ্য লোড করা যায়নি: " + err.message;
     });
 }
 loadSponsorStats();
