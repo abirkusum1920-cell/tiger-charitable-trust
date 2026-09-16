@@ -105,6 +105,19 @@
   .qr-frame{background:var(--rice);padding:14px;border-radius:16px;box-shadow:0 6px 16px rgba(43,38,32,0.1);}
   .qr-frame img{width:190px;border-radius:8px;}
 
+  /* Gallery */
+  .gallery-intro{max-width:640px;margin:0 auto 30px;}
+  .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:820px;margin:0 auto;}
+  .gallery-item{background:var(--rice);border-radius:16px;overflow:hidden;
+    box-shadow:0 6px 16px rgba(43,38,32,0.1);transition:transform .2s ease;}
+  .gallery-item:hover{transform:translateY(-4px);}
+  .gallery-item img{width:100%;height:150px;object-fit:cover;}
+  .gallery-caption{padding:12px 14px;text-align:left;}
+  .gallery-caption b{display:block;font-family:'Tiro Bangla',serif;font-size:.98rem;margin-bottom:3px;}
+  .gallery-caption p{color:var(--ink-soft);font-size:.86rem;margin:0;}
+  @media(max-width:640px){.gallery-grid{grid-template-columns:1fr 1fr;}}
+  @media(max-width:420px){.gallery-grid{grid-template-columns:1fr;}}
+
   /* Social */
   .social-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;}
   .social-row .btn{padding:11px 22px;font-size:.92rem;}
@@ -116,6 +129,34 @@
 
   footer{background:var(--ink);color:#B9AE9C;padding:30px 20px;font-size:.88rem;}
   footer p{margin:4px 0;}
+
+  /* Sponsor a Meal */
+  .sponsor-stats{display:flex;justify-content:space-between;gap:10px;margin:14px 0 6px;flex-wrap:wrap;}
+  .sponsor-stats div{flex:1;min-width:110px;text-align:center;}
+  .sponsor-stats b{display:block;font-family:'Tiro Bangla',serif;font-size:1.15rem;color:var(--marigold-deep);}
+  .sponsor-stats span{font-size:.82rem;color:var(--ink-soft);}
+  .progress-track{background:var(--rice);border-radius:999px;height:16px;overflow:hidden;
+    box-shadow:inset 0 2px 4px rgba(43,38,32,0.12);margin:10px 0 4px;}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--marigold),var(--clay));
+    border-radius:999px;width:0%;transition:width .8s ease;}
+  .progress-note{font-size:.82rem;color:var(--ink-soft);text-align:center;margin-bottom:18px;}
+
+  .amount-grid{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0;}
+  .amount-btn{background:var(--rice);border:1.5px solid rgba(43,38,32,0.12);border-radius:14px;
+    padding:12px 16px;font-weight:600;font-family:inherit;font-size:.95rem;color:var(--ink);
+    cursor:pointer;transition:all .2s ease;text-align:center;min-width:96px;}
+  .amount-btn small{display:block;font-weight:500;color:var(--ink-soft);font-size:.78rem;margin-top:2px;}
+  .amount-btn:hover, .amount-btn.selected{background:var(--marigold);color:var(--rice);border-color:var(--marigold);}
+  .amount-btn.selected small{color:var(--rice);}
+
+  .sponsor-form{max-width:420px;margin:22px auto 0;}
+  .sponsor-form input{width:100%;padding:12px 16px;margin-bottom:12px;border-radius:12px;
+    border:1.5px solid rgba(43,38,32,0.15);background:var(--rice);font-family:inherit;font-size:.95rem;color:var(--ink);}
+  .sponsor-form input:focus{outline:none;border-color:var(--marigold);}
+  .sponsor-note{font-size:.82rem;color:var(--ink-soft);text-align:center;margin-top:10px;}
+  #sponsor-msg{margin-top:14px;font-size:.9rem;font-weight:600;text-align:center;}
+  #sponsor-msg.ok{color:var(--leaf);}
+  #sponsor-msg.err{color:var(--clay);}
 </style>
 </head>
 <body>
@@ -123,6 +164,8 @@
 <nav>
   <a href="#team">টিম</a>
   <a href="#service">সেবা</a>
+  <a href="#sponsor">স্পনসর করুন</a>
+  <a href="#gallery">গ্যালারি</a>
   <a href="#membership">সদস্য হোন</a>
   <a href="#whatsapp">WhatsApp</a>
   <a href="#donate">দান করুন</a>
@@ -169,6 +212,74 @@
       <div class="service-line">🍚 প্রতি রবিবার — সাঁইথিয়া</div>
       <div class="service-line">🤝 অসহায় ও দুস্থ মানুষের পাশে দাঁড়ানো</div>
       <div class="service-line">❤️ মানবিক সহায়তা প্রদান</div>
+    </div>
+  </div>
+</section>
+
+<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+<section id="sponsor">
+  <div class="card centered" id="sponsor-target" style="position:relative;">
+    <span id="sp-gear" style="position:absolute;top:14px;right:16px;font-size:.85rem;opacity:.35;cursor:pointer;user-select:none;">⚙</span>
+    <h2>❤️ একজনের খাবার Sponsor করুন</h2>
+    <p>আপনার সামান্য সহযোগিতা — আমরা খাবারটি পৌঁছে দেব।</p>
+
+    <div class="sponsor-stats">
+      <div><b id="sp-collected">₹০</b><span>জমা হয়েছে</span></div>
+      <div><b id="sp-target">₹০</b><span>লক্ষ্যমাত্রা</span></div>
+      <div><b id="sp-remaining">₹০</b><span>বাকি আছে</span></div>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="sp-progress-fill"></div></div>
+    <p class="progress-note" id="sp-progress-note">লোড হচ্ছে...</p>
+
+    <div class="amount-grid">
+      <button type="button" class="amount-btn" data-amount="500">₹৫০০<small>৫ জনের খাবার</small></button>
+      <button type="button" class="amount-btn" data-amount="1000">₹১০০০<small>১০ জনের খাবার</small></button>
+      <button type="button" class="amount-btn" data-amount="2000">₹২০০০<small>২০ জনের খাবার</small></button>
+    </div>
+
+    <div class="donate-flex" style="margin-bottom:10px;">
+      <a class="btn" id="sp-pay-btn" href="upi://pay?pa=9832899309@ybl&pn=TIGER%20The%20Charitable%20Trust&cu=INR" target="_blank">🙏 প্রথমে UPI-তে পেমেন্ট করুন</a>
+    </div>
+    <p class="sponsor-note">পেমেন্ট করার পর নিচের ফর্মটি পূরণ করুন, রসিদ ও নিশ্চিতকরণ WhatsApp-এ পাঠানো হবে।</p>
+
+    <form class="sponsor-form" id="sponsor-form">
+      <input type="text" id="sp-name" placeholder="আপনার নাম" required>
+      <input type="tel" id="sp-phone" placeholder="ফোন নম্বর" required pattern="[0-9]{10}">
+      <input type="number" id="sp-amount" placeholder="পরিমাণ (₹)" required min="1">
+      <button type="submit" class="btn" style="width:100%;">✅ নিশ্চিত করুন</button>
+    </form>
+    <div id="sponsor-msg"></div>
+  </div>
+</section>
+
+<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+<section id="gallery">
+  <div class="card centered">
+    <h2>📸 ছবি গ্যালারি</h2>
+    <p class="gallery-intro">আপনি যদি আমাদের কোনো কর্মসূচিতে অংশ নিয়ে থাকেন বা দান করে থাকেন, তাহলে আপনার ছবি ও অনুভূতি আমাদের সাথে শেয়ার করুন। যাচাই করে গ্যালারিতে যুক্ত করা হবে।</p>
+    <a class="btn" href="PASTE_YOUR_GOOGLE_FORM_LINK_HERE" target="_blank">📤 ছবি ও মতামত জমা দিন</a>
+  </div>
+
+  <!--
+    ⬇️ গ্যালারিতে নতুন ছবি যোগ করতে চাইলে নিচের ব্লকটি কপি করে
+    </div><div class="gallery-grid"> ট্যাগের ঠিক আগে/পরে বসান, তারপর
+    - src="ছবির-নাম.jpg" এ আসল ছবির ফাইলের নাম দিন (ছবিটি HTML ফাইলের একই ফোল্ডারে রাখতে হবে)
+    - নাম ও কমেন্ট বদলে দিন
+  -->
+  <div class="gallery-grid" style="margin-top:34px;">
+    <div class="gallery-item">
+      <img src="gallery1.jpg" alt="দাতার ছবি">
+      <div class="gallery-caption"><b>সুপ্রিয় সরকার</b><p>মেয়ের জন্মদিনে দান করে খুব ভালো লাগলো 🙏</p></div>
+    </div>
+    <div class="gallery-item">
+      <img src="gallery2.jpg" alt="খাদ্য বিতরণ">
+      <div class="gallery-caption"><b>সাঁইথিয়া কর্মসূচি</b><p>প্রতি রবিবারের সেবাকাজের একটি মুহূর্ত</p></div>
+    </div>
+    <div class="gallery-item">
+      <img src="gallery3.jpg" alt="স্বেচ্ছাসেবক দল">
+      <div class="gallery-caption"><b>আমাদের স্বেচ্ছাসেবকরা</b><p>একসাথে কাজ করার আনন্দ</p></div>
     </div>
   </div>
 </section>
@@ -252,6 +363,129 @@ function toggleTeam(){
 function toggleService(){
   document.getElementById('service-details').classList.toggle('open');
 }
+
+/* ---------- Sponsor a Meal ---------- */
+var SPONSOR_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxVhXdyfWM_1L5tpFCUyo0SqTVjUeECmLJqeIHODpkIsD5aXISYkB9Wcv4a6PXdHtIcRA/exec";
+
+function bnMoney(n){
+  return "₹" + Number(n).toLocaleString('en-IN');
+}
+
+function toEnglishDigits(str){
+  var bn = "০১২৩৪৫৬৭৮৯";
+  return str.toString().replace(/[০-৯]/g, function(ch){ return bn.indexOf(ch); });
+}
+
+function loadSponsorStats(){
+  document.getElementById('sp-progress-note').textContent = "লোড হচ্ছে...";
+  fetch(SPONSOR_WEBAPP_URL + "?action=stats")
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      if(data.success){
+        var target = Number(data.target) || 0;
+        var collected = Number(data.weekTotal) || 0;
+        var remaining = Math.max(target - collected, 0);
+        var pct = target > 0 ? Math.min((collected / target) * 100, 100) : 0;
+        document.getElementById('sp-target').textContent = bnMoney(target);
+        document.getElementById('sp-collected').textContent = bnMoney(collected);
+        document.getElementById('sp-remaining').textContent = bnMoney(remaining);
+        document.getElementById('sp-progress-fill').style.width = pct + "%";
+        document.getElementById('sp-progress-note').textContent =
+          remaining > 0 ? (bnMoney(remaining) + " বাকি আছে লক্ষ্যপূরণে") : "🎉 লক্ষ্যমাত্রা পূরণ হয়েছে!";
+      } else {
+        document.getElementById('sp-progress-note').textContent = "তথ্য লোড করা যায়নি";
+      }
+    })
+    .catch(function(){
+      document.getElementById('sp-progress-note').textContent = "তথ্য লোড করা যায়নি";
+    });
+}
+loadSponsorStats();
+
+document.getElementById('sp-gear').addEventListener('click', function(){
+  var passcode = prompt("পাসওয়ার্ড দিন:");
+  if(passcode === null) return;
+  var newTarget = prompt("নতুন টার্গেট (₹) বসান:");
+  if(newTarget === null || newTarget.trim() === "") return;
+  newTarget = toEnglishDigits(newTarget).replace(/[^0-9]/g, "");
+  if(!newTarget){ alert("সঠিক সংখ্যা দিন।"); return; }
+
+  fetch(SPONSOR_WEBAPP_URL, {
+    method: "POST",
+    body: JSON.stringify({ action: "setTarget", passcode: passcode, target: newTarget })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    if(data.success){
+      alert("টার্গেট আপডেট হয়েছে ✅");
+      loadSponsorStats();
+    } else {
+      alert(data.error || "পাসওয়ার্ড ভুল।");
+    }
+  })
+  .catch(function(){
+    alert("নেটওয়ার্ক সমস্যা হয়েছে, আবার চেষ্টা করুন।");
+  });
+});
+
+document.querySelectorAll('.amount-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.amount-btn').forEach(function(b){ b.classList.remove('selected'); });
+    btn.classList.add('selected');
+    var amt = btn.getAttribute('data-amount');
+    document.getElementById('sp-amount').value = amt;
+    document.getElementById('sp-pay-btn').href =
+      "upi://pay?pa=9832899309@ybl&pn=TIGER%20The%20Charitable%20Trust&cu=INR&am=" + amt;
+  });
+});
+
+document.getElementById('sponsor-form').addEventListener('submit', function(e){
+  e.preventDefault();
+  var name = document.getElementById('sp-name').value.trim();
+  var phone = document.getElementById('sp-phone').value.trim();
+  var amount = document.getElementById('sp-amount').value.trim();
+  var msgBox = document.getElementById('sponsor-msg');
+  var submitBtn = e.target.querySelector('button[type="submit"]');
+
+  if(!name || !phone || !amount){ return; }
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = "পাঠানো হচ্ছে...";
+  msgBox.className = "";
+  msgBox.textContent = "";
+
+  fetch(SPONSOR_WEBAPP_URL, {
+    method: "POST",
+    body: JSON.stringify({
+      donorName: name,
+      phone: phone,
+      amount: amount,
+      address: "",
+      paymentMode: "Website Donation"
+    })
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    submitBtn.disabled = false;
+    submitBtn.textContent = "✅ নিশ্চিত করুন";
+    if(data.success){
+      msgBox.className = "ok";
+      msgBox.textContent = "ধন্যবাদ! আপনার রসিদ WhatsApp-এ পাঠানো হয়েছে 🙏";
+      document.getElementById('sponsor-form').reset();
+      document.querySelectorAll('.amount-btn').forEach(function(b){ b.classList.remove('selected'); });
+      loadSponsorStats();
+    } else {
+      msgBox.className = "err";
+      msgBox.textContent = "দুঃখিত, একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।";
+    }
+  })
+  .catch(function(){
+    submitBtn.disabled = false;
+    submitBtn.textContent = "✅ নিশ্চিত করুন";
+    msgBox.className = "err";
+    msgBox.textContent = "দুঃখিত, নেটওয়ার্ক সমস্যা হয়েছে। আবার চেষ্টা করুন।";
+  });
+});
 </script>
 
 </body>
