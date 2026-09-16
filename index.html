@@ -431,6 +431,24 @@ function loadSponsorStats(){
 }
 loadSponsorStats();
 
+function loadApprovedGallery(){
+  jsonp(SPONSOR_WEBAPP_URL, { action: 'gallery' })
+  .then(function(items){
+    if(!items || !items.length) return;
+    var grid = document.querySelector('.gallery-grid');
+    items.forEach(function(item){
+      var div = document.createElement('div');
+      div.className = 'gallery-item';
+      div.innerHTML =
+        '<img src="' + item.imageUrl + '" alt="' + (item.name || '') + '">' +
+        '<div class="gallery-caption"><b>' + (item.name || '') + '</b><p>' + (item.comment || '') + '</p></div>';
+      grid.appendChild(div);
+    });
+  })
+  .catch(function(){});
+}
+loadApprovedGallery();
+
 document.getElementById('sp-gear').addEventListener('click', function(){
   var passcode = prompt("পাসওয়ার্ড দিন:");
   if(passcode === null) return;
