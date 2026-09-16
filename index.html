@@ -376,10 +376,39 @@ function toEnglishDigits(str){
   return str.toString().replace(/[০-৯]/g, function(ch){ return bn.indexOf(ch); });
 }
 
+function jsonp(url, params){
+  return new Promise(function(resolve, reject){
+    var callbackName = 'jsonp_cb_' + Math.random().toString(36).substr(2, 9);
+    var timeoutId;
+    function cleanup(){
+      delete window[callbackName];
+      if(script.parentNode) script.parentNode.removeChild(script);
+      clearTimeout(timeoutId);
+    }
+    window[callbackName] = function(data){
+      resolve(data);
+      cleanup();
+    };
+    var query = Object.keys(params).map(function(k){
+      return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
+    }).join('&');
+    var script = document.createElement('script');
+    script.src = url + '?' + query + '&callback=' + callbackName;
+    script.onerror = function(){
+      reject(new Error('Request failed'));
+      cleanup();
+    };
+    document.body.appendChild(script);
+    timeoutId = setTimeout(function(){
+      reject(new Error('Timeout'));
+      cleanup();
+    }, 15000);
+  });
+}
+
 function loadSponsorStats(){
   document.getElementById('sp-progress-note').textContent = "লোড হচ্ছে...";
-  fetch(SPONSOR_WEBAPP_URL + "?action=stats")
-    .then(function(res){ return res.json(); })
+  jsonp(SPONSOR_WEBAPP_URL, { action: 'stats' })
     .then(function(data){
       if(data.success){
         var target = Number(data.target) || 0;
@@ -410,11 +439,7 @@ document.getElementById('sp-gear').addEventListener('click', function(){
   newTarget = toEnglishDigits(newTarget).replace(/[^0-9]/g, "");
   if(!newTarget){ alert("সঠিক সংখ্যা দিন।"); return; }
 
-  fetch(SPONSOR_WEBAPP_URL, {
-    method: "POST",
-    body: JSON.stringify({ action: "setTarget", passcode: passcode, target: newTarget })
-  })
-  .then(function(res){ return res.json(); })
+  jsonp(SPONSOR_WEBAPP_URL, { action: 'setTarget', passcode: passcode, target: newTarget })
   .then(function(data){
     if(data.success){
       alert("টার্গেট আপডেট হয়েছে ✅");
@@ -454,17 +479,14 @@ document.getElementById('sponsor-form').addEventListener('submit', function(e){
   msgBox.className = "";
   msgBox.textContent = "";
 
-  fetch(SPONSOR_WEBAPP_URL, {
-    method: "POST",
-    body: JSON.stringify({
-      donorName: name,
-      phone: phone,
-      amount: amount,
-      address: "",
-      paymentMode: "Website Donation"
-    })
+  jsonp(SPONSOR_WEBAPP_URL, {
+    action: 'donate',
+    donorName: name,
+    phone: phone,
+    amount: amount,
+    address: "",
+    paymentMode: "Website Donation"
   })
-  .then(function(res){ return res.json(); })
   .then(function(data){
     submitBtn.disabled = false;
     submitBtn.textContent = "✅ নিশ্চিত করুন";
