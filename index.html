@@ -8,14 +8,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --rice:#FAF5E9;
-    --rice-deep:#F1E7D2;
-    --marigold:#C8792A;
-    --marigold-deep:#A85F1B;
-    --leaf:#4A5D3A;
-    --clay:#A63D2F;
+    --rice:#FFF8EC;
+    --rice-deep:#FFE9B8;
+    --marigold:#FF9800;
+    --marigold-deep:#E65100;
+    --leaf:#2E7D32;
+    --clay:#E53935;
     --ink:#2B2620;
     --ink-soft:#5C5347;
+    --blue:#1565C0;
+    --gold:#FDD835;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   html{scroll-behavior:smooth;}
@@ -42,7 +44,7 @@
   @media (prefers-reduced-motion: reduce){.garland span{animation:none;}}
 
   /* Sticky nav */
-  nav{position:sticky;top:0;z-index:50;background:rgba(250,245,233,0.94);
+  nav{position:sticky;top:0;z-index:50;background:rgba(255,248,236,0.94);
     backdrop-filter:blur(6px);border-bottom:1px solid rgba(43,38,32,0.08);
     display:flex;justify-content:center;gap:6px;flex-wrap:wrap;padding:12px 16px;}
   nav a{font-size:.88rem;font-weight:600;color:var(--ink-soft);text-decoration:none;
@@ -53,7 +55,7 @@
   header.hero{padding:56px 20px 44px;position:relative;}
   .hero-plate{width:150px;height:150px;margin:0 auto 22px;border-radius:50%;
     background:radial-gradient(circle at 50% 50%, #fff 0%, #fff 42%, transparent 43%),
-      conic-gradient(from 0deg, var(--marigold), #E8A44D, var(--marigold), var(--clay), var(--marigold));
+      conic-gradient(from 0deg, var(--marigold), var(--gold), var(--leaf), var(--blue), var(--clay), var(--marigold));
     display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(168,95,27,0.22);}
   .hero-plate span{font-family:'Tiro Bangla',serif;font-size:2rem;color:var(--marigold-deep);}
   header.hero h1{font-size:clamp(1.7rem,5vw,2.6rem);max-width:640px;margin:0 auto 10px;line-height:1.35;}
@@ -95,7 +97,7 @@
     max-width:480px;font-weight:600;color:var(--ink);}
 
   /* Membership */
-  .fee-badge{display:inline-block;background:var(--marigold);color:var(--rice);
+  .fee-badge{display:inline-block;background:var(--blue);color:var(--rice);
     font-weight:700;padding:8px 20px;border-radius:999px;font-size:1.15rem;margin:10px 0 16px;}
   .upi-line{background:var(--rice);border-radius:12px;padding:12px 18px;font-family:monospace;
     font-size:1rem;display:inline-block;margin:14px 0;}
@@ -183,7 +185,6 @@
   </div>
 </header>
 
-<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
 <section id="team">
   <div class="card centered">
@@ -216,7 +217,6 @@
   </div>
 </section>
 
-<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
 <section id="sponsor">
   <div class="card centered" id="sponsor-target" style="position:relative;">
@@ -253,7 +253,6 @@
   </div>
 </section>
 
-<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
 <section id="gallery">
   <div class="card centered">
@@ -272,7 +271,6 @@
   </div>
 </section>
 
-<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
 <section id="membership">
   <div class="card centered">
@@ -296,7 +294,6 @@
   </div>
 </section>
 
-<div class="garland"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
 
 <section id="donate">
   <div class="card centered">
