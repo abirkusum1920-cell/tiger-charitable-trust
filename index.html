@@ -660,9 +660,46 @@ document.getElementById('member-gear').addEventListener('click', function(){
   memberPasscode = pass;
   document.getElementById('member-modal-overlay').classList.add('open');
   loadAdminMemberList();
+  try{
+    sessionStorage.setItem('memberModalOpen', '1');
+    sessionStorage.setItem('memberPasscode', pass);
+  }catch(e){}
 });
 document.getElementById('member-modal-close').addEventListener('click', function(){
   document.getElementById('member-modal-overlay').classList.remove('open');
+  try{
+    sessionStorage.removeItem('memberModalOpen');
+    sessionStorage.removeItem('memberPasscode');
+  }catch(e){}
+});
+
+/* ফোন ক্যামেরা/ফাইল-পিকার থেকে ফিরলে পেজ রিলোড হয়ে গেলেও মডাল আবার খুলে যাবে */
+(function(){
+  try{
+    if(sessionStorage.getItem('memberModalOpen') === '1'){
+      var savedPass = sessionStorage.getItem('memberPasscode');
+      if(savedPass){
+        memberPasscode = savedPass;
+        document.getElementById('member-modal-overlay').classList.add('open');
+        loadAdminMemberList();
+      }
+    }
+    var savedName = sessionStorage.getItem('memberFormName');
+    var savedPhone = sessionStorage.getItem('memberFormPhone');
+    var savedAddress = sessionStorage.getItem('memberFormAddress');
+    var savedAadhaarNum = sessionStorage.getItem('memberFormAadhaarNum');
+    if(savedName) document.getElementById('mem-name').value = savedName;
+    if(savedPhone) document.getElementById('mem-phone').value = savedPhone;
+    if(savedAddress) document.getElementById('mem-address').value = savedAddress;
+    if(savedAadhaarNum) document.getElementById('mem-aadhaar-number').value = savedAadhaarNum;
+  }catch(e){}
+})();
+
+['mem-name','mem-phone','mem-address','mem-aadhaar-number'].forEach(function(id){
+  var storeKey = { 'mem-name':'memberFormName', 'mem-phone':'memberFormPhone', 'mem-address':'memberFormAddress', 'mem-aadhaar-number':'memberFormAadhaarNum' }[id];
+  document.getElementById(id).addEventListener('input', function(){
+    try{ sessionStorage.setItem(storeKey, this.value); }catch(e){}
+  });
 });
 
 var lastAdminMembers = [];
@@ -873,6 +910,12 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
       capturedAadhaar = null;
       document.getElementById('mem-photo-preview').style.display = 'none';
       document.getElementById('mem-aadhaar-preview').style.display = 'none';
+      try{
+        sessionStorage.removeItem('memberFormName');
+        sessionStorage.removeItem('memberFormPhone');
+        sessionStorage.removeItem('memberFormAddress');
+        sessionStorage.removeItem('memberFormAadhaarNum');
+      }catch(e){}
       loadAdminMemberList();
       loadPublicMembers();
     }, 3500);
