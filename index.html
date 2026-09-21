@@ -188,6 +188,19 @@
   .member-admin-row button{border:none;border-radius:8px;padding:6px 10px;font-size:.76rem;cursor:pointer;font-weight:600;}
   .btn-mini-danger{background:var(--clay);color:#fff;}
   .btn-mini{background:var(--rice-deep);color:var(--ink);}
+
+  /* ইন-পেজ ক্যামেরা */
+  .cam-open-btn{background:var(--rice-deep);border:1.5px solid rgba(43,38,32,0.15);border-radius:10px;
+    padding:8px 14px;font-size:.82rem;font-weight:600;color:var(--ink);cursor:pointer;margin-left:8px;}
+  .cam-preview-thumb{width:60px;height:60px;object-fit:cover;border-radius:8px;margin-top:6px;display:none;}
+  #camera-overlay{display:none;position:fixed;inset:0;background:#000;z-index:300;
+    flex-direction:column;align-items:center;justify-content:center;}
+  #camera-overlay.open{display:flex;}
+  #camera-video{width:100%;max-height:70vh;object-fit:contain;background:#000;}
+  .camera-controls{display:flex;gap:16px;padding:20px;}
+  .camera-controls button{padding:12px 22px;border-radius:999px;border:none;font-weight:600;font-size:1rem;cursor:pointer;}
+  .cam-capture{background:var(--marigold);color:#fff;}
+  .cam-cancel{background:#444;color:#fff;}
 </style>
 </head>
 <body>
@@ -391,13 +404,30 @@
       <input type="tel" id="mem-phone" placeholder="ফোন নাম্বার" required>
       <input type="text" id="mem-address" placeholder="ঠিকানা">
       <label class="file-label">ছবি (সকলে দেখতে পাবেন)</label>
-      <input type="file" id="mem-photo" accept="image/*" capture="environment" required>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;">
+        <input type="file" id="mem-photo" accept="image/*">
+        <button type="button" class="cam-open-btn" data-cam-target="photo">📷 ক্যামেরা</button>
+      </div>
+      <img id="mem-photo-preview" class="cam-preview-thumb">
       <label class="file-label">আধার কার্ডের ছবি (গোপনীয় — শুধু ট্রাস্টের রেকর্ডের জন্য, কখনো প্রকাশ্যে দেখানো হবে না)</label>
-      <input type="file" id="mem-aadhaar" accept="image/*" capture="environment" required>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;">
+        <input type="file" id="mem-aadhaar" accept="image/*">
+        <button type="button" class="cam-open-btn" data-cam-target="aadhaar">📷 ক্যামেরা</button>
+      </div>
+      <img id="mem-aadhaar-preview" class="cam-preview-thumb">
       <button type="submit" class="btn" style="width:100%;margin-top:6px;">যোগ করুন</button>
       <p id="member-add-msg" style="text-align:center;margin-top:10px;font-size:.88rem;font-weight:600;"></p>
     </form>
     <div class="member-admin-list" id="member-admin-list"></div>
+  </div>
+</div>
+
+<div id="camera-overlay">
+  <video id="camera-video" autoplay playsinline></video>
+  <canvas id="camera-canvas" style="display:none;"></canvas>
+  <div class="camera-controls">
+    <button type="button" class="cam-capture" id="cam-capture-btn">📸 ক্যাপচার করুন</button>
+    <button type="button" class="cam-cancel" id="cam-cancel-btn">বাতিল</button>
   </div>
 </div>
 <iframe name="member-upload-frame" style="display:none;"></iframe>
@@ -683,6 +713,71 @@ function fileToBase64(file){
   });
 }
 
+/* ---------- ইন-পেজ ক্যামেরা ---------- */
+var cameraTargetField = null;
+var cameraStream = null;
+var capturedPhoto = null;
+var capturedAadhaar = null;
+
+function openCamera(field){
+  cameraTargetField = field;
+  document.getElementById('camera-overlay').classList.add('open');
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+  .then(function(stream){
+    cameraStream = stream;
+    document.getElementById('camera-video').srcObject = stream;
+  })
+  .catch(function(err){
+    alert('ক্যামেরা চালু করা যাচ্ছে না: ' + err.message);
+    closeCamera();
+  });
+}
+
+function closeCamera(){
+  if(cameraStream){
+    cameraStream.getTracks().forEach(function(t){ t.stop(); });
+    cameraStream = null;
+  }
+  document.getElementById('camera-overlay').classList.remove('open');
+}
+
+document.querySelectorAll('[data-cam-target]').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    openCamera(btn.getAttribute('data-cam-target'));
+  });
+});
+
+document.getElementById('cam-cancel-btn').addEventListener('click', closeCamera);
+
+document.getElementById('cam-capture-btn').addEventListener('click', function(){
+  var video = document.getElementById('camera-video');
+  var canvas = document.getElementById('camera-canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  canvas.getContext('2d').drawImage(video, 0, 0);
+  var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+  var base64 = dataUrl.split(',')[1];
+  var result = { base64: base64, mime: 'image/jpeg' };
+  if(cameraTargetField === 'photo'){
+    capturedPhoto = result;
+    var prev = document.getElementById('mem-photo-preview');
+    prev.src = dataUrl; prev.style.display = 'block';
+    document.getElementById('mem-photo').value = '';
+  } else {
+    capturedAadhaar = result;
+    var prev2 = document.getElementById('mem-aadhaar-preview');
+    prev2.src = dataUrl; prev2.style.display = 'block';
+    document.getElementById('mem-aadhaar').value = '';
+  }
+  closeCamera();
+});
+
+function getImageData(file, captured){
+  if(captured) return Promise.resolve(captured);
+  if(file) return fileToBase64(file).then(function(b64){ return { base64: b64, mime: file.type }; });
+  return Promise.resolve(null);
+}
+
 document.getElementById('member-add-form').addEventListener('submit', function(e){
   e.preventDefault();
   var name = document.getElementById('mem-name').value.trim();
@@ -692,13 +787,13 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
   var aadhaarFile = document.getElementById('mem-aadhaar').files[0];
   var msg = document.getElementById('member-add-msg');
   var submitBtn = e.target.querySelector('button[type="submit"]');
-  if(!name || !phone || !photoFile || !aadhaarFile) return;
+  if(!name || !phone || (!photoFile && !capturedPhoto) || (!aadhaarFile && !capturedAadhaar)) return;
 
   submitBtn.disabled = true;
   msg.style.color = 'var(--ink-soft)';
   msg.textContent = "আপলোড হচ্ছে...";
 
-  Promise.all([fileToBase64(photoFile), fileToBase64(aadhaarFile)])
+  Promise.all([getImageData(photoFile, capturedPhoto), getImageData(aadhaarFile, capturedAadhaar)])
   .then(function(results){
     var form = document.createElement('form');
     form.method = 'POST';
@@ -714,10 +809,10 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
     addField('name', name);
     addField('phone', phone);
     addField('address', address);
-    addField('photoBase64', results[0]);
-    addField('photoMime', photoFile.type);
-    addField('aadhaarBase64', results[1]);
-    addField('aadhaarMime', aadhaarFile.type);
+    addField('photoBase64', results[0].base64);
+    addField('photoMime', results[0].mime);
+    addField('aadhaarBase64', results[1].base64);
+    addField('aadhaarMime', results[1].mime);
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
@@ -728,6 +823,10 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
       msg.textContent = "✅ সম্পন্ন! নিচের তালিকায় দেখুন।";
       submitBtn.disabled = false;
       document.getElementById('member-add-form').reset();
+      capturedPhoto = null;
+      capturedAadhaar = null;
+      document.getElementById('mem-photo-preview').style.display = 'none';
+      document.getElementById('mem-aadhaar-preview').style.display = 'none';
       loadAdminMemberList();
       loadPublicMembers();
     }, 3500);
