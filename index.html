@@ -568,12 +568,15 @@ function loadApprovedGallery(){
   .then(function(items){
     if(!items || !items.length) return;
     var grid = document.querySelector('.gallery-grid');
-    items.forEach(function(item){
+    var total = items.length;
+    var reversed = items.slice().reverse(); // নতুন ছবি সবার আগে
+    reversed.forEach(function(item, i){
+      var num = total - i; // নতুন = সর্বোচ্চ সংখ্যা, পুরনো = ১
       var div = document.createElement('div');
       div.className = 'gallery-item';
       div.innerHTML =
         '<img src="' + item.imageUrl + '" alt="' + (item.name || '') + '">' +
-        '<div class="gallery-caption"><b>' + (item.name || '') + '</b><p>' + (item.comment || '') + '</p></div>';
+        '<div class="gallery-caption"><b>#' + num + ' &middot; ' + (item.name || '') + '</b><p>' + (item.comment || '') + '</p></div>';
       grid.appendChild(div);
     });
   })
