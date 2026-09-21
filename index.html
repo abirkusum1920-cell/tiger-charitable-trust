@@ -637,13 +637,13 @@ function loadAdminMemberList(){
   .then(function(data){
     if(!data.success){ box.innerHTML = '<p style="color:var(--clay)">'+(data.error||"পাসওয়ার্ড ভুল")+'</p>'; return; }
     box.innerHTML = "";
-    data.members.forEach(function(m){
+    data.members.filter(function(m){ return m.status === 'active'; }).forEach(function(m){
       var row = document.createElement('div');
       row.className = 'member-admin-row';
       row.innerHTML =
         '<img src="'+driveThumb(m.photoUrl)+'">' +
-        '<div class="grow"><b>'+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+' · '+(m.status==='active'?'সক্রিয়':'বাদ দেওয়া হয়েছে')+'</div>' +
-        (m.status==='active' ? '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>' : '') +
+        '<div class="grow"><b>'+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+'</div>' +
+        '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>' +
         '<button class="btn-mini" data-aadhaar-id="'+m.id+'">আধার দেখুন</button>';
       box.appendChild(row);
     });
