@@ -583,6 +583,12 @@ var MEMBERS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwLBJdaSTNMnyG
 
 var memberPasscode = null;
 
+function driveThumb(url){
+  if(!url) return '';
+  var m = url.match(/id=([a-zA-Z0-9_-]+)/);
+  return m ? ('https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800') : url;
+}
+
 function loadPublicMembers(){
   jsonp(MEMBERS_WEBAPP_URL, { action: 'listMembers' })
   .then(function(data){
@@ -592,7 +598,7 @@ function loadPublicMembers(){
     data.members.forEach(function(m){
       var div = document.createElement('div');
       div.className = 'member-card';
-      div.innerHTML = '<img src="'+m.photoUrl+'" alt="'+m.name+'"><b>'+m.name+'</b>';
+      div.innerHTML = '<img src="'+driveThumb(m.photoUrl)+'" alt="'+m.name+'"><b>'+m.name+'</b>';
       grid.appendChild(div);
     });
   })
@@ -634,7 +640,7 @@ function loadAdminMemberList(){
       var row = document.createElement('div');
       row.className = 'member-admin-row';
       row.innerHTML =
-        '<img src="'+(m.photoUrl||'')+'">' +
+        '<img src="'+driveThumb(m.photoUrl)+'">' +
         '<div class="grow"><b>'+m.name+'</b><br>'+m.phone+' · '+(m.status==='active'?'সক্রিয়':'বাদ দেওয়া হয়েছে')+'</div>' +
         (m.status==='active' ? '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>' : '') +
         '<button class="btn-mini" data-aadhaar-id="'+m.id+'">আধার দেখুন</button>';
