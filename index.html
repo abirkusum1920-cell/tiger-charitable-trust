@@ -673,9 +673,9 @@ function renderAdminMemberList(filterText){
   var list = lastAdminMembers.filter(function(m){ return m.status === 'active'; });
   if(q){
     var matches = function(m){
-      return (m.name && m.name.toLowerCase().indexOf(q) !== -1) ||
-             (m.phone && m.phone.toLowerCase().indexOf(q) !== -1) ||
-             (m.aadhaarNumber && m.aadhaarNumber.toLowerCase().indexOf(q) !== -1);
+      return (m.name && String(m.name).toLowerCase().indexOf(q) !== -1) ||
+             (m.phone && String(m.phone).toLowerCase().indexOf(q) !== -1) ||
+             (m.aadhaarNumber && String(m.aadhaarNumber).toLowerCase().indexOf(q) !== -1);
     };
     var matched = list.filter(matches);
     var rest = list.filter(function(m){ return !matches(m); });
@@ -689,9 +689,9 @@ function renderAdminMemberList(filterText){
   var matchedIds = {};
   if(q){
     list.forEach(function(m){
-      if((m.name && m.name.toLowerCase().indexOf(q) !== -1) ||
-         (m.phone && m.phone.toLowerCase().indexOf(q) !== -1) ||
-         (m.aadhaarNumber && m.aadhaarNumber.toLowerCase().indexOf(q) !== -1)){
+      if((m.name && String(m.name).toLowerCase().indexOf(q) !== -1) ||
+         (m.phone && String(m.phone).toLowerCase().indexOf(q) !== -1) ||
+         (m.aadhaarNumber && String(m.aadhaarNumber).toLowerCase().indexOf(q) !== -1)){
         matchedIds[m.id] = true;
       }
     });
