@@ -403,6 +403,7 @@
       <input type="text" id="mem-name" placeholder="নাম" required>
       <input type="tel" id="mem-phone" placeholder="ফোন নাম্বার" required>
       <input type="text" id="mem-address" placeholder="ঠিকানা">
+      <input type="text" id="mem-aadhaar-number" placeholder="আধার নম্বর (ঐচ্ছিক, সার্চের জন্য)">
       <label class="file-label">ছবি (সকলে দেখতে পাবেন)</label>
       <div style="display:flex;align-items:center;flex-wrap:wrap;">
         <input type="file" id="mem-photo" accept="image/*">
@@ -418,7 +419,11 @@
       <button type="submit" class="btn" style="width:100%;margin-top:6px;">যোগ করুন</button>
       <p id="member-add-msg" style="text-align:center;margin-top:10px;font-size:.88rem;font-weight:600;"></p>
     </form>
-    <div class="member-admin-list" id="member-admin-list"></div>
+    <div class="member-admin-list">
+      <input type="text" id="member-search-input" placeholder="🔍 নাম, ফোন বা আধার নম্বর দিয়ে খুঁজুন"
+        style="width:100%;padding:10px 14px;margin-bottom:10px;border-radius:10px;border:1.5px solid rgba(43,38,32,0.15);font-family:inherit;font-size:.9rem;background:#fff;">
+      <div id="member-admin-list"></div>
+    </div>
   </div>
 </div>
 
@@ -660,49 +665,74 @@ document.getElementById('member-modal-close').addEventListener('click', function
   document.getElementById('member-modal-overlay').classList.remove('open');
 });
 
+var lastAdminMembers = [];
+
+function renderAdminMemberList(filterText){
+  var box = document.getElementById('member-admin-list');
+  var q = (filterText || '').trim().toLowerCase();
+  var list = lastAdminMembers.filter(function(m){ return m.status === 'active'; });
+  if(q){
+    list = list.filter(function(m){
+      return (m.name && m.name.toLowerCase().indexOf(q) !== -1) ||
+             (m.phone && m.phone.toLowerCase().indexOf(q) !== -1) ||
+             (m.aadhaarNumber && m.aadhaarNumber.toLowerCase().indexOf(q) !== -1);
+    });
+  }
+  box.innerHTML = "";
+  if(!list.length){
+    box.innerHTML = '<p style="color:var(--ink-soft);text-align:center;">কোনো সদস্য পাওয়া যায়নি।</p>';
+    return;
+  }
+  list.forEach(function(m){
+    var row = document.createElement('div');
+    row.className = 'member-admin-row';
+    row.innerHTML =
+      '<img src="'+driveThumb(m.photoUrl)+'">' +
+      '<div class="grow"><b>'+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+(m.aadhaarNumber ? ' · আধার: '+m.aadhaarNumber : '')+'</div>' +
+      '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>' +
+      '<button class="btn-mini" data-aadhaar-id="'+m.id+'">আধার দেখুন</button>';
+    box.appendChild(row);
+  });
+  box.querySelectorAll('.btn-mini-danger').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(!confirm("সত্যিই বাদ দিতে চান?")) return;
+      jsonp(MEMBERS_WEBAPP_URL, { action:'removeMember', passcode: memberPasscode, id: btn.getAttribute('data-id') })
+      .then(function(res){
+        if(res.success){ loadAdminMemberList(); loadPublicMembers(); }
+        else alert(res.error || "সমস্যা হয়েছে।");
+      })
+      .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
+    });
+  });
+  box.querySelectorAll('[data-aadhaar-id]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var id = btn.getAttribute('data-aadhaar-id');
+      jsonp(MEMBERS_WEBAPP_URL, { action:'getAadhaarImage', passcode: memberPasscode, id: id })
+      .then(function(res){
+        if(!res.success){ alert(res.error || "দেখা যাচ্ছে না।"); return; }
+        var w = window.open('');
+        w.document.write('<img src="data:'+res.mime+';base64,'+res.base64+'" style="max-width:100%">');
+      })
+      .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
+    });
+  });
+}
+
 function loadAdminMemberList(){
   var box = document.getElementById('member-admin-list');
   box.innerHTML = "লোড হচ্ছে...";
   jsonp(MEMBERS_WEBAPP_URL, { action:'listMembersAdmin', passcode: memberPasscode })
   .then(function(data){
     if(!data.success){ box.innerHTML = '<p style="color:var(--clay)">'+(data.error||"পাসওয়ার্ড ভুল")+'</p>'; return; }
-    box.innerHTML = "";
-    data.members.filter(function(m){ return m.status === 'active'; }).forEach(function(m){
-      var row = document.createElement('div');
-      row.className = 'member-admin-row';
-      row.innerHTML =
-        '<img src="'+driveThumb(m.photoUrl)+'">' +
-        '<div class="grow"><b>'+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+'</div>' +
-        '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>' +
-        '<button class="btn-mini" data-aadhaar-id="'+m.id+'">আধার দেখুন</button>';
-      box.appendChild(row);
-    });
-    box.querySelectorAll('.btn-mini-danger').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        if(!confirm("সত্যিই বাদ দিতে চান?")) return;
-        jsonp(MEMBERS_WEBAPP_URL, { action:'removeMember', passcode: memberPasscode, id: btn.getAttribute('data-id') })
-        .then(function(res){
-          if(res.success){ loadAdminMemberList(); loadPublicMembers(); }
-          else alert(res.error || "সমস্যা হয়েছে।");
-        })
-        .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
-      });
-    });
-    box.querySelectorAll('[data-aadhaar-id]').forEach(function(btn){
-      btn.addEventListener('click', function(){
-        var id = btn.getAttribute('data-aadhaar-id');
-        jsonp(MEMBERS_WEBAPP_URL, { action:'getAadhaarImage', passcode: memberPasscode, id: id })
-        .then(function(res){
-          if(!res.success){ alert(res.error || "দেখা যাচ্ছে না।"); return; }
-          var w = window.open('');
-          w.document.write('<img src="data:'+res.mime+';base64,'+res.base64+'" style="max-width:100%">');
-        })
-        .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
-      });
-    });
+    lastAdminMembers = data.members;
+    renderAdminMemberList(document.getElementById('member-search-input').value);
   })
   .catch(function(){ box.innerHTML = '<p style="color:var(--clay)">নেটওয়ার্ক সমস্যা</p>'; });
 }
+
+document.getElementById('member-search-input').addEventListener('input', function(){
+  renderAdminMemberList(this.value);
+});
 
 function fileToBase64(file){
   return new Promise(function(resolve, reject){
@@ -783,6 +813,7 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
   var name = document.getElementById('mem-name').value.trim();
   var phone = document.getElementById('mem-phone').value.trim();
   var address = document.getElementById('mem-address').value.trim();
+  var aadhaarNumber = document.getElementById('mem-aadhaar-number').value.trim();
   var photoFile = document.getElementById('mem-photo').files[0];
   var aadhaarFile = document.getElementById('mem-aadhaar').files[0];
   var msg = document.getElementById('member-add-msg');
@@ -809,6 +840,7 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
     addField('name', name);
     addField('phone', phone);
     addField('address', address);
+    addField('aadhaarNumber', aadhaarNumber);
     addField('photoBase64', results[0].base64);
     addField('photoMime', results[0].mime);
     addField('aadhaarBase64', results[1].base64);
