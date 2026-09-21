@@ -672,20 +672,34 @@ function renderAdminMemberList(filterText){
   var q = (filterText || '').trim().toLowerCase();
   var list = lastAdminMembers.filter(function(m){ return m.status === 'active'; });
   if(q){
-    list = list.filter(function(m){
+    var matches = function(m){
       return (m.name && m.name.toLowerCase().indexOf(q) !== -1) ||
              (m.phone && m.phone.toLowerCase().indexOf(q) !== -1) ||
              (m.aadhaarNumber && m.aadhaarNumber.toLowerCase().indexOf(q) !== -1);
-    });
+    };
+    var matched = list.filter(matches);
+    var rest = list.filter(function(m){ return !matches(m); });
+    list = matched.concat(rest);
   }
   box.innerHTML = "";
   if(!list.length){
     box.innerHTML = '<p style="color:var(--ink-soft);text-align:center;">কোনো সদস্য পাওয়া যায়নি।</p>';
     return;
   }
+  var matchedIds = {};
+  if(q){
+    list.forEach(function(m){
+      if((m.name && m.name.toLowerCase().indexOf(q) !== -1) ||
+         (m.phone && m.phone.toLowerCase().indexOf(q) !== -1) ||
+         (m.aadhaarNumber && m.aadhaarNumber.toLowerCase().indexOf(q) !== -1)){
+        matchedIds[m.id] = true;
+      }
+    });
+  }
   list.forEach(function(m){
     var row = document.createElement('div');
     row.className = 'member-admin-row';
+    if(matchedIds[m.id]) row.style.background = 'var(--rice-deep)';
     row.innerHTML =
       '<img src="'+driveThumb(m.photoUrl)+'">' +
       '<div class="grow"><b>'+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+(m.aadhaarNumber ? ' · আধার: '+m.aadhaarNumber : '')+'</div>' +
