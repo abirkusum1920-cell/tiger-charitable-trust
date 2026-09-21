@@ -677,10 +677,13 @@ function loadPublicMembers(){
     if(!data.success) return;
     var grid = document.getElementById('members-grid');
     grid.innerHTML = "";
-    data.members.forEach(function(m){
+    var total = data.members.length;
+    var reversed = data.members.slice().reverse(); // নতুন সদস্য সবার আগে
+    reversed.forEach(function(m, i){
+      var num = total - i; // নতুন = সর্বোচ্চ সংখ্যা, পুরনো = ১
       var div = document.createElement('div');
       div.className = 'member-card';
-      div.innerHTML = '<img src="'+driveThumb(m.photoUrl)+'" alt="'+m.name+'"><b>'+m.name+'</b>';
+      div.innerHTML = '<img src="'+driveThumb(m.photoUrl)+'" alt="'+m.name+'"><b>#'+num+' &middot; '+m.name+'</b>';
       grid.appendChild(div);
     });
   })
@@ -753,7 +756,9 @@ var lastAdminMembers = [];
 function renderAdminMemberList(filterText){
   var box = document.getElementById('member-admin-list');
   var q = (filterText || '').trim().toLowerCase();
-  var list = lastAdminMembers.filter(function(m){ return m.status === 'active'; });
+  var activeChrono = lastAdminMembers.filter(function(m){ return m.status === 'active'; });
+  activeChrono.forEach(function(m, idx){ m.__num = idx + 1; }); // পুরনো=১, নতুন=সর্বোচ্চ সংখ্যা
+  var list = activeChrono.slice().reverse(); // নতুন সদস্য সবার আগে
   if(q){
     var matches = function(m){
       return (m.name && String(m.name).toLowerCase().indexOf(q) !== -1) ||
@@ -785,7 +790,7 @@ function renderAdminMemberList(filterText){
     if(matchedIds[m.id]) row.style.background = 'var(--rice-deep)';
     row.innerHTML =
       '<img src="'+driveThumb(m.photoUrl)+'">' +
-      '<div class="grow"><b>'+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+(m.aadhaarNumber ? ' · আধার: '+m.aadhaarNumber : '')+'</div>' +
+      '<div class="grow"><b>#'+m.__num+' &middot; '+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+(m.aadhaarNumber ? ' · আধার: '+m.aadhaarNumber : '')+'</div>' +
       '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>' +
       '<button class="btn-mini" data-aadhaar-id="'+m.id+'">আধার দেখুন</button>';
     box.appendChild(row);
