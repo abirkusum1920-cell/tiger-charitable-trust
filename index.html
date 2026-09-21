@@ -163,7 +163,7 @@
   /* সদস্য রেজিস্ট্রেশন */
   .members-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:820px;margin:0 auto;}
   .member-card{background:var(--rice);border-radius:16px;overflow:hidden;box-shadow:0 6px 16px rgba(43,38,32,0.1);}
-  .member-card img{width:100%;height:180px;object-fit:cover;background:var(--rice-deep);}
+  .member-card img{width:100%;height:220px;object-fit:cover;object-position:top center;background:var(--rice-deep);}
   .member-card b{display:block;padding:10px;font-family:'Tiro Bangla',serif;font-size:.95rem;}
   @media(max-width:640px){.members-grid{grid-template-columns:1fr 1fr;}}
   @media(max-width:420px){.members-grid{grid-template-columns:1fr;}}
@@ -389,6 +389,7 @@
     <form id="member-add-form">
       <input type="text" id="mem-name" placeholder="নাম" required>
       <input type="tel" id="mem-phone" placeholder="ফোন নাম্বার" required>
+      <input type="text" id="mem-address" placeholder="ঠিকানা">
       <label class="file-label">ছবি (সকলে দেখতে পাবেন)</label>
       <input type="file" id="mem-photo" accept="image/*" required>
       <label class="file-label">আধার কার্ডের ছবি (গোপনীয় — শুধু ট্রাস্টের রেকর্ডের জন্য, কখনো প্রকাশ্যে দেখানো হবে না)</label>
@@ -641,7 +642,7 @@ function loadAdminMemberList(){
       row.className = 'member-admin-row';
       row.innerHTML =
         '<img src="'+driveThumb(m.photoUrl)+'">' +
-        '<div class="grow"><b>'+m.name+'</b><br>'+m.phone+' · '+(m.status==='active'?'সক্রিয়':'বাদ দেওয়া হয়েছে')+'</div>' +
+        '<div class="grow"><b>'+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+' · '+(m.status==='active'?'সক্রিয়':'বাদ দেওয়া হয়েছে')+'</div>' +
         (m.status==='active' ? '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>' : '') +
         '<button class="btn-mini" data-aadhaar-id="'+m.id+'">আধার দেখুন</button>';
       box.appendChild(row);
@@ -686,6 +687,7 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
   e.preventDefault();
   var name = document.getElementById('mem-name').value.trim();
   var phone = document.getElementById('mem-phone').value.trim();
+  var address = document.getElementById('mem-address').value.trim();
   var photoFile = document.getElementById('mem-photo').files[0];
   var aadhaarFile = document.getElementById('mem-aadhaar').files[0];
   var msg = document.getElementById('member-add-msg');
@@ -711,6 +713,7 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
     addField('passcode', memberPasscode);
     addField('name', name);
     addField('phone', phone);
+    addField('address', address);
     addField('photoBase64', results[0]);
     addField('photoMime', photoFile.type);
     addField('aadhaarBase64', results[1]);
