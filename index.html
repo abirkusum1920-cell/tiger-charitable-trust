@@ -1090,32 +1090,18 @@ function getImageData(file, captured){
   return Promise.resolve(null);
 }
 
-document.getElementById('ocr-fill-btn').addEventListener('click', function(){
-  var frontFile = document.getElementById('mem-aadhaar-front').files[0];
-  var backFile = document.getElementById('mem-aadhaar-back').files[0];
-  var ocrMsg = document.getElementById('ocr-msg');
-  if(!frontFile && !capturedAadhaarFront){
+function pollOcrResult(requestId, attemptsLeft, ocrMsg){
+  if(attemptsLeft <= 0){
     ocrMsg.style.color = 'var(--clay)';
-    ocrMsg.textContent = 'আগে আধার কার্ডের সামনের পাশের ছবি দিন।';
+    ocrMsg.textContent = 'অনেকক্ষণ সময় লাগছে, আবার চেষ্টা করুন।';
     return;
   }
-  ocrMsg.style.color = 'var(--ink-soft)';
-  ocrMsg.textContent = 'পড়া হচ্ছে, একটু অপেক্ষা করুন...';
-  Promise.all([getImageData(frontFile, capturedAadhaarFront), getImageData(backFile, capturedAadhaarBack)])
-  .then(function(results){
-    var body = new URLSearchParams();
-    body.append('action', 'ocrAadhaar');
-    body.append('passcode', memberPasscode);
-    body.append('frontBase64', results[0].base64);
-    body.append('frontMime', results[0].mime);
-    if(results[1]){
-      body.append('backBase64', results[1].base64);
-      body.append('backMime', results[1].mime);
-    }
-    return fetch(MEMBERS_WEBAPP_URL, { method: 'POST', body: body });
-  })
-  .then(function(res){ return res.json(); })
+  jsonp(MEMBERS_WEBAPP_URL, { action: 'ocrAadhaarResult', passcode: memberPasscode, requestId: requestId })
   .then(function(data){
+    if(data.pending){
+      setTimeout(function(){ pollOcrResult(requestId, attemptsLeft - 1, ocrMsg); }, 2000);
+      return;
+    }
     if(!data.success){
       ocrMsg.style.color = 'var(--clay)';
       ocrMsg.textContent = data.error || 'পড়া যায়নি, ম্যানুয়ালি লিখুন।';
@@ -1129,8 +1115,47 @@ document.getElementById('ocr-fill-btn').addEventListener('click', function(){
     ocrMsg.textContent = '✅ তথ্য বসানো হয়েছে, দেখে নিশ্চিত করুন।';
   })
   .catch(function(){
+    setTimeout(function(){ pollOcrResult(requestId, attemptsLeft - 1, ocrMsg); }, 2000);
+  });
+}
+
+document.getElementById('ocr-fill-btn').addEventListener('click', function(){
+  var frontFile = document.getElementById('mem-aadhaar-front').files[0];
+  var backFile = document.getElementById('mem-aadhaar-back').files[0];
+  var ocrMsg = document.getElementById('ocr-msg');
+  if(!frontFile && !capturedAadhaarFront){
     ocrMsg.style.color = 'var(--clay)';
-    ocrMsg.textContent = 'স্বয়ংক্রিয় পূরণ কাজ করছে না — ম্যানুয়ালি লিখুন।';
+    ocrMsg.textContent = 'আগে আধার কার্ডের সামনের পাশের ছবি দিন।';
+    return;
+  }
+  ocrMsg.style.color = 'var(--ink-soft)';
+  ocrMsg.textContent = 'পড়া হচ্ছে, একটু অপেক্ষা করুন...';
+  Promise.all([getImageData(frontFile, capturedAadhaarFront), getImageData(backFile, capturedAadhaarBack)])
+  .then(function(results){
+    var requestId = 'ocr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    var form = document.createElement('form');
+    form.method = 'POST';
+    form.action = MEMBERS_WEBAPP_URL;
+    form.target = 'member-upload-frame';
+    function addField(k, v){
+      var inp = document.createElement('input');
+      inp.type = 'hidden'; inp.name = k; inp.value = v;
+      form.appendChild(inp);
+    }
+    addField('action', 'ocrAadhaarStart');
+    addField('requestId', requestId);
+    addField('passcode', memberPasscode);
+    addField('frontBase64', results[0].base64);
+    addField('frontMime', results[0].mime);
+    if(results[1]){
+      addField('backBase64', results[1].base64);
+      addField('backMime', results[1].mime);
+    }
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+
+    setTimeout(function(){ pollOcrResult(requestId, 8, ocrMsg); }, 3000);
   });
 });
 
