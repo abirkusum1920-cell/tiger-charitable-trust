@@ -461,12 +461,20 @@
         <button type="button" class="cam-open-btn" data-cam-target="photo">📷 ক্যামেরা</button>
       </div>
       <img id="mem-photo-preview" class="cam-preview-thumb">
-      <label class="file-label">আধার কার্ডের ছবি (গোপনীয় — শুধু ট্রাস্টের রেকর্ডের জন্য, কখনো প্রকাশ্যে দেখানো হবে না)</label>
+      <label class="file-label">আধার কার্ডের ছবি — সামনের পাশ (গোপনীয়, নাম/লিঙ্গ পড়ার জন্য দরকার)</label>
       <div style="display:flex;align-items:center;flex-wrap:wrap;">
-        <input type="file" id="mem-aadhaar" accept="image/*">
-        <button type="button" class="cam-open-btn" data-cam-target="aadhaar">📷 ক্যামেরা</button>
+        <input type="file" id="mem-aadhaar-front" accept="image/*">
+        <button type="button" class="cam-open-btn" data-cam-target="aadhaarFront">📷 ক্যামেরা</button>
       </div>
-      <img id="mem-aadhaar-preview" class="cam-preview-thumb">
+      <img id="mem-aadhaar-front-preview" class="cam-preview-thumb">
+      <label class="file-label">আধার কার্ডের ছবি — পিছনের পাশ (গোপনীয়, ঐচ্ছিক — ঠিকানা পড়ার জন্য দরকার)</label>
+      <div style="display:flex;align-items:center;flex-wrap:wrap;">
+        <input type="file" id="mem-aadhaar-back" accept="image/*">
+        <button type="button" class="cam-open-btn" data-cam-target="aadhaarBack">📷 ক্যামেরা</button>
+      </div>
+      <img id="mem-aadhaar-back-preview" class="cam-preview-thumb">
+      <button type="button" id="ocr-fill-btn" class="btn-outline" style="width:100%;margin:8px 0;">🔎 আধার থেকে নাম/ঠিকানা/লিঙ্গ বসান</button>
+      <p id="ocr-msg" style="text-align:center;font-size:.85rem;font-weight:600;margin-bottom:6px;"></p>
       <button type="submit" class="btn" style="width:100%;margin-top:6px;">যোগ করুন</button>
       <p id="member-add-msg" style="text-align:center;margin-top:10px;font-size:.88rem;font-weight:600;"></p>
     </form>
@@ -480,6 +488,24 @@
         style="width:100%;padding:10px 14px;margin-bottom:10px;border-radius:10px;border:1.5px solid rgba(43,38,32,0.15);font-family:inherit;font-size:.9rem;background:#fff;">
       <div id="member-admin-list"></div>
     </div>
+  </div>
+</div>
+
+<div id="member-edit-overlay" style="display:none;position:fixed;inset:0;background:rgba(43,38,32,0.55);z-index:250;align-items:center;justify-content:center;padding:20px;">
+  <div class="member-modal">
+    <button class="member-close" id="member-edit-close">✕</button>
+    <h3>সদস্যের তথ্য সম্পাদনা</h3>
+    <input type="text" id="edit-name" placeholder="নাম">
+    <input type="tel" id="edit-phone" placeholder="ফোন নাম্বার">
+    <input type="text" id="edit-address" placeholder="ঠিকানা">
+    <input type="text" id="edit-aadhaar-number" placeholder="আধার নম্বর">
+    <select id="edit-gender" style="width:100%;padding:11px 14px;margin-bottom:10px;border-radius:10px;border:1.5px solid rgba(43,38,32,0.15);font-family:inherit;font-size:.92rem;background:#fff;">
+      <option value="">লিঙ্গ বেছে নিন (ঐচ্ছিক)</option>
+      <option value="পুরুষ">পুরুষ</option>
+      <option value="মহিলা">মহিলা</option>
+    </select>
+    <button type="button" id="edit-save-btn" class="btn" style="width:100%;margin-top:6px;">সংরক্ষণ করুন</button>
+    <p id="edit-msg" style="text-align:center;margin-top:10px;font-size:.88rem;font-weight:600;"></p>
   </div>
 </div>
 
@@ -749,6 +775,45 @@ document.getElementById('member-modal-close').addEventListener('click', function
   }catch(e){}
 });
 
+document.getElementById('member-edit-close').addEventListener('click', function(){
+  document.getElementById('member-edit-overlay').style.display = 'none';
+});
+
+document.getElementById('edit-save-btn').addEventListener('click', function(){
+  var id = this.getAttribute('data-editing-id');
+  var name = document.getElementById('edit-name').value.trim();
+  var phone = document.getElementById('edit-phone').value.trim();
+  var address = document.getElementById('edit-address').value.trim();
+  var aadhaarNumber = document.getElementById('edit-aadhaar-number').value.trim();
+  var gender = document.getElementById('edit-gender').value;
+  var msg = document.getElementById('edit-msg');
+  if(!name || !phone){
+    msg.style.color = 'var(--clay)';
+    msg.textContent = 'নাম ও ফোন নাম্বার আবশ্যক।';
+    return;
+  }
+  msg.style.color = 'var(--ink-soft)';
+  msg.textContent = 'সংরক্ষণ হচ্ছে...';
+  jsonp(MEMBERS_WEBAPP_URL, {
+    action: 'editMember', passcode: memberPasscode, id: id,
+    name: name, phone: phone, address: address, aadhaarNumber: aadhaarNumber, gender: gender
+  })
+  .then(function(res){
+    if(res.success){
+      document.getElementById('member-edit-overlay').style.display = 'none';
+      loadAdminMemberList();
+      loadPublicMembers();
+    } else {
+      msg.style.color = 'var(--clay)';
+      msg.textContent = res.error || 'সমস্যা হয়েছে।';
+    }
+  })
+  .catch(function(){
+    msg.style.color = 'var(--clay)';
+    msg.textContent = 'নেটওয়ার্ক সমস্যা।';
+  });
+});
+
 /* ফোন ক্যামেরা/ফাইল-পিকার থেকে ফিরলে পেজ রিলোড হয়ে গেলেও মডাল আবার খুলে যাবে */
 (function(){
   try{
@@ -834,11 +899,13 @@ function renderAdminMemberList(filterText){
     var statusLabel = q ? (m.status === 'active' ? ' · সক্রিয়' : ' · বাদ দেওয়া') : '';
     var actionBtn = m.status === 'active'
       ? '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>'
-      : '<button class="btn-mini" data-restore-id="'+m.id+'" style="background:var(--leaf);color:#fff;">ফিরিয়ে আনুন</button>';
+      : '<button class="btn-mini" data-restore-id="'+m.id+'" style="background:var(--leaf);color:#fff;">ফিরিয়ে আনুন</button>' +
+        '<button class="btn-mini-danger" data-delete-id="'+m.id+'" style="background:#7a0000;">স্থায়ীভাবে মুছুন</button>';
     row.innerHTML =
       '<img src="'+driveThumb(m.photoUrl)+'">' +
       '<div class="grow"><b>'+numLabel+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+(m.gender ? ' · '+m.gender : '')+(m.aadhaarNumber ? ' · আধার: '+m.aadhaarNumber : '')+statusLabel+'</div>' +
       actionBtn +
+      '<button class="btn-mini" data-edit-id="'+m.id+'" data-edit-name="'+encodeURIComponent(m.name||'')+'" data-edit-phone="'+encodeURIComponent(m.phone||'')+'" data-edit-address="'+encodeURIComponent(m.address||'')+'" data-edit-aadhaar="'+encodeURIComponent(m.aadhaarNumber||'')+'" data-edit-gender="'+encodeURIComponent(m.gender||'')+'">সম্পাদনা</button>' +
       '<button class="btn-mini" data-aadhaar-id="'+m.id+'">আধার দেখুন</button>';
     box.appendChild(row);
   });
@@ -864,6 +931,29 @@ function renderAdminMemberList(filterText){
       .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
     });
   });
+  box.querySelectorAll('[data-delete-id]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(!confirm("⚠️ এই সদস্যের নাম, ফোন, ছবি ও আধারের ছবি — সবকিছু চিরতরে মুছে যাবে। এটা আর ফিরিয়ে আনা যাবে না। আপনি কি একদম নিশ্চিত?")) return;
+      jsonp(MEMBERS_WEBAPP_URL, { action:'deleteMemberPermanently', passcode: memberPasscode, id: btn.getAttribute('data-delete-id') })
+      .then(function(res){
+        if(res.success){ loadAdminMemberList(); loadPublicMembers(); }
+        else alert(res.error || "সমস্যা হয়েছে।");
+      })
+      .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
+    });
+  });
+  box.querySelectorAll('[data-edit-id]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.getElementById('edit-name').value = decodeURIComponent(btn.getAttribute('data-edit-name') || '');
+      document.getElementById('edit-phone').value = decodeURIComponent(btn.getAttribute('data-edit-phone') || '');
+      document.getElementById('edit-address').value = decodeURIComponent(btn.getAttribute('data-edit-address') || '');
+      document.getElementById('edit-aadhaar-number').value = decodeURIComponent(btn.getAttribute('data-edit-aadhaar') || '');
+      document.getElementById('edit-gender').value = decodeURIComponent(btn.getAttribute('data-edit-gender') || '');
+      document.getElementById('edit-save-btn').setAttribute('data-editing-id', btn.getAttribute('data-edit-id'));
+      document.getElementById('edit-msg').textContent = '';
+      document.getElementById('member-edit-overlay').style.display = 'flex';
+    });
+  });
   box.querySelectorAll('[data-aadhaar-id]').forEach(function(btn){
     btn.addEventListener('click', function(){
       var id = btn.getAttribute('data-aadhaar-id');
@@ -871,7 +961,11 @@ function renderAdminMemberList(filterText){
       .then(function(res){
         if(!res.success){ alert(res.error || "দেখা যাচ্ছে না।"); return; }
         var w = window.open('');
-        w.document.write('<img src="data:'+res.mime+';base64,'+res.base64+'" style="max-width:100%">');
+        var html = '<h3>আধার — সামনের পাশ</h3><img src="data:'+res.front.mime+';base64,'+res.front.base64+'" style="max-width:100%">';
+        if(res.back){
+          html += '<h3>আধার — পিছনের পাশ</h3><img src="data:'+res.back.mime+';base64,'+res.back.base64+'" style="max-width:100%">';
+        }
+        w.document.write(html);
       })
       .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
     });
@@ -929,7 +1023,8 @@ function fileToBase64(file){
 var cameraTargetField = null;
 var cameraStream = null;
 var capturedPhoto = null;
-var capturedAadhaar = null;
+var capturedAadhaarFront = null;
+var capturedAadhaarBack = null;
 
 function openCamera(field){
   cameraTargetField = field;
@@ -975,11 +1070,16 @@ document.getElementById('cam-capture-btn').addEventListener('click', function(){
     var prev = document.getElementById('mem-photo-preview');
     prev.src = dataUrl; prev.style.display = 'block';
     document.getElementById('mem-photo').value = '';
-  } else {
-    capturedAadhaar = result;
-    var prev2 = document.getElementById('mem-aadhaar-preview');
-    prev2.src = dataUrl; prev2.style.display = 'block';
-    document.getElementById('mem-aadhaar').value = '';
+  } else if(cameraTargetField === 'aadhaarFront'){
+    capturedAadhaarFront = result;
+    var prevF = document.getElementById('mem-aadhaar-front-preview');
+    prevF.src = dataUrl; prevF.style.display = 'block';
+    document.getElementById('mem-aadhaar-front').value = '';
+  } else if(cameraTargetField === 'aadhaarBack'){
+    capturedAadhaarBack = result;
+    var prevB = document.getElementById('mem-aadhaar-back-preview');
+    prevB.src = dataUrl; prevB.style.display = 'block';
+    document.getElementById('mem-aadhaar-back').value = '';
   }
   closeCamera();
 });
@@ -990,6 +1090,50 @@ function getImageData(file, captured){
   return Promise.resolve(null);
 }
 
+document.getElementById('ocr-fill-btn').addEventListener('click', function(){
+  var frontFile = document.getElementById('mem-aadhaar-front').files[0];
+  var backFile = document.getElementById('mem-aadhaar-back').files[0];
+  var ocrMsg = document.getElementById('ocr-msg');
+  if(!frontFile && !capturedAadhaarFront){
+    ocrMsg.style.color = 'var(--clay)';
+    ocrMsg.textContent = 'আগে আধার কার্ডের সামনের পাশের ছবি দিন।';
+    return;
+  }
+  ocrMsg.style.color = 'var(--ink-soft)';
+  ocrMsg.textContent = 'পড়া হচ্ছে, একটু অপেক্ষা করুন...';
+  Promise.all([getImageData(frontFile, capturedAadhaarFront), getImageData(backFile, capturedAadhaarBack)])
+  .then(function(results){
+    var body = new URLSearchParams();
+    body.append('action', 'ocrAadhaar');
+    body.append('passcode', memberPasscode);
+    body.append('frontBase64', results[0].base64);
+    body.append('frontMime', results[0].mime);
+    if(results[1]){
+      body.append('backBase64', results[1].base64);
+      body.append('backMime', results[1].mime);
+    }
+    return fetch(MEMBERS_WEBAPP_URL, { method: 'POST', body: body });
+  })
+  .then(function(res){ return res.json(); })
+  .then(function(data){
+    if(!data.success){
+      ocrMsg.style.color = 'var(--clay)';
+      ocrMsg.textContent = data.error || 'পড়া যায়নি, ম্যানুয়ালি লিখুন।';
+      return;
+    }
+    if(data.name) document.getElementById('mem-name').value = data.name;
+    if(data.address) document.getElementById('mem-address').value = data.address;
+    if(data.gender === 'পুরুষ' || data.gender === 'মহিলা') document.getElementById('mem-gender').value = data.gender;
+    if(data.aadhaarNumber) document.getElementById('mem-aadhaar-number').value = data.aadhaarNumber;
+    ocrMsg.style.color = 'var(--leaf)';
+    ocrMsg.textContent = '✅ তথ্য বসানো হয়েছে, দেখে নিশ্চিত করুন।';
+  })
+  .catch(function(){
+    ocrMsg.style.color = 'var(--clay)';
+    ocrMsg.textContent = 'স্বয়ংক্রিয় পূরণ কাজ করছে না — ম্যানুয়ালি লিখুন।';
+  });
+});
+
 document.getElementById('member-add-form').addEventListener('submit', function(e){
   e.preventDefault();
   var name = document.getElementById('mem-name').value.trim();
@@ -998,16 +1142,21 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
   var aadhaarNumber = document.getElementById('mem-aadhaar-number').value.trim();
   var gender = document.getElementById('mem-gender').value;
   var photoFile = document.getElementById('mem-photo').files[0];
-  var aadhaarFile = document.getElementById('mem-aadhaar').files[0];
+  var aadhaarFrontFile = document.getElementById('mem-aadhaar-front').files[0];
+  var aadhaarBackFile = document.getElementById('mem-aadhaar-back').files[0];
   var msg = document.getElementById('member-add-msg');
   var submitBtn = e.target.querySelector('button[type="submit"]');
-  if(!name || !phone || (!photoFile && !capturedPhoto) || (!aadhaarFile && !capturedAadhaar)) return;
+  if(!name || !phone || (!photoFile && !capturedPhoto) || (!aadhaarFrontFile && !capturedAadhaarFront)) return;
 
   submitBtn.disabled = true;
   msg.style.color = 'var(--ink-soft)';
   msg.textContent = "আপলোড হচ্ছে...";
 
-  Promise.all([getImageData(photoFile, capturedPhoto), getImageData(aadhaarFile, capturedAadhaar)])
+  Promise.all([
+    getImageData(photoFile, capturedPhoto),
+    getImageData(aadhaarFrontFile, capturedAadhaarFront),
+    getImageData(aadhaarBackFile, capturedAadhaarBack)
+  ])
   .then(function(results){
     var form = document.createElement('form');
     form.method = 'POST';
@@ -1027,8 +1176,12 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
     addField('gender', gender);
     addField('photoBase64', results[0].base64);
     addField('photoMime', results[0].mime);
-    addField('aadhaarBase64', results[1].base64);
-    addField('aadhaarMime', results[1].mime);
+    addField('aadhaarFrontBase64', results[1].base64);
+    addField('aadhaarFrontMime', results[1].mime);
+    if(results[2]){
+      addField('aadhaarBackBase64', results[2].base64);
+      addField('aadhaarBackMime', results[2].mime);
+    }
     document.body.appendChild(form);
     form.submit();
     document.body.removeChild(form);
@@ -1040,9 +1193,12 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
       submitBtn.disabled = false;
       document.getElementById('member-add-form').reset();
       capturedPhoto = null;
-      capturedAadhaar = null;
+      capturedAadhaarFront = null;
+      capturedAadhaarBack = null;
       document.getElementById('mem-photo-preview').style.display = 'none';
-      document.getElementById('mem-aadhaar-preview').style.display = 'none';
+      document.getElementById('mem-aadhaar-front-preview').style.display = 'none';
+      document.getElementById('mem-aadhaar-back-preview').style.display = 'none';
+      document.getElementById('ocr-msg').textContent = '';
       try{
         sessionStorage.removeItem('memberFormName');
         sessionStorage.removeItem('memberFormPhone');
