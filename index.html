@@ -450,6 +450,11 @@
       <input type="tel" id="mem-phone" placeholder="ফোন নাম্বার" required>
       <input type="text" id="mem-address" placeholder="ঠিকানা">
       <input type="text" id="mem-aadhaar-number" placeholder="আধার নম্বর (ঐচ্ছিক, সার্চের জন্য)">
+      <select id="mem-gender" style="width:100%;padding:11px 14px;margin-bottom:10px;border-radius:10px;border:1.5px solid rgba(43,38,32,0.15);font-family:inherit;font-size:.92rem;background:#fff;">
+        <option value="">লিঙ্গ বেছে নিন (ঐচ্ছিক)</option>
+        <option value="পুরুষ">পুরুষ</option>
+        <option value="মহিলা">মহিলা</option>
+      </select>
       <label class="file-label">ছবি (সকলে দেখতে পাবেন)</label>
       <div style="display:flex;align-items:center;flex-wrap:wrap;">
         <input type="file" id="mem-photo" accept="image/*">
@@ -466,7 +471,12 @@
       <p id="member-add-msg" style="text-align:center;margin-top:10px;font-size:.88rem;font-weight:600;"></p>
     </form>
     <div class="member-admin-list">
-      <input type="text" id="member-search-input" placeholder="🔍 নাম, ফোন বা আধার নম্বর দিয়ে খুঁজুন"
+      <p id="member-gender-summary" style="font-size:.85rem;color:var(--ink-soft);text-align:center;margin-bottom:10px;"></p>
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button type="button" id="member-view-active" class="btn-mini" style="flex:1;padding:8px;font-size:.85rem;">সক্রিয় সদস্য</button>
+        <button type="button" id="member-view-removed" class="btn-mini" style="flex:1;padding:8px;font-size:.85rem;">বাদ দেওয়া সদস্য</button>
+      </div>
+      <input type="text" id="member-search-input" placeholder="🔍 নাম, ফোন বা আধার নম্বর দিয়ে খুঁজুন (সক্রিয় ও বাদ দেওয়া উভয়েই)"
         style="width:100%;padding:10px 14px;margin-bottom:10px;border-radius:10px;border:1.5px solid rgba(43,38,32,0.15);font-family:inherit;font-size:.9rem;background:#fff;">
       <div id="member-admin-list"></div>
     </div>
@@ -572,11 +582,25 @@ function loadApprovedGallery(){
     var reversed = items.slice().reverse(); // নতুন ছবি সবার আগে
     reversed.forEach(function(item, i){
       var num = total - i; // নতুন = সর্বোচ্চ সংখ্যা, পুরনো = ১
+      var dateLine = '';
+      if(item.timestamp){
+        var d = new Date(item.timestamp);
+        if(!isNaN(d.getTime())){
+          var dd = ('0'+d.getDate()).slice(-2);
+          var mm = ('0'+(d.getMonth()+1)).slice(-2);
+          var yyyy = d.getFullYear();
+          var hh = d.getHours(); var min = ('0'+d.getMinutes()).slice(-2);
+          var ampm = hh >= 12 ? 'PM' : 'AM';
+          var hh12 = hh % 12; if(hh12 === 0) hh12 = 12;
+          dateLine = '<span style="display:block;font-size:.75rem;color:var(--ink-soft);margin-top:2px;">' +
+            dd+'/'+mm+'/'+yyyy+' &middot; '+hh12+':'+min+' '+ampm + '</span>';
+        }
+      }
       var div = document.createElement('div');
       div.className = 'gallery-item';
       div.innerHTML =
         '<img src="' + item.imageUrl + '" alt="' + (item.name || '') + '">' +
-        '<div class="gallery-caption"><b>#' + num + ' &middot; ' + (item.name || '') + '</b><p>' + (item.comment || '') + '</p></div>';
+        '<div class="gallery-caption"><b>#' + num + ' &middot; ' + (item.name || '') + '</b>' + dateLine + '<p>' + (item.comment || '') + '</p></div>';
       grid.appendChild(div);
     });
   })
@@ -740,10 +764,12 @@ document.getElementById('member-modal-close').addEventListener('click', function
     var savedPhone = sessionStorage.getItem('memberFormPhone');
     var savedAddress = sessionStorage.getItem('memberFormAddress');
     var savedAadhaarNum = sessionStorage.getItem('memberFormAadhaarNum');
+    var savedGender = sessionStorage.getItem('memberFormGender');
     if(savedName) document.getElementById('mem-name').value = savedName;
     if(savedPhone) document.getElementById('mem-phone').value = savedPhone;
     if(savedAddress) document.getElementById('mem-address').value = savedAddress;
     if(savedAadhaarNum) document.getElementById('mem-aadhaar-number').value = savedAadhaarNum;
+    if(savedGender) document.getElementById('mem-gender').value = savedGender;
   }catch(e){}
 })();
 
@@ -753,48 +779,66 @@ document.getElementById('member-modal-close').addEventListener('click', function
     try{ sessionStorage.setItem(storeKey, this.value); }catch(e){}
   });
 });
+document.getElementById('mem-gender').addEventListener('change', function(){
+  try{ sessionStorage.setItem('memberFormGender', this.value); }catch(e){}
+});
 
 var lastAdminMembers = [];
+var memberViewMode = 'active'; // 'active' অথবা 'removed'
+
+function updateGenderSummary(){
+  var activeList = lastAdminMembers.filter(function(m){ return m.status === 'active'; });
+  var male = activeList.filter(function(m){ return m.gender === 'পুরুষ'; }).length;
+  var female = activeList.filter(function(m){ return m.gender === 'মহিলা'; }).length;
+  document.getElementById('member-gender-summary').textContent =
+    'মোট সক্রিয় সদস্য: ' + activeList.length + ' জন (পুরুষ: ' + male + ', মহিলা: ' + female + ')';
+}
 
 function renderAdminMemberList(filterText){
   var box = document.getElementById('member-admin-list');
   var q = (filterText || '').trim().toLowerCase();
+
+  var matches = function(m){
+    return (m.name && String(m.name).toLowerCase().indexOf(q) !== -1) ||
+           (m.phone && String(m.phone).toLowerCase().indexOf(q) !== -1) ||
+           (m.aadhaarNumber && String(m.aadhaarNumber).toLowerCase().indexOf(q) !== -1);
+  };
+
   var activeChrono = lastAdminMembers.filter(function(m){ return m.status === 'active'; });
   activeChrono.forEach(function(m, idx){ m.__num = idx + 1; }); // পুরনো=১, নতুন=সর্বোচ্চ সংখ্যা
-  var list = activeChrono.slice().reverse(); // নতুন সদস্য সবার আগে
+
+  var list, matchedIds = {};
   if(q){
-    var matches = function(m){
-      return (m.name && String(m.name).toLowerCase().indexOf(q) !== -1) ||
-             (m.phone && String(m.phone).toLowerCase().indexOf(q) !== -1) ||
-             (m.aadhaarNumber && String(m.aadhaarNumber).toLowerCase().indexOf(q) !== -1);
-    };
-    var matched = list.filter(matches);
-    var rest = list.filter(function(m){ return !matches(m); });
+    // সার্চ করলে সক্রিয় ও বাদ দেওয়া — দুটো থেকেই ফলাফল দেখাবে
+    var allNewestFirst = lastAdminMembers.slice().reverse();
+    var matched = allNewestFirst.filter(matches);
+    var rest = allNewestFirst.filter(function(m){ return !matches(m); });
     list = matched.concat(rest);
+    matched.forEach(function(m){ matchedIds[m.id] = true; });
+  } else if(memberViewMode === 'removed'){
+    list = lastAdminMembers.filter(function(m){ return m.status === 'removed'; }).slice().reverse();
+  } else {
+    list = activeChrono.slice().reverse(); // নতুন সদস্য সবার আগে
   }
+
   box.innerHTML = "";
   if(!list.length){
     box.innerHTML = '<p style="color:var(--ink-soft);text-align:center;">কোনো সদস্য পাওয়া যায়নি।</p>';
     return;
   }
-  var matchedIds = {};
-  if(q){
-    list.forEach(function(m){
-      if((m.name && String(m.name).toLowerCase().indexOf(q) !== -1) ||
-         (m.phone && String(m.phone).toLowerCase().indexOf(q) !== -1) ||
-         (m.aadhaarNumber && String(m.aadhaarNumber).toLowerCase().indexOf(q) !== -1)){
-        matchedIds[m.id] = true;
-      }
-    });
-  }
   list.forEach(function(m){
     var row = document.createElement('div');
     row.className = 'member-admin-row';
     if(matchedIds[m.id]) row.style.background = 'var(--rice-deep)';
+    var numLabel = m.status === 'active' ? ('#'+m.__num+' &middot; ') : '';
+    var statusLabel = q ? (m.status === 'active' ? ' · সক্রিয়' : ' · বাদ দেওয়া') : '';
+    var actionBtn = m.status === 'active'
+      ? '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>'
+      : '<button class="btn-mini" data-restore-id="'+m.id+'" style="background:var(--leaf);color:#fff;">ফিরিয়ে আনুন</button>';
     row.innerHTML =
       '<img src="'+driveThumb(m.photoUrl)+'">' +
-      '<div class="grow"><b>#'+m.__num+' &middot; '+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+(m.aadhaarNumber ? ' · আধার: '+m.aadhaarNumber : '')+'</div>' +
-      '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>' +
+      '<div class="grow"><b>'+numLabel+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+(m.gender ? ' · '+m.gender : '')+(m.aadhaarNumber ? ' · আধার: '+m.aadhaarNumber : '')+statusLabel+'</div>' +
+      actionBtn +
       '<button class="btn-mini" data-aadhaar-id="'+m.id+'">আধার দেখুন</button>';
     box.appendChild(row);
   });
@@ -802,6 +846,17 @@ function renderAdminMemberList(filterText){
     btn.addEventListener('click', function(){
       if(!confirm("সত্যিই বাদ দিতে চান?")) return;
       jsonp(MEMBERS_WEBAPP_URL, { action:'removeMember', passcode: memberPasscode, id: btn.getAttribute('data-id') })
+      .then(function(res){
+        if(res.success){ loadAdminMemberList(); loadPublicMembers(); }
+        else alert(res.error || "সমস্যা হয়েছে।");
+      })
+      .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
+    });
+  });
+  box.querySelectorAll('[data-restore-id]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(!confirm("এই সদস্যকে আবার সক্রিয় করতে চান?")) return;
+      jsonp(MEMBERS_WEBAPP_URL, { action:'restoreMember', passcode: memberPasscode, id: btn.getAttribute('data-restore-id') })
       .then(function(res){
         if(res.success){ loadAdminMemberList(); loadPublicMembers(); }
         else alert(res.error || "সমস্যা হয়েছে।");
@@ -823,6 +878,27 @@ function renderAdminMemberList(filterText){
   });
 }
 
+document.getElementById('member-view-active').addEventListener('click', function(){
+  memberViewMode = 'active';
+  document.getElementById('member-view-active').style.background = 'var(--marigold)';
+  document.getElementById('member-view-active').style.color = '#fff';
+  document.getElementById('member-view-removed').style.background = 'var(--rice-deep)';
+  document.getElementById('member-view-removed').style.color = 'var(--ink)';
+  document.getElementById('member-search-input').value = '';
+  renderAdminMemberList('');
+});
+document.getElementById('member-view-removed').addEventListener('click', function(){
+  memberViewMode = 'removed';
+  document.getElementById('member-view-removed').style.background = 'var(--marigold)';
+  document.getElementById('member-view-removed').style.color = '#fff';
+  document.getElementById('member-view-active').style.background = 'var(--rice-deep)';
+  document.getElementById('member-view-active').style.color = 'var(--ink)';
+  document.getElementById('member-search-input').value = '';
+  renderAdminMemberList('');
+});
+document.getElementById('member-view-active').style.background = 'var(--marigold)';
+document.getElementById('member-view-active').style.color = '#fff';
+
 function loadAdminMemberList(){
   var box = document.getElementById('member-admin-list');
   box.innerHTML = "লোড হচ্ছে...";
@@ -830,6 +906,7 @@ function loadAdminMemberList(){
   .then(function(data){
     if(!data.success){ box.innerHTML = '<p style="color:var(--clay)">'+(data.error||"পাসওয়ার্ড ভুল")+'</p>'; return; }
     lastAdminMembers = data.members;
+    updateGenderSummary();
     renderAdminMemberList(document.getElementById('member-search-input').value);
   })
   .catch(function(){ box.innerHTML = '<p style="color:var(--clay)">নেটওয়ার্ক সমস্যা</p>'; });
@@ -919,6 +996,7 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
   var phone = document.getElementById('mem-phone').value.trim();
   var address = document.getElementById('mem-address').value.trim();
   var aadhaarNumber = document.getElementById('mem-aadhaar-number').value.trim();
+  var gender = document.getElementById('mem-gender').value;
   var photoFile = document.getElementById('mem-photo').files[0];
   var aadhaarFile = document.getElementById('mem-aadhaar').files[0];
   var msg = document.getElementById('member-add-msg');
@@ -946,6 +1024,7 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
     addField('phone', phone);
     addField('address', address);
     addField('aadhaarNumber', aadhaarNumber);
+    addField('gender', gender);
     addField('photoBase64', results[0].base64);
     addField('photoMime', results[0].mime);
     addField('aadhaarBase64', results[1].base64);
@@ -969,6 +1048,7 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
         sessionStorage.removeItem('memberFormPhone');
         sessionStorage.removeItem('memberFormAddress');
         sessionStorage.removeItem('memberFormAadhaarNum');
+        sessionStorage.removeItem('memberFormGender');
       }catch(e){}
       loadAdminMemberList();
       loadPublicMembers();
