@@ -558,6 +558,18 @@ function jsonp(url, params){
   });
 }
 
+// দুর্বল নেটওয়ার্কে প্রথমবার ব্যর্থ হলে স্বয়ংক্রিয়ভাবে আরও কয়েকবার চেষ্টা করে
+function jsonpRetry(url, params, retriesLeft){
+  if(retriesLeft === undefined) retriesLeft = 2;
+  return jsonp(url, params).catch(function(err){
+    if(retriesLeft > 0){
+      return new Promise(function(resolve){ setTimeout(resolve, 1200); })
+        .then(function(){ return jsonpRetry(url, params, retriesLeft - 1); });
+    }
+    throw err;
+  });
+}
+
 function loadSponsorStats(){
   document.getElementById('sp-progress-note').textContent = "লোড হচ্ছে...";
   jsonp(SPONSOR_WEBAPP_URL, { action: 'stats' })
@@ -583,36 +595,48 @@ function loadSponsorStats(){
 }
 loadSponsorStats();
 
+function renderGalleryItems(items){
+  var grid = document.querySelector('.gallery-grid');
+  grid.innerHTML = "";
+  var total = items.length;
+  var reversed = items.slice().reverse(); // নতুন ছবি সবার আগে
+  reversed.forEach(function(item, i){
+    var num = total - i; // নতুন = সর্বোচ্চ সংখ্যা, পুরনো = ১
+    var dateLine = '';
+    if(item.timestamp){
+      var d = new Date(item.timestamp);
+      if(!isNaN(d.getTime())){
+        var dd = ('0'+d.getDate()).slice(-2);
+        var mm = ('0'+(d.getMonth()+1)).slice(-2);
+        var yyyy = d.getFullYear();
+        var hh = d.getHours(); var min = ('0'+d.getMinutes()).slice(-2);
+        var ampm = hh >= 12 ? 'PM' : 'AM';
+        var hh12 = hh % 12; if(hh12 === 0) hh12 = 12;
+        dateLine = '<span style="display:block;font-size:.75rem;color:var(--ink-soft);margin-top:2px;">' +
+          dd+'/'+mm+'/'+yyyy+' &middot; '+hh12+':'+min+' '+ampm + '</span>';
+      }
+    }
+    var div = document.createElement('div');
+    div.className = 'gallery-item';
+    div.innerHTML =
+      '<img loading="lazy" src="' + item.imageUrl + '" alt="' + (item.name || '') + '">' +
+      '<div class="gallery-caption"><b>#' + num + ' &middot; ' + (item.name || '') + '</b>' + dateLine + '<p>' + (item.comment || '') + '</p></div>';
+    grid.appendChild(div);
+  });
+}
+
 function loadApprovedGallery(){
-  jsonp(SPONSOR_WEBAPP_URL, { action: 'gallery' })
+  // আগে একবার লোড হয়ে থাকলে সাথে সাথেই সেটা দেখানো হবে
+  try{
+    var cached = localStorage.getItem('cachedGalleryItems');
+    if(cached) renderGalleryItems(JSON.parse(cached));
+  }catch(e){}
+  // ব্যাকগ্রাউন্ডে নতুন কিছু আছে কিনা যাচাই করে আপডেট করা হবে
+  jsonpRetry(SPONSOR_WEBAPP_URL, { action: 'gallery' })
   .then(function(items){
     if(!items || !items.length) return;
-    var grid = document.querySelector('.gallery-grid');
-    var total = items.length;
-    var reversed = items.slice().reverse(); // নতুন ছবি সবার আগে
-    reversed.forEach(function(item, i){
-      var num = total - i; // নতুন = সর্বোচ্চ সংখ্যা, পুরনো = ১
-      var dateLine = '';
-      if(item.timestamp){
-        var d = new Date(item.timestamp);
-        if(!isNaN(d.getTime())){
-          var dd = ('0'+d.getDate()).slice(-2);
-          var mm = ('0'+(d.getMonth()+1)).slice(-2);
-          var yyyy = d.getFullYear();
-          var hh = d.getHours(); var min = ('0'+d.getMinutes()).slice(-2);
-          var ampm = hh >= 12 ? 'PM' : 'AM';
-          var hh12 = hh % 12; if(hh12 === 0) hh12 = 12;
-          dateLine = '<span style="display:block;font-size:.75rem;color:var(--ink-soft);margin-top:2px;">' +
-            dd+'/'+mm+'/'+yyyy+' &middot; '+hh12+':'+min+' '+ampm + '</span>';
-        }
-      }
-      var div = document.createElement('div');
-      div.className = 'gallery-item';
-      div.innerHTML =
-        '<img src="' + item.imageUrl + '" alt="' + (item.name || '') + '">' +
-        '<div class="gallery-caption"><b>#' + num + ' &middot; ' + (item.name || '') + '</b>' + dateLine + '<p>' + (item.comment || '') + '</p></div>';
-      grid.appendChild(div);
-    });
+    renderGalleryItems(items);
+    try{ localStorage.setItem('cachedGalleryItems', JSON.stringify(items)); }catch(e){}
   })
   .catch(function(){});
 }
@@ -634,7 +658,7 @@ document.getElementById('sp-gear').addEventListener('click', function(){
     } else {
       alert(data.error || "পাসওয়ার্ড ভুল।");
     }
-  })
+    })
   .catch(function(){
     alert("নেটওয়ার্ক সমস্যা হয়েছে, আবার চেষ্টা করুন।");
   });
@@ -708,21 +732,32 @@ function driveThumb(url){
   return m ? ('https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800') : url;
 }
 
+function renderPublicMembers(members){
+  var grid = document.getElementById('members-grid');
+  grid.innerHTML = "";
+  var total = members.length;
+  var reversed = members.slice().reverse(); // নতুন সদস্য সবার আগে
+  reversed.forEach(function(m, i){
+    var num = total - i; // নতুন = সর্বোচ্চ সংখ্যা, পুরনো = ১
+    var div = document.createElement('div');
+    div.className = 'member-card';
+    div.innerHTML = '<img loading="lazy" src="'+driveThumb(m.photoUrl)+'" alt="'+m.name+'"><b>#'+num+' &middot; '+m.name+'</b>';
+    grid.appendChild(div);
+  });
+}
+
 function loadPublicMembers(){
-  jsonp(MEMBERS_WEBAPP_URL, { action: 'listMembers' })
+  // আগে একবার লোড হয়ে থাকলে সাথে সাথেই সেটা দেখানো হবে
+  try{
+    var cached = localStorage.getItem('cachedPublicMembers');
+    if(cached) renderPublicMembers(JSON.parse(cached));
+  }catch(e){}
+  // ব্যাকগ্রাউন্ডে নতুন কিছু আছে কিনা যাচাই করে আপডেট করা হবে
+  jsonpRetry(MEMBERS_WEBAPP_URL, { action: 'listMembers' })
   .then(function(data){
     if(!data.success) return;
-    var grid = document.getElementById('members-grid');
-    grid.innerHTML = "";
-    var total = data.members.length;
-    var reversed = data.members.slice().reverse(); // নতুন সদস্য সবার আগে
-    reversed.forEach(function(m, i){
-      var num = total - i; // নতুন = সর্বোচ্চ সংখ্যা, পুরনো = ১
-      var div = document.createElement('div');
-      div.className = 'member-card';
-      div.innerHTML = '<img src="'+driveThumb(m.photoUrl)+'" alt="'+m.name+'"><b>#'+num+' &middot; '+m.name+'</b>';
-      grid.appendChild(div);
-    });
+    renderPublicMembers(data.members);
+    try{ localStorage.setItem('cachedPublicMembers', JSON.stringify(data.members)); }catch(e){}
   })
   .catch(function(){});
 }
@@ -886,7 +921,7 @@ function renderAdminMemberList(filterText){
       : '<button class="btn-mini" data-restore-id="'+m.id+'" style="background:var(--leaf);color:#fff;">ফিরিয়ে আনুন</button>' +
         '<button class="btn-mini-danger" data-delete-id="'+m.id+'" style="background:#7a0000;">স্থায়ীভাবে মুছুন</button>';
     row.innerHTML =
-      '<img src="'+driveThumb(m.photoUrl)+'">' +
+      '<img loading="lazy" src="'+driveThumb(m.photoUrl)+'">' +
       '<div class="grow"><b>'+numLabel+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+(m.gender ? ' · '+m.gender : '')+(m.aadhaarNumber ? ' · আধার: '+m.aadhaarNumber : '')+statusLabel+'</div>' +
       actionBtn +
       '<button class="btn-mini" data-edit-id="'+m.id+'" data-edit-name="'+encodeURIComponent(m.name||'')+'" data-edit-phone="'+encodeURIComponent(m.phone||'')+'" data-edit-address="'+encodeURIComponent(m.address||'')+'" data-edit-aadhaar="'+encodeURIComponent(m.aadhaarNumber||'')+'" data-edit-gender="'+encodeURIComponent(m.gender||'')+'">সম্পাদনা</button>' +
@@ -953,7 +988,7 @@ function renderAdminMemberList(filterText){
       })
       .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
     });
-  });
+    });
 }
 
 document.getElementById('member-view-active').addEventListener('click', function(){
@@ -979,15 +1014,36 @@ document.getElementById('member-view-active').style.color = '#fff';
 
 function loadAdminMemberList(){
   var box = document.getElementById('member-admin-list');
-  box.innerHTML = "লোড হচ্ছে...";
-  jsonp(MEMBERS_WEBAPP_URL, { action:'listMembersAdmin', passcode: memberPasscode })
+  // ক্যাশ শুধু তখনই দেখানো হবে যদি এবারের পাসওয়ার্ড, আগে যেই পাসওয়ার্ড দিয়ে ডেটা আনা হয়েছিল তার সাথে মিলে যায়
+  // (ভুল পাসওয়ার্ড দিলে যেন পুরনো সংবেদনশীল তথ্য দেখা না যায়)
+  var hadCache = false;
+  try{
+    var cachedRaw = localStorage.getItem('cachedAdminMembers');
+    if(cachedRaw){
+      var cachedObj = JSON.parse(cachedRaw);
+      if(cachedObj.passcode === memberPasscode){
+        lastAdminMembers = cachedObj.members;
+        hadCache = true;
+        updateGenderSummary();
+        renderAdminMemberList(document.getElementById('member-search-input').value);
+      }
+    }
+  }catch(e){}
+  if(!hadCache) box.innerHTML = "লোড হচ্ছে...";
+  // ব্যাকগ্রাউন্ডে নতুন কিছু আছে কিনা যাচাই করে আপডেট করা হবে
+  jsonpRetry(MEMBERS_WEBAPP_URL, { action:'listMembersAdmin', passcode: memberPasscode })
   .then(function(data){
-    if(!data.success){ box.innerHTML = '<p style="color:var(--clay)">'+(data.error||"পাসওয়ার্ড ভুল")+'</p>'; return; }
+    if(!data.success){
+      if(!hadCache) box.innerHTML = '<p style="color:var(--clay)">'+(data.error||"পাসওয়ার্ড ভুল")+'</p>';
+      try{ localStorage.removeItem('cachedAdminMembers'); }catch(e){} // ভুল পাসওয়ার্ড হলে পুরনো ক্যাশও মুছে দেওয়া হলো
+      return;
+    }
     lastAdminMembers = data.members;
+    try{ localStorage.setItem('cachedAdminMembers', JSON.stringify({ passcode: memberPasscode, members: data.members })); }catch(e){}
     updateGenderSummary();
     renderAdminMemberList(document.getElementById('member-search-input').value);
   })
-  .catch(function(){ box.innerHTML = '<p style="color:var(--clay)">নেটওয়ার্ক সমস্যা</p>'; });
+  .catch(function(){ if(!hadCache) box.innerHTML = '<p style="color:var(--clay)">নেটওয়ার্ক সমস্যা</p>'; });
 }
 
 document.getElementById('member-search-input').addEventListener('input', function(){
@@ -1143,6 +1199,50 @@ document.getElementById('ocr-fill-btn').addEventListener('click', function(){
   });
 });
 
+function pollAddMemberResult(requestId, attemptsLeft, msg, submitBtn){
+  if(attemptsLeft <= 0){
+    msg.style.color = 'var(--clay)';
+    msg.textContent = 'অনেকক্ষণ সময় লাগছে — তালিকায় দেখে নিশ্চিত করুন সদস্য যোগ হয়েছে কিনা, নাহলে আবার চেষ্টা করুন।';
+    submitBtn.disabled = false;
+    return;
+  }
+  jsonp(MEMBERS_WEBAPP_URL, { action: 'addMemberResult', requestId: requestId })
+  .then(function(data){
+    if(data.pending){
+      setTimeout(function(){ pollAddMemberResult(requestId, attemptsLeft - 1, msg, submitBtn); }, 1500);
+      return;
+    }
+    submitBtn.disabled = false;
+    if(!data.success){
+      msg.style.color = 'var(--clay)';
+      msg.textContent = data.error || 'সমস্যা হয়েছে, আবার চেষ্টা করুন।';
+      return;
+    }
+    msg.style.color = 'var(--leaf)';
+    msg.textContent = "✅ সম্পন্ন! নিচের তালিকায় দেখুন।";
+    document.getElementById('member-add-form').reset();
+    capturedPhoto = null;
+    capturedAadhaarFront = null;
+    capturedAadhaarBack = null;
+    document.getElementById('mem-photo-preview').style.display = 'none';
+    document.getElementById('mem-aadhaar-front-preview').style.display = 'none';
+    document.getElementById('mem-aadhaar-back-preview').style.display = 'none';
+    document.getElementById('ocr-msg').textContent = '';
+    try{
+      sessionStorage.removeItem('memberFormName');
+      sessionStorage.removeItem('memberFormPhone');
+      sessionStorage.removeItem('memberFormAddress');
+      sessionStorage.removeItem('memberFormAadhaarNum');
+      sessionStorage.removeItem('memberFormGender');
+    }catch(e){}
+    loadAdminMemberList();
+    loadPublicMembers();
+  })
+  .catch(function(){
+    setTimeout(function(){ pollAddMemberResult(requestId, attemptsLeft - 1, msg, submitBtn); }, 1500);
+  });
+}
+
 document.getElementById('member-add-form').addEventListener('submit', function(e){
   e.preventDefault();
   var name = document.getElementById('mem-name').value.trim();
@@ -1167,6 +1267,7 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
     getImageData(aadhaarBackFile, capturedAadhaarBack)
   ])
   .then(function(results){
+    var requestId = 'add_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
     var form = document.createElement('form');
     form.method = 'POST';
     form.action = MEMBERS_WEBAPP_URL;
@@ -1177,6 +1278,7 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
       form.appendChild(inp);
     }
     addField('action','addMember');
+    addField('requestId', requestId);
     addField('passcode', memberPasscode);
     addField('name', name);
     addField('phone', phone);
@@ -1195,29 +1297,8 @@ document.getElementById('member-add-form').addEventListener('submit', function(e
     form.submit();
     document.body.removeChild(form);
 
-    msg.textContent = "পাঠানো হয়েছে, একটু অপেক্ষা করুন...";
-    setTimeout(function(){
-      msg.style.color = 'var(--leaf)';
-      msg.textContent = "✅ সম্পন্ন! নিচের তালিকায় দেখুন।";
-      submitBtn.disabled = false;
-      document.getElementById('member-add-form').reset();
-      capturedPhoto = null;
-      capturedAadhaarFront = null;
-      capturedAadhaarBack = null;
-      document.getElementById('mem-photo-preview').style.display = 'none';
-      document.getElementById('mem-aadhaar-front-preview').style.display = 'none';
-      document.getElementById('mem-aadhaar-back-preview').style.display = 'none';
-      document.getElementById('ocr-msg').textContent = '';
-      try{
-        sessionStorage.removeItem('memberFormName');
-        sessionStorage.removeItem('memberFormPhone');
-        sessionStorage.removeItem('memberFormAddress');
-        sessionStorage.removeItem('memberFormAadhaarNum');
-        sessionStorage.removeItem('memberFormGender');
-      }catch(e){}
-      loadAdminMemberList();
-      loadPublicMembers();
-    }, 3500);
+    msg.textContent = "পাঠানো হয়েছে, সেভ হচ্ছে...";
+    setTimeout(function(){ pollAddMemberResult(requestId, 12, msg, submitBtn); }, 2500);
   });
 });
 </script>
