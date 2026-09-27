@@ -183,17 +183,76 @@ footer{background:#2a2a22;color:#cfc6b4;text-align:center;padding:26px 16px;bord
 </footer>
 <div class="toast" id="toast"></div>
 
+<script src="logo.js"></script>
+<script src="config.js"></script>
 <script>
-/* ============ এখানে সব তথ্য বদলানো যাবে ============ */
-var CFG = {
-  phone: "9832899309",                 // কল ও WhatsApp বার্তা এই নাম্বারে যাবে
-  upi: "9832899309@ybl",
-  upiName: "TIGER The Charitable Trust",
-  email: "abirkusum1920@gmail.com",
-  facebook: "https://www.facebook.com/share/1D7GQfyKv1/",
-  youtube: "https://youtube.com/@t.i.g.e.r-group8881?si=5JCZgDuMhdHoiMHz",
-  instagram: "https://www.instagram.com/das412641?igsh=MXhpdDB2djI2ODh2OA==",
-  waGroup: "https://chat.whatsapp.com/DwZzhOGhPKvIpRmRmwgntF?s=cl&p=a&ilr=2",
-  galleryForm: "https://docs.google.com/forms/d/e/1FAIpQLSc-4AEjAnFt5stfLcRLM22_DSLKJJde7H7Ak9WxuONOOh5OrQ/viewform",
-  memberForm: "https://form.svhrt.com/6a4108bfa1ff98e3452915b4",
-  logo: "data:image/jpeg;base64,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
+
+function $(id){return document.getElementById(id)}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function toast(t){var e=$("toast");e.textContent=t;e.classList.add("on");setTimeout(function(){e.classList.remove("on")},2200)}
+function upiLink(amt,note){return "upi://pay?pa="+CFG.upi+"&pn="+encodeURIComponent(CFG.upiName)+"&cu=INR"+(amt?"&am="+amt:"")+"&tn="+encodeURIComponent(note)}
+var bn="০১২৩৪৫৬৭৮৯";
+function toEn(s){return String(s).replace(/[০-৯]/g,function(d){return bn.indexOf(d)})}
+
+// লোগো: ফাইল থাকলে দেখাবে, না থাকলে "অন্ন" থাকবে
+var li=new Image();li.onload=function(){$("logoBox").innerHTML="";li.alt="TIGER Trust লোগো";$("logoBox").appendChild(li)};li.src=CFG.logo;
+
+// লিংক বসানো
+$("sFb").href=CFG.facebook;$("sYt").href=CFG.youtube;$("sIg").href=CFG.instagram;
+$("waGroup").href=CFG.waGroup;$("galForm").href=CFG.galleryForm;$("memForm").href=CFG.memberForm;
+$("cCall").href="tel:+91"+CFG.phone;$("cMail").href="mailto:"+CFG.email;
+$("cWa").href="https://wa.me/91"+CFG.phone+"?text="+encodeURIComponent("নমস্কার দাদা, আমি T.I.G.E.R ট্রাস্টের ওয়েবসাইট থেকে যোগাযোগ করছি।");
+document.querySelectorAll(".upiT").forEach(function(e){e.textContent=CFG.upi});
+var qi=new Image();qi.onload=function(){$("qrImg").src=CFG.qr;$("qrImg").hidden=false};qi.src=CFG.qr;
+$("memPay").href=upiLink(1000,"Membership Fee");
+$("upiPay").href=upiLink("","Sponsor a Meal Donation");
+
+// টিম তালিকা
+$("teamList").innerHTML=CFG.team.map(function(t){return '<div class="item"><b>'+esc(t[0])+'</b><a class="call" href="tel:+91'+t[1]+'">📞 '+t[1]+'</a></div>'}).join("");
+// সেবাগ্রহীতা তালিকা
+$("benList").innerHTML=CFG.beneficiaries.length?CFG.beneficiaries.map(function(b,i){return '<div class="item">'+(i+1)+'. '+esc(b)+'</div>'}).join(""):'<div class="item">তালিকা শীঘ্রই যুক্ত করা হবে 🙏</div>';
+
+// দেখুন / লুকান বোতাম
+document.querySelectorAll("[data-toggle]").forEach(function(b){
+  var orig=b.textContent;
+  b.addEventListener("click",function(){var el=$(b.dataset.toggle);var open=el.classList.toggle("hide")===false;b.textContent=open?"বন্ধ করুন ✕":orig});
+});
+
+// গ্যালারি: সবচেয়ে নতুন ছবি (তালিকার শেষেরটা) সবার আগে দেখাবে। নতুন ছবি সবসময় তালিকার শেষে যোগ করুন।
+$("gal").innerHTML=CFG.gallery.map(function(g,i){return [g,i]}).reverse().map(function(x){var g=x[0],i=x[1];return '<div class="gi"><img loading="lazy" decoding="async" src="'+esc(g[0])+'" alt="'+esc(g[1])+'" onerror="this.remove()"><div><h3>#'+(i+1)+' · '+esc(g[1])+'</h3><p>'+esc(g[2])+'</p></div></div>'}).join("");
+
+// পরিমাণ বাছাই
+document.querySelectorAll(".amt").forEach(function(b){
+  b.addEventListener("click",function(){
+    document.querySelectorAll(".amt").forEach(function(x){x.classList.remove("on")});
+    b.classList.add("on");$("fAmt").value=b.dataset.amt;
+    $("upiPay").href=upiLink(b.dataset.amt,"Sponsor a Meal Donation");
+  });
+});
+$("fAmt").addEventListener("input",function(){var a=parseInt(toEn(this.value),10);$("upiPay").href=upiLink(a>0?a:"","Sponsor a Meal Donation")});
+
+// স্পনসর ফর্ম → WhatsApp বার্তা (আসল লিংক, তাই সব জায়গায় খোলে)
+function spCheck(){
+  var n=$("fName").value.trim(),p=toEn($("fPhone").value).replace(/\D/g,""),a=parseInt(toEn($("fAmt").value).replace(/\D/g,""),10);
+  if(p.length>10)p=p.slice(-10);
+  if(!n)return {err:"অনুগ্রহ করে আপনার নাম লিখুন"};
+  if(!/^[6-9]\d{9}$/.test(p))return {err:"সঠিক ১০ সংখ্যার ফোন নম্বর লিখুন"};
+  if(!(a>0))return {err:"দানের পরিমাণ লিখুন"};
+  var msg="দাদা, আমি আপনার ট্রাস্টের জন্য কিছু দান করতে চাই।\n\nনাম: "+n+"\nফোন: "+p+"\nপরিমাণ: ₹"+a+"\n\n(T.I.G.E.R ওয়েবসাইট থেকে পাঠানো)";
+  return {url:"https://wa.me/91"+CFG.phone+"?text="+encodeURIComponent(msg)};
+}
+function spUpdate(){var r=spCheck();$("spSend").href=r.url||"#";if(r.url)$("fErr").textContent=""}
+["fName","fPhone","fAmt"].forEach(function(id){$(id).addEventListener("input",spUpdate)});
+document.querySelectorAll(".amt").forEach(function(b){b.addEventListener("click",spUpdate)});
+$("spSend").addEventListener("click",function(e){var r=spCheck();if(!r.url){e.preventDefault();$("fErr").textContent=r.err}else{this.href=r.url}});
+$("spForm").addEventListener("submit",function(e){e.preventDefault();$("spSend").click()});
+
+// UPI কপি
+document.querySelectorAll(".upiC").forEach(function(el){el.addEventListener("click",function(){
+  var t=CFG.upi;
+  if(navigator.clipboard){navigator.clipboard.writeText(t).then(function(){toast("UPI ID কপি হয়েছে ✅")},fb)}else fb();
+  function fb(){var i=document.createElement("input");i.value=t;document.body.appendChild(i);i.select();try{document.execCommand("copy");toast("UPI ID কপি হয়েছে ✅")}catch(x){}i.remove()}
+})});
+</script>
+</body>
+</html>
