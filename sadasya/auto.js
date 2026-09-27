@@ -25,9 +25,12 @@
       document.getElementById("apS").onclick = function(){ var v = document.getElementById("apT").value.trim(); if(v){ set(LS.tok, v); set(LS.s1, ""); set(LS.s2, ""); lastMsg = "টোকেন সংরক্ষিত — প্রকাশ হচ্ছে..."; paint(); run(true); } };
     } else {
       var at = get(LS.at);
-      pan.innerHTML = "<b>ওয়েবসাইটে স্বয়ংক্রিয় প্রকাশ চালু ✅</b><br>শেষ প্রকাশ: " + (at ? new Date(+at).toLocaleString("bn-IN") : "এখনো হয়নি") + "<br>" + (lastMsg || "") + "<br><button id='apN'>এখনই প্রকাশ করুন</button><button id='apX' style='background:#6b7280'>টোকেন মুছুন</button><button id='apC'>বন্ধ</button>";
+      var bad = lastMsg.indexOf("টোকেন") > -1 && lastMsg.indexOf("❌") == 0;   // টোকেন নষ্ট হলে শুধু তখনই নতুন টোকেন বসানোর ঘর দেখায়
+      pan.innerHTML = "<b>ওয়েবসাইটে স্বয়ংক্রিয় প্রকাশ চালু ✅</b><br>শেষ প্রকাশ: " + (at ? new Date(+at).toLocaleString("bn-IN") : "এখনো হয়নি") + "<br>" + (lastMsg || "") +
+        (bad ? "<br>নতুন টোকেন পেস্ট করুন:<input id='apT' placeholder='github_pat_...'><button id='apS'>নতুন টোকেন সংরক্ষণ</button>" : "") +
+        "<br><button id='apN'>এখনই প্রকাশ করুন</button><button id='apC'>বন্ধ</button>";
       document.getElementById("apN").onclick = function(){ run(true); };
-      document.getElementById("apX").onclick = function(){ set(LS.tok, ""); lastMsg = ""; paint(); };
+      if(bad) document.getElementById("apS").onclick = function(){ var v = document.getElementById("apT").value.trim(); if(v){ set(LS.tok, v); lastMsg = "নতুন টোকেন সংরক্ষিত — প্রকাশ হচ্ছে..."; paint(); run(true); } };
     }
     document.getElementById("apC").onclick = function(){ pan.hidden = true; };
   }
@@ -110,4 +113,4 @@
   setInterval(function(){ run(false); }, 60000);
   document.addEventListener("visibilitychange", function(){ if(document.visibilityState == "hidden") run(false); });
 })();
-                                                                                           
+       
