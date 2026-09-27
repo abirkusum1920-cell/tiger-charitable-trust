@@ -156,26 +156,10 @@ document.addEventListener("DOMContentLoaded", function(){
   };
 });
 
-/* ===== সেবাগ্রহীতাদের তালিকা (সদস্য রেজিস্ট্রেশনের আলাদা Apps Script থেকে) ===== */
-var MEMBERS_URL = "https://script.google.com/macros/s/AKfycbwLBJdaSTNMnyGSztJuTL8pV3L9LtzXDvWBqElWVR5l8Xx0u7mFifLz0KPxiWrJsfYS-A/exec";
-function driveThumb(u){ var m = String(u || "").match(/id=([a-zA-Z0-9_-]+)/); return m ? "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w600" : (u || ""); }
-function benRender(list){
-  var box = document.getElementById("benList"), n = list.length;
-  if(!n) return;
-  box.innerHTML = '<div class="bg">' + list.slice().reverse().map(function(m, i){   // নতুন সদস্য সবার আগে
-    return '<div class="bc">' + (m.photoUrl ? '<img loading="lazy" decoding="async" src="' + esc(driveThumb(m.photoUrl)) + '" alt="' + esc(m.name || "") + '" onerror="this.remove()">' : '') +
-      '<b>#' + (n - i) + ' · ' + esc(m.name || "") + '</b></div>';
-  }).join("") + '</div>';
-}
+/* ===== সেবাগ্রহীতাদের তালিকা: list.js ফাইলে ===== */
 document.addEventListener("DOMContentLoaded", function(){
-  var st = document.createElement("style");
-  st.textContent = "#benList .bg{display:grid;grid-template-columns:1fr 1fr;gap:10px}#benList .bc{background:#fff;border:1px solid #e8dcc4;border-radius:16px;overflow:hidden;text-align:center}#benList .bc img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#ffe3b3}#benList .bc b{display:block;padding:8px 6px;font-size:15px}";
-  document.head.appendChild(st);
-  try { var c = localStorage.getItem("tigerMembers"); if(c) benRender(JSON.parse(c)); } catch(e){}
-  tigerCall({ action: "listMembers" }, 2, MEMBERS_URL).then(function(d){
-    if(!d || !d.success || !d.members) return;
-    benRender(d.members);
-    try { localStorage.setItem("tigerMembers", JSON.stringify(d.members)); } catch(e){}
-  }).catch(function(){});
+  var btn = document.querySelector('[data-toggle="benList"]');
+  if(btn){ var a = document.createElement("a"); a.className = btn.className; a.href = "sadasya/"; a.textContent = "তালিকা দেখুন"; btn.parentNode.replaceChild(a, btn); }
+  var s = document.createElement("script"); s.src = "list.js?v=" + Date.now().toString().slice(0, 7); document.body.appendChild(s);
 });
     
