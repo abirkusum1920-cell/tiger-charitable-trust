@@ -3,1305 +3,197 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#fdf1d8">
 <title>T.I.G.E.R The Charitable Trust — মানুষের পাশে, মানুষের জন্য</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Tiro+Bangla&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="description" content="T.I.G.E.R The Charitable Trust — প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায় দুস্থ ও অসহায় মানুষদের ভোজন।">
 <style>
-  :root{
-    --rice:#FFF8EC;
-    --rice-deep:#FFE9B8;
-    --marigold:#FF9800;
-    --marigold-deep:#E65100;
-    --leaf:#2E7D32;
-    --clay:#E53935;
-    --ink:#2B2620;
-    --ink-soft:#5C5347;
-    --blue:#1565C0;
-    --gold:#FDD835;
-    --violet:#8E24AA;
-    --teal:#00897B;
-    --pink:#E91E8C;
-    --sky:#0288D1;
-  }
-  *{box-sizing:border-box;margin:0;padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:
-      radial-gradient(circle at 8% 10%, rgba(255,152,0,0.10), transparent 32%),
-      radial-gradient(circle at 92% 18%, rgba(0,137,123,0.10), transparent 34%),
-      radial-gradient(circle at 15% 85%, rgba(233,30,140,0.08), transparent 30%),
-      radial-gradient(circle at 88% 82%, rgba(21,101,192,0.09), transparent 32%),
-      var(--rice);
-    color:var(--ink);
-    font-family:'Hind Siliguri',sans-serif;
-    line-height:1.7;
-    text-align:center;
-  }
-  h1,h2,h3,.display{font-family:'Tiro Bangla',serif;font-weight:400;color:var(--ink);}
-  a{color:inherit;}
-  img{max-width:100%;display:block;margin:0 auto;}
-  .wrap{max-width:900px;margin:0 auto;padding:0 20px;}
-
-  /* Garland divider — signature element */
-  .garland{display:flex;justify-content:center;align-items:flex-end;gap:14px;padding:22px 0;overflow:hidden;}
-  .garland span{width:14px;height:14px;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, #E8A44D, var(--marigold-deep));
-    animation:sway 3.2s ease-in-out infinite;box-shadow:0 3px 6px rgba(168,95,27,0.25);}
-  .garland span:nth-child(odd){animation-delay:.4s;}
-  .garland span:nth-child(3n){animation-delay:.9s;}
-  @keyframes sway{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(6px) rotate(3deg);}}
-  @media (prefers-reduced-motion: reduce){.garland span{animation:none;}}
-
-  /* Sticky nav */
-  nav{position:sticky;top:0;z-index:50;
-    background:linear-gradient(90deg, rgba(255,248,236,0.95), rgba(255,233,184,0.92), rgba(255,248,236,0.95));
-    backdrop-filter:blur(6px);border-bottom:2px solid rgba(255,152,0,0.25);
-    box-shadow:0 4px 16px rgba(43,38,32,0.06);
-    display:flex;justify-content:center;gap:6px;flex-wrap:wrap;padding:12px 16px;}
-  nav a{font-size:.88rem;font-weight:600;color:var(--ink-soft);text-decoration:none;
-    padding:8px 14px;border-radius:999px;transition:background .2s ease,color .2s ease, transform .2s ease;}
-  nav a:hover{background:linear-gradient(135deg, var(--marigold), var(--pink));color:#fff!important;transform:translateY(-1px);}
-
-  /* Hero */
-  header.hero{padding:56px 20px 44px;position:relative;}
-  .hero-plate{width:150px;height:150px;margin:0 auto 22px;border-radius:50%;
-    background:radial-gradient(circle at 50% 50%, #fff 0%, #fff 42%, transparent 43%),
-      conic-gradient(from 0deg, var(--marigold), var(--gold), var(--leaf), var(--teal), var(--blue), var(--violet), var(--clay), var(--marigold));
-    display:flex;align-items:center;justify-content:center;
-    box-shadow:0 12px 34px rgba(168,95,27,0.32), 0 0 0 6px rgba(255,255,255,0.5);}
-  .hero-plate span{font-family:'Tiro Bangla',serif;font-size:2rem;color:var(--marigold-deep);}
-  header.hero h1{font-size:clamp(1.7rem,5vw,2.6rem);max-width:640px;margin:0 auto 10px;line-height:1.35;}
-  header.hero p.tagline{color:var(--ink-soft);font-size:1.1rem;margin-bottom:26px;}
-  .hero-ctas{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-
-  /* Buttons */
-  .btn{display:inline-block;position:relative;overflow:hidden;
-    background:linear-gradient(135deg, var(--clay), var(--marigold-deep), var(--marigold));
-    background-size:200% 200%;
-    color:var(--rice)!important;
-    padding:13px 28px;border-radius:999px;text-decoration:none;font-weight:600;font-size:1rem;
-    box-shadow:0 8px 20px rgba(230,81,0,0.35), inset 0 1px 0 rgba(255,255,255,0.35);
-    transition:transform .2s ease, box-shadow .2s ease, background-position .4s ease;
-    border:none;cursor:pointer;}
-  .btn::after{content:"";position:absolute;top:0;left:-60%;width:40%;height:100%;
-    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.55), transparent);
-    transform:skewX(-20deg);transition:left .6s ease;}
-  .btn:hover{transform:translateY(-2px) scale(1.02);
-    box-shadow:0 14px 28px rgba(230,81,0,0.45), inset 0 1px 0 rgba(255,255,255,0.45);
-    background-position:100% 50%;}
-  .btn:hover::after{left:120%;}
-  .btn-outline{display:inline-block;padding:13px 28px;border-radius:999px;font-weight:600;font-size:1rem;
-    border:1.5px solid var(--ink);color:var(--ink)!important;text-decoration:none;
-    transition:background .2s ease, box-shadow .2s ease, transform .2s ease;background:rgba(255,255,255,0.4);}
-  .btn-outline:hover{background:rgba(43,38,32,0.08);transform:translateY(-1px);
-    box-shadow:0 6px 16px rgba(43,38,32,0.15);}
-
-  /* Section blocks */
-  section{padding:56px 20px;}
-  .card{background:linear-gradient(160deg, var(--rice-deep), var(--rice) 70%);
-    border-radius:22px;padding:38px 30px;max-width:720px;margin:0 auto;
-    border-left:6px solid var(--marigold);text-align:left;
-    box-shadow:0 10px 30px rgba(230,150,0,0.14), inset 0 1px 0 rgba(255,255,255,0.5);
-    position:relative;}
-  .card h2{font-size:1.5rem;margin-bottom:16px;text-align:center;}
-  .card p{color:var(--ink-soft);margin-bottom:10px;}
-  .card.centered{text-align:center;}
-
-  /* Team accordion */
-  #team-details{max-width:640px;margin:0 auto;overflow:hidden;max-height:0;
-    transition:max-height .4s ease;}
-  #team-details.open{max-height:900px;}
-  .team-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:24px 0;}
-  .team-member{background:linear-gradient(160deg, var(--rice), var(--rice-deep));border-radius:14px;padding:16px;text-align:center;
-    box-shadow:0 6px 16px rgba(0,137,123,0.14);transition:transform .2s ease;}
-  .team-member:hover{transform:translateY(-3px);}
-  .team-member b{display:block;margin-bottom:4px;font-family:'Tiro Bangla',serif;font-size:1.05rem;}
-  .team-member a{color:var(--marigold-deep);text-decoration:none;font-weight:600;font-size:.92rem;}
-  @media(max-width:560px){.team-grid{grid-template-columns:1fr;}}
-
-  /* Service accordion */
-  #service-details{max-width:640px;margin:0 auto;overflow:hidden;max-height:0;transition:max-height .4s ease;}
-  #service-details.open{max-height:600px;}
-  .service-line{background:var(--rice);border-radius:12px;padding:14px 18px;margin:10px auto;
-    max-width:480px;font-weight:600;color:var(--ink);}
-
-  /* Membership */
-  .fee-badge{display:inline-block;background:linear-gradient(135deg,var(--blue),var(--violet));color:var(--rice);
-    font-weight:700;padding:8px 20px;border-radius:999px;font-size:1.15rem;margin:10px 0 16px;
-    box-shadow:0 6px 16px rgba(21,101,192,0.35);}
-  .upi-line{background:var(--rice);border-radius:12px;padding:12px 18px;font-family:monospace;
-    font-size:1rem;display:inline-block;margin:14px 0;}
-
-  /* Donation */
-  .donate-flex{display:flex;gap:28px;flex-wrap:wrap;align-items:center;justify-content:center;}
-  .qr-frame{background:var(--rice);padding:14px;border-radius:16px;box-shadow:0 6px 16px rgba(43,38,32,0.1);}
-  .qr-frame img{width:190px;border-radius:8px;}
-
-  /* Gallery */
-  .gallery-intro{max-width:640px;margin:0 auto 30px;}
-  .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:820px;margin:0 auto;}
-  .gallery-item{background:linear-gradient(160deg, var(--rice), var(--rice-deep));border-radius:16px;overflow:hidden;
-    box-shadow:0 8px 20px rgba(2,136,209,0.15);transition:transform .25s ease, box-shadow .25s ease;}
-  .gallery-item:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 14px 28px rgba(2,136,209,0.28);}
-  .gallery-item img{width:100%;height:220px;object-fit:contain;background:var(--rice-deep);}
-  .gallery-caption{padding:12px 14px;text-align:left;}
-  .gallery-caption b{display:block;font-family:'Tiro Bangla',serif;font-size:.98rem;margin-bottom:3px;}
-  .gallery-caption p{color:var(--ink-soft);font-size:.86rem;margin:0;}
-  @media(max-width:640px){.gallery-grid{grid-template-columns:1fr 1fr;}}
-  @media(max-width:420px){.gallery-grid{grid-template-columns:1fr;}}
-
-  /* Social */
-  .social-row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px;}
-  .social-row .btn{padding:11px 22px;font-size:.92rem;}
-
-  /* সেকশন ভেদে আলাদা রঙের বর্ডার ও গ্লো */
-  #team .card{border-left-color:var(--teal);box-shadow:0 10px 30px rgba(0,137,123,0.16), inset 0 1px 0 rgba(255,255,255,0.5);}
-  #service .card{border-left-color:var(--leaf);box-shadow:0 10px 30px rgba(46,125,50,0.16), inset 0 1px 0 rgba(255,255,255,0.5);}
-  #sponsor .card{border-left-color:var(--pink);box-shadow:0 10px 30px rgba(233,30,140,0.16), inset 0 1px 0 rgba(255,255,255,0.5);}
-  #gallery .card{border-left-color:var(--sky);box-shadow:0 10px 30px rgba(2,136,209,0.16), inset 0 1px 0 rgba(255,255,255,0.5);}
-  #membership .card{border-left-color:var(--violet);box-shadow:0 10px 30px rgba(142,36,170,0.16), inset 0 1px 0 rgba(255,255,255,0.5);}
-  #whatsapp .card{border-left-color:var(--leaf);box-shadow:0 10px 30px rgba(46,125,50,0.16), inset 0 1px 0 rgba(255,255,255,0.5);}
-  #contact .card{border-left-color:var(--sky);box-shadow:0 10px 30px rgba(2,136,209,0.16), inset 0 1px 0 rgba(255,255,255,0.5);}
-  #social .card{border-left-color:var(--violet);box-shadow:0 10px 30px rgba(142,36,170,0.16), inset 0 1px 0 rgba(255,255,255,0.5);}
-
-  /* Transparency */
-  .transparency{background:linear-gradient(120deg, var(--leaf), var(--teal));color:var(--rice);padding:48px 20px;
-    box-shadow:inset 0 4px 20px rgba(0,0,0,0.1);}
-  .transparency h2{color:var(--rice);font-size:1.4rem;margin-bottom:10px;}
-  .transparency p{color:#E4E9DC;max-width:560px;margin:0 auto;}
-
-  footer{background:linear-gradient(135deg, var(--ink), #1a3a2e, var(--ink));color:#B9AE9C;padding:30px 20px;font-size:.88rem;
-    border-top:3px solid var(--marigold);}
-  footer p{margin:4px 0;}
-
-  /* Sponsor a Meal */
-  .sponsor-stats{display:flex;justify-content:space-between;gap:10px;margin:14px 0 6px;flex-wrap:wrap;}
-  .sponsor-stats div{flex:1;min-width:110px;text-align:center;}
-  .sponsor-stats b{display:block;font-family:'Tiro Bangla',serif;font-size:1.15rem;color:var(--marigold-deep);}
-  .sponsor-stats span{font-size:.82rem;color:var(--ink-soft);}
-  .progress-track{background:var(--rice);border-radius:999px;height:16px;overflow:hidden;
-    box-shadow:inset 0 2px 4px rgba(43,38,32,0.12);margin:10px 0 4px;}
-  .progress-fill{height:100%;background:linear-gradient(90deg,var(--pink),var(--marigold),var(--gold));
-    border-radius:999px;width:0%;transition:width .8s ease;box-shadow:0 0 10px rgba(255,152,0,0.5);}
-  .progress-note{font-size:.82rem;color:var(--ink-soft);text-align:center;margin-bottom:18px;}
-
-  .amount-grid{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:18px 0;}
-  .amount-btn{background:var(--rice);border:1.5px solid rgba(43,38,32,0.12);border-radius:14px;
-    padding:12px 16px;font-weight:600;font-family:inherit;font-size:.95rem;color:var(--ink);
-    cursor:pointer;transition:all .2s ease;text-align:center;min-width:96px;}
-  .amount-btn small{display:block;font-weight:500;color:var(--ink-soft);font-size:.78rem;margin-top:2px;}
-  .amount-btn:hover, .amount-btn.selected{background:linear-gradient(135deg,var(--marigold),var(--pink));color:var(--rice);border-color:var(--marigold);
-    box-shadow:0 6px 16px rgba(233,30,140,0.3);}
-  .amount-btn.selected small{color:var(--rice);}
-
-  .sponsor-form{max-width:420px;margin:22px auto 0;}
-  .sponsor-form input{width:100%;padding:12px 16px;margin-bottom:12px;border-radius:12px;
-    border:1.5px solid rgba(43,38,32,0.15);background:var(--rice);font-family:inherit;font-size:.95rem;color:var(--ink);}
-  .sponsor-form input:focus{outline:none;border-color:var(--marigold);}
-  .sponsor-note{font-size:.82rem;color:var(--ink-soft);text-align:center;margin-top:10px;}
-  #sponsor-msg{margin-top:14px;font-size:.9rem;font-weight:600;text-align:center;}
-  #sponsor-msg.ok{color:var(--leaf);}
-  #sponsor-msg.err{color:var(--clay);}
-
-  /* সদস্য রেজিস্ট্রেশন */
-  .members-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;max-width:820px;margin:0 auto;}
-  .member-card{background:linear-gradient(160deg, var(--rice), var(--rice-deep));border-radius:16px;overflow:hidden;
-    box-shadow:0 8px 20px rgba(142,36,170,0.14);transition:transform .25s ease, box-shadow .25s ease;}
-  .member-card:hover{transform:translateY(-5px);box-shadow:0 14px 26px rgba(142,36,170,0.25);}
-  .member-card img{width:100%;height:220px;object-fit:cover;object-position:top center;background:var(--rice-deep);}
-  .member-card b{display:block;padding:10px;font-family:'Tiro Bangla',serif;font-size:.95rem;}
-  @media(max-width:640px){.members-grid{grid-template-columns:1fr 1fr;}}
-  @media(max-width:420px){.members-grid{grid-template-columns:1fr;}}
-
-
-
-  #member-modal-overlay{display:none;position:fixed;inset:0;background:rgba(43,38,32,0.55);z-index:200;
-    align-items:center;justify-content:center;padding:20px;}
-  #member-modal-overlay.open{display:flex;}
-  .member-modal{background:var(--rice);border-radius:18px;max-width:480px;width:100%;max-height:86vh;
-    overflow-y:auto;padding:26px 22px;text-align:left;}
-  .member-modal h3{font-family:'Tiro Bangla',serif;margin-bottom:14px;text-align:center;}
-  .member-modal input[type=text],.member-modal input[type=tel]{width:100%;padding:11px 14px;margin-bottom:10px;
-    border-radius:10px;border:1.5px solid rgba(43,38,32,0.15);font-family:inherit;font-size:.92rem;background:#fff;}
-  .member-modal label.file-label{display:block;font-size:.82rem;color:var(--ink-soft);margin:8px 0 4px;}
-  .member-modal input[type=file]{width:100%;font-size:.85rem;margin-bottom:8px;}
-  .member-close{float:right;background:none;border:none;font-size:1.3rem;cursor:pointer;color:var(--ink);}
-  .member-admin-list{margin-top:20px;border-top:1px solid rgba(43,38,32,0.12);padding-top:14px;}
-  .member-admin-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid rgba(43,38,32,0.06);flex-wrap:wrap;}
-  .member-admin-row img{width:42px;height:42px;border-radius:8px;object-fit:cover;background:var(--rice-deep);}
-  .member-admin-row .grow{flex:1;font-size:.85rem;min-width:110px;}
-  .member-admin-row button{border:none;border-radius:8px;padding:6px 10px;font-size:.76rem;cursor:pointer;font-weight:600;}
-  .btn-mini-danger{background:var(--clay);color:#fff;}
-  .btn-mini{background:var(--rice-deep);color:var(--ink);}
-
-  /* ইন-পেজ ক্যামেরা */
-  .cam-open-btn{background:var(--rice-deep);border:1.5px solid rgba(43,38,32,0.15);border-radius:10px;
-    padding:8px 14px;font-size:.82rem;font-weight:600;color:var(--ink);cursor:pointer;margin-left:8px;}
-  .cam-preview-thumb{width:60px;height:60px;object-fit:cover;border-radius:8px;margin-top:6px;display:none;}
-  #camera-overlay{display:none;position:fixed;inset:0;background:#000;z-index:300;
-    flex-direction:column;align-items:center;justify-content:center;}
-  #camera-overlay.open{display:flex;}
-  #camera-video{width:100%;max-height:70vh;object-fit:contain;background:#000;}
-  .camera-controls{display:flex;gap:16px;padding:20px;}
-  .camera-controls button{padding:12px 22px;border-radius:999px;border:none;font-weight:600;font-size:1rem;cursor:pointer;}
-  .cam-capture{background:var(--marigold);color:#fff;}
-  .cam-cancel{background:#444;color:#fff;}
+:root{--bg:#f3ead6;--card:#fff7e6;--ink:#2a2118;--muted:#5b4d3e;--line:#e8dcc4;--btn1:#e53935;--btn2:#e65100}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:64px}
+body{font-family:"Noto Sans Bengali","Hind Siliguri","Nirmala UI",system-ui,sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;font-size:17px}
+a{color:inherit;text-decoration:none}
+nav{position:sticky;top:0;z-index:10;background:#fdf1d8;border-bottom:3px solid #ffd79a;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+nav .row{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;scrollbar-width:none}
+nav .row::-webkit-scrollbar{display:none}
+nav a{flex:0 0 auto;padding:6px 14px;border-radius:20px;font-weight:600;color:var(--muted);font-size:15px;background:#fff8ea;border:1px solid var(--line)}
+nav a:active{background:#ffe2b8}
+.hero{text-align:center;padding:36px 16px 28px}
+.ring{width:170px;height:170px;margin:0 auto 20px;border-radius:50%;padding:28px;background:conic-gradient(#e53935,#fb8c00,#fdd835,#43a047,#00897b,#1e88e5,#8e24aa,#e53935);box-shadow:0 0 0 8px #efe3cb}
+.ring .in{width:100%;height:100%;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;font-size:40px;font-weight:700;color:#e65100}
+.ring img{width:100%;height:100%;object-fit:contain}
+h1{font-family:Georgia,"Noto Serif Bengali",serif;font-size:34px;line-height:1.2;margin-bottom:10px}
+.tag{color:var(--muted);font-size:19px;margin-bottom:22px}
+.btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;border:0;cursor:pointer;font:inherit;font-weight:700;font-size:17px;padding:13px 26px;border-radius:40px;color:#fff;background:linear-gradient(90deg,var(--btn1),var(--btn2));box-shadow:0 6px 16px rgba(230,81,0,.25);text-align:center}
+.btn.o{background:transparent;color:var(--ink);border:2.5px solid var(--ink);box-shadow:none}
+.btn.p{background:linear-gradient(90deg,#1e5fc0,#8e24aa)}
+.btn.w{width:100%}
+.btn:active{transform:scale(.97)}
+section{padding:14px 16px}
+.card{background:var(--card);border-radius:26px;padding:30px 20px;text-align:center;border-left:8px solid var(--c,#00897b);box-shadow:0 8px 22px rgba(0,0,0,.06);max-width:640px;margin:0 auto}
+.card h2{font-family:Georgia,"Noto Serif Bengali",serif;font-size:27px;line-height:1.3;margin-bottom:10px}
+.card p.s{color:var(--muted);margin-bottom:18px}
+.hide{display:none!important}
+[hidden]{display:none!important}
+.list{margin-top:18px;text-align:left;display:grid;gap:10px}
+.item{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.item b{font-size:17px}
+.call{flex:0 0 auto;background:#2e7d32;color:#fff;border-radius:20px;padding:6px 14px;font-weight:700;font-size:15px}
+.amts{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:6px 0 20px}
+.amt{background:#fff9ee;border:2px solid var(--line);border-radius:20px;padding:12px 18px;min-width:130px;cursor:pointer;font:inherit}
+.amt b{display:block;font-size:20px}
+.amt span{color:var(--muted);font-size:15px}
+.amt.on{border-color:#e65100;background:#fff0dc}
+input{width:100%;font:inherit;padding:14px 18px;border:2px solid var(--line);border-radius:18px;background:#fffaf0;margin-bottom:12px;outline:none}
+input:focus{border-color:#fb8c00}
+.note{color:var(--muted);font-size:15px;margin:12px 0 18px}
+.err{color:#c62828;font-size:15px;min-height:1.2em;margin-bottom:8px}
+.upi{background:#fffaf0;border-radius:16px;padding:12px;font-family:monospace;font-size:19px;margin:14px 0;cursor:pointer}
+.payalt{background:#fff;border:1px dashed #e0c9a0;border-radius:18px;padding:14px;margin-top:14px;font-size:15px;color:var(--muted)}
+.payalt img{width:200px;max-width:100%;margin:10px auto 0;display:block;border-radius:10px}
+.gal{display:grid;gap:18px;max-width:640px;margin:18px auto 0}
+.gi{background:#ffeccc;border-radius:24px;overflow:hidden;text-align:left}
+.gi img{width:100%;display:block;max-height:520px;object-fit:contain;background:#ffe3b3}
+.gi div{padding:16px 18px}
+.gi h3{font-size:19px;margin-bottom:6px}
+.soc{display:flex;flex-wrap:wrap;gap:12px;justify-content:center}
+.trust{background:linear-gradient(120deg,#2e7d32,#00897b);color:#fff;text-align:center;padding:40px 20px;margin-top:20px}
+.trust h2{font-size:27px;margin-bottom:10px}
+footer{background:#2a2a22;color:#cfc6b4;text-align:center;padding:26px 16px;border-top:4px solid #fb8c00;font-size:15px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#2a2118;color:#fff;padding:10px 18px;border-radius:20px;font-size:15px;opacity:0;transition:.3s;pointer-events:none;z-index:20}
+.toast.on{opacity:1}
 </style>
 </head>
 <body>
 
-<nav>
-  <a href="#team">টিম</a>
-  <a href="#service">সেবা</a>
-  <a href="#sponsor">স্পনসর করুন</a>
-  <a href="#gallery">গ্যালারি</a>
-  <a href="#membership">সদস্য হোন</a>
-  <a href="#members">সদস্যগণ</a>
-  <a href="#whatsapp">WhatsApp</a>
-  <a href="#contact">যোগাযোগ</a>
-  <a href="#social">সোশ্যাল</a>
-</nav>
+<nav><div class="row">
+<a href="#team">টিম</a><a href="#service">সেবা</a><a href="#sponsor">স্পনসর করুন</a><a href="#gallery">গ্যালারি</a><a href="#membership">সদস্য হোন</a><a href="#members">সদস্যগণ</a><a href="#whatsapp">WhatsApp</a><a href="#contact">যোগাযোগ</a><a href="#social">সোশ্যাল</a>
+</div></nav>
 
 <header class="hero">
-  <div class="hero-plate"><span>অন্ন</span></div>
-  <h1>T.I.G.E.R The Charitable Trust</h1>
-  <p class="tagline">মানুষের পাশে, মানুষের জন্য</p>
-  <div class="hero-ctas">
-    <a href="#sponsor" class="btn">🍚 দান করুন</a>
-    <a href="#team" class="btn-outline">আমাদের টিম দেখুন</a>
-  </div>
+<div class="ring"><div class="in" id="logoBox">অন্ন</div></div>
+<h1>T.I.G.E.R The Charitable Trust</h1>
+<p class="tag">মানুষের পাশে, মানুষের জন্য</p>
+<div class="btns"><a class="btn" href="#sponsor">🍚 দান করুন</a><a class="btn o" href="#team">আমাদের টিম দেখুন</a></div>
 </header>
 
+<section id="members"><div class="card" style="--c:#fb8c00">
+<h2>যাঁরা আমাদের সেবা গ্রহণ করেন</h2>
+<p class="s">আমাদের কেন্দ্রে নিয়মিত সেবা গ্রহণ করতে আসা সদস্যরা</p>
+<button class="btn" data-toggle="benList">তালিকা দেখুন</button>
+<div id="benList" class="list hide"></div>
+</div></section>
 
-<section id="members" style="position:relative;">
-  <span id="member-gear" style="position:absolute;top:14px;right:16px;font-size:.85rem;opacity:.3;cursor:pointer;user-select:none;">⚙</span>
-  <div class="wrap">
-    <h2>যাঁরা আমাদের সেবা গ্রহণ করেন</h2>
-    <p style="color:var(--ink-soft);max-width:560px;margin:0 auto 24px;">
-      আমাদের কেন্দ্রে নিয়মিত সেবা গ্রহণ করতে আসা সদস্যরা
-    </p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
-      <button id="members-show-btn" class="btn">তালিকা দেখুন</button>
-      <button id="members-hide-btn" class="btn-outline" style="display:none;">তালিকা থেকে বের হন</button>
-    </div>
-    <div class="members-grid" id="members-grid" style="display:none;"></div>
-  </div>
-</section>
+<section id="team"><div class="card" style="--c:#00897b">
+<h2>আমাদের টিম</h2>
+<p class="s">যাঁরা প্রতি সপ্তাহে এই কাজ পরিচালনা করেন</p>
+<button class="btn o" data-toggle="teamList">সদস্যদের দেখুন 👇</button>
+<div id="teamList" class="list hide"></div>
+</div></section>
 
-<section id="team">
-  <div class="card centered">
-    <h2>আমাদের টিম</h2>
-    <p>যাঁরা প্রতি সপ্তাহে এই কাজ পরিচালনা করেন</p>
-    <button class="btn-outline" onclick="toggleTeam()" style="margin-top:12px;background:none;font-family:inherit;">সদস্যদের দেখুন 👇</button>
-    <div id="team-details">
-      <div class="team-grid">
-        <div class="team-member"><b>পার্থ সারথি দাস</b><a href="tel:9832899309">📞 9832899309</a></div>
-        <div class="team-member"><b>উজ্জ্বল পাল</b><a href="tel:7001494982">📞 7001494982</a></div>
-        <div class="team-member"><b>জয়ন্ত দাস</b><a href="tel:7718376676">📞 7718376676</a></div>
-        <div class="team-member"><b>রামচন্দ্র দাস</b><a href="tel:9635275061">📞 9635275061</a></div>
-        <div class="team-member"><b>মানস কুমার দাস</b><a href="tel:9933340824">📞 9933340824</a></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section id="service">
-  <div class="card centered">
-    <h2>🍚 আমাদের সেবা</h2>
-    <p>প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায় দুস্থ ও অসহায় মানুষদের ভোজন করানো হয়।</p>
-    <button class="btn-outline" onclick="toggleService()" style="margin-top:6px;background:none;font-family:inherit;">বিস্তারিত দেখুন 👇</button>
-    <div id="service-details">
-      <div class="service-line">🍚 প্রতি শুক্রবার — সিউড়ি</div>
-      <div class="service-line">🍚 প্রতি রবিবার — সাঁইথিয়া</div>
-      <div class="service-line">🤝 অসহায় ও দুস্থ মানুষের পাশে দাঁড়ানো</div>
-      <div class="service-line">❤️ মানবিক সহায়তা প্রদান</div>
-    </div>
-  </div>
-</section>
-
-
-<section id="sponsor">
-  <div class="card centered" id="sponsor-target" style="position:relative;">
-    <span id="sp-gear" style="position:absolute;top:14px;right:16px;font-size:.85rem;opacity:.35;cursor:pointer;user-select:none;">⚙</span>
-    <h2>❤️ একজনের খাবার Sponsor করুন</h2>
-    <p>আপনার সামান্য সহযোগিতা — আমরা খাবারটি পৌঁছে দেব।</p>
-
-    <div class="sponsor-stats">
-      <div><b id="sp-collected">₹০</b><span>জমা হয়েছে</span></div>
-      <div><b id="sp-target">₹০</b><span>লক্ষ্যমাত্রা</span></div>
-      <div><b id="sp-remaining">₹০</b><span>বাকি আছে</span></div>
-    </div>
-    <div class="progress-track"><div class="progress-fill" id="sp-progress-fill"></div></div>
-    <p class="progress-note" id="sp-progress-note">লোড হচ্ছে...</p>
-
-    <div class="amount-grid">
-      <button type="button" class="amount-btn" data-amount="500">₹৫০০<small>৫ জনের খাবার</small></button>
-      <button type="button" class="amount-btn" data-amount="1000">₹১০০০<small>১০ জনের খাবার</small></button>
-      <button type="button" class="amount-btn" data-amount="2000">₹২০০০<small>২০ জনের খাবার</small></button>
-    </div>
-
-    <div class="donate-flex" style="margin-bottom:10px;">
-      <a class="btn" id="sp-pay-btn" href="upi://pay?pa=9832899309@ybl&pn=TIGER%20The%20Charitable%20Trust&cu=INR&tn=Sponsor%20a%20Meal%20Donation" target="_blank">🙏 প্রথমে UPI-তে পেমেন্ট করুন</a>
-    </div>
-    <p class="sponsor-note">পেমেন্ট করার পর নিচের ফর্মটি পূরণ করুন, রসিদ ও নিশ্চিতকরণ WhatsApp-এ পাঠানো হবে।</p>
-
-    <form class="sponsor-form" id="sponsor-form">
-      <input type="text" id="sp-name" placeholder="আপনার নাম" required>
-      <input type="tel" id="sp-phone" placeholder="ফোন নম্বর" required pattern="[0-9]{10}">
-      <input type="number" id="sp-amount" placeholder="পরিমাণ (₹)" required min="1">
-      <button type="submit" class="btn" style="width:100%;">✅ নিশ্চিত করুন</button>
-    </form>
-    <div id="sponsor-msg"></div>
-  </div>
-</section>
-
-
-<section id="gallery">
-  <div class="card centered">
-    <h2>📸 ছবি গ্যালারি</h2>
-    <p class="gallery-intro">আপনি যদি আমাদের কোনো কর্মসূচিতে অংশ নিয়ে থাকেন বা দান করে থাকেন, তাহলে আপনার ছবি ও অনুভূতি আমাদের সাথে শেয়ার করুন। যাচাই করে গ্যালারিতে যুক্ত করা হবে।</p>
-    <a class="btn" href="https://docs.google.com/forms/d/e/1FAIpQLSc-4AEjAnFt5stfLcRLM22_DSLKJJde7H7Ak9WxuONOOh5OrQ/viewform" target="_blank">📤 ছবি ও মতামত জমা দিন</a>
-  </div>
-
-  <!--
-    ⬇️ গ্যালারিতে নতুন ছবি যোগ করতে চাইলে নিচের ব্লকটি কপি করে
-    </div><div class="gallery-grid"> ট্যাগের ঠিক আগে/পরে বসান, তারপর
-    - src="ছবির-নাম.jpg" এ আসল ছবির ফাইলের নাম দিন (ছবিটি HTML ফাইলের একই ফোল্ডারে রাখতে হবে)
-    - নাম ও কমেন্ট বদলে দিন
-  -->
-  <div class="gallery-grid" style="margin-top:34px;">
-  </div>
-</section>
-
-
-<section id="membership">
-  <div class="card centered">
-    <h2>সদস্য হোন</h2>
-    <p>T.I.G.E.R The Charitable Trust-এর মানবতার পরিবারের সদস্য হয়ে নিয়মিত সেবাকাজে অংশ নিন।</p>
-    <div class="fee-badge">💰 সদস্য ফি ₹১,০০০</div>
-    <p>প্রথমে পেমেন্ট করুন, তারপর সদস্য আবেদন ফর্ম পূরণ করুন।</p>
-    <div class="upi-line">UPI: 9832899309@ybl</div>
-    <br>
-    <a class="btn" href="upi://pay?pa=9832899309@ybl&pn=TIGER%20The%20Charitable%20Trust&cu=INR&am=1000&tn=Membership%20Fee">💳 ₹১০০০ পেমেন্ট করুন</a>
-    <br><br>
-    <a class="btn-outline" href="https://form.svhrt.com/6a4108bfa1ff98e3452915b4" target="_blank">📝 সদস্য আবেদন করুন</a>
-  </div>
-</section>
-
-<section id="whatsapp">
-  <div class="card centered">
-    <h2>WhatsApp Community</h2>
-    <p>আমাদের মানবতার পরিবারের সাথে যুক্ত থাকুন এবং সকল আপডেট পান।</p>
-    <a class="btn" href="https://chat.whatsapp.com/DwZzhOGhPKvIpRmRmwgntF?s=cl&p=a&ilr=2" target="_blank">💬 WhatsApp গ্রুপে যোগ দিন</a>
-  </div>
-</section>
-
-
-<section id="contact">
-  <div class="card centered">
-    <h2>যোগাযোগ</h2>
-    <p><b>পার্থ সারথি দাস</b></p>
-    <p>📍 বেণীমাধব মোড় সংলগ্ন, সিউড়ি, বীরভূম</p>
-    <a class="btn" href="tel:9832899309">📞 Call</a>
-    &nbsp;&nbsp;
-    <a class="btn-outline" href="mailto:abirkusum1920@gmail.com">📧 Email</a>
-  </div>
-</section>
-
-<section id="social">
-  <div class="card centered">
-    <h2>আমাদের সাথে যুক্ত থাকুন</h2>
-    <div class="social-row">
-      <a class="btn" href="https://www.facebook.com/share/1D7GQfyKv1/" target="_blank">Facebook</a>
-      <a class="btn" href="https://youtube.com/@t.i.g.e.r-group8881?si=5JCZgDuMhdHoiMHz" target="_blank">YouTube</a>
-      <a class="btn" href="https://www.instagram.com/das412641?igsh=MXhpdDB2djI2ODh2OA==" target="_blank">Instagram</a>
-    </div>
-  </div>
-</section>
-
-<div class="transparency">
-  <h2>স্বচ্ছতার প্রতিশ্রুতি</h2>
-  <p>প্রতিটি দানের হিসাব আমরা নিয়মিত প্রকাশ করি — আপনার বিশ্বাসই আমাদের কাজের ভিত্তি।</p>
+<section id="service"><div class="card" style="--c:#2e7d32">
+<h2>🍚 আমাদের সেবা</h2>
+<p class="s">প্রতি শুক্রবার সিউড়ি এবং প্রতি রবিবার সাঁইথিয়ায় দুস্থ ও অসহায় মানুষদের ভোজন করানো হয়।</p>
+<button class="btn o" data-toggle="svcList">বিস্তারিত দেখুন 👇</button>
+<div id="svcList" class="list hide">
+<div class="item">🍚 প্রতি শুক্রবার — সিউড়ি</div>
+<div class="item">🍚 প্রতি রবিবার — সাঁইথিয়া</div>
+<div class="item">🤝 অসহায় ও দুস্থ মানুষের পাশে দাঁড়ানো</div>
+<div class="item">❤️ মানবিক সহায়তা প্রদান</div>
 </div>
+</div></section>
 
-
-<div id="member-modal-overlay">
-  <div class="member-modal">
-    <button class="member-close" id="member-modal-close">✕</button>
-    <h3>নতুন সদস্য নথিভুক্ত করুন</h3>
-    <form id="member-add-form">
-      <input type="text" id="mem-name" placeholder="নাম" required>
-      <input type="tel" id="mem-phone" placeholder="ফোন নাম্বার" required>
-      <input type="text" id="mem-address" placeholder="ঠিকানা">
-      <input type="text" id="mem-aadhaar-number" placeholder="আধার নম্বর (ঐচ্ছিক, সার্চের জন্য)">
-      <select id="mem-gender" style="width:100%;padding:11px 14px;margin-bottom:10px;border-radius:10px;border:1.5px solid rgba(43,38,32,0.15);font-family:inherit;font-size:.92rem;background:#fff;">
-        <option value="">লিঙ্গ বেছে নিন (ঐচ্ছিক)</option>
-        <option value="পুরুষ">পুরুষ</option>
-        <option value="মহিলা">মহিলা</option>
-      </select>
-      <label class="file-label">ছবি (সকলে দেখতে পাবেন)</label>
-      <div style="display:flex;align-items:center;flex-wrap:wrap;">
-        <input type="file" id="mem-photo" accept="image/*">
-        <button type="button" class="cam-open-btn" data-cam-target="photo">📷 ক্যামেরা</button>
-      </div>
-      <img id="mem-photo-preview" class="cam-preview-thumb">
-      <label class="file-label">আধার কার্ডের ছবি — সামনের পাশ (গোপনীয়, নাম/লিঙ্গ পড়ার জন্য দরকার)</label>
-      <div style="display:flex;align-items:center;flex-wrap:wrap;">
-        <input type="file" id="mem-aadhaar-front" accept="image/*">
-        <button type="button" class="cam-open-btn" data-cam-target="aadhaarFront">📷 ক্যামেরা</button>
-      </div>
-      <img id="mem-aadhaar-front-preview" class="cam-preview-thumb">
-      <label class="file-label">আধার কার্ডের ছবি — পিছনের পাশ (গোপনীয়, ঐচ্ছিক — ঠিকানা পড়ার জন্য দরকার)</label>
-      <div style="display:flex;align-items:center;flex-wrap:wrap;">
-        <input type="file" id="mem-aadhaar-back" accept="image/*">
-        <button type="button" class="cam-open-btn" data-cam-target="aadhaarBack">📷 ক্যামেরা</button>
-      </div>
-      <img id="mem-aadhaar-back-preview" class="cam-preview-thumb">
-      <button type="button" id="ocr-fill-btn" class="btn-outline" style="width:100%;margin:8px 0;">🔎 আধার থেকে নাম/ঠিকানা/লিঙ্গ বসান</button>
-      <p id="ocr-msg" style="text-align:center;font-size:.85rem;font-weight:600;margin-bottom:6px;"></p>
-      <button type="submit" class="btn" style="width:100%;margin-top:6px;">যোগ করুন</button>
-      <p id="member-add-msg" style="text-align:center;margin-top:10px;font-size:.88rem;font-weight:600;"></p>
-    </form>
-    <div class="member-admin-list">
-      <p id="member-gender-summary" style="font-size:.85rem;color:var(--ink-soft);text-align:center;margin-bottom:10px;"></p>
-      <div style="display:flex;gap:8px;margin-bottom:10px;">
-        <button type="button" id="member-view-active" class="btn-mini" style="flex:1;padding:8px;font-size:.85rem;">সক্রিয় সদস্য</button>
-        <button type="button" id="member-view-removed" class="btn-mini" style="flex:1;padding:8px;font-size:.85rem;">বাদ দেওয়া সদস্য</button>
-      </div>
-      <input type="text" id="member-search-input" placeholder="🔍 নাম, ফোন বা আধার নম্বর দিয়ে খুঁজুন (সক্রিয় ও বাদ দেওয়া উভয়েই)"
-        style="width:100%;padding:10px 14px;margin-bottom:10px;border-radius:10px;border:1.5px solid rgba(43,38,32,0.15);font-family:inherit;font-size:.9rem;background:#fff;">
-      <div id="member-admin-list"></div>
-    </div>
-  </div>
+<section id="sponsor"><div class="card" style="--c:#e91e8c">
+<h2>❤️ একজনের খাবার Sponsor করুন</h2>
+<p class="s">আপনার সামান্য সহযোগিতা — আমরা খাবারটি পৌঁছে দেব।</p>
+<div class="amts">
+<button class="amt" data-amt="500"><b>₹৫০০</b><span>৫ জনের খাবার</span></button>
+<button class="amt" data-amt="1000"><b>₹১০০০</b><span>১০ জনের খাবার</span></button>
+<button class="amt" data-amt="2000"><b>₹২০০০</b><span>২০ জনের খাবার</span></button>
 </div>
-
-<div id="member-edit-overlay" style="display:none;position:fixed;inset:0;background:rgba(43,38,32,0.55);z-index:250;align-items:center;justify-content:center;padding:20px;">
-  <div class="member-modal">
-    <button class="member-close" id="member-edit-close">✕</button>
-    <h3>সদস্যের তথ্য সম্পাদনা</h3>
-    <input type="text" id="edit-name" placeholder="নাম">
-    <input type="tel" id="edit-phone" placeholder="ফোন নাম্বার">
-    <input type="text" id="edit-address" placeholder="ঠিকানা">
-    <input type="text" id="edit-aadhaar-number" placeholder="আধার নম্বর">
-    <select id="edit-gender" style="width:100%;padding:11px 14px;margin-bottom:10px;border-radius:10px;border:1.5px solid rgba(43,38,32,0.15);font-family:inherit;font-size:.92rem;background:#fff;">
-      <option value="">লিঙ্গ বেছে নিন (ঐচ্ছিক)</option>
-      <option value="পুরুষ">পুরুষ</option>
-      <option value="মহিলা">মহিলা</option>
-    </select>
-    <button type="button" id="edit-save-btn" class="btn" style="width:100%;margin-top:6px;">সংরক্ষণ করুন</button>
-    <p id="edit-msg" style="text-align:center;margin-top:10px;font-size:.88rem;font-weight:600;"></p>
-  </div>
+<a class="btn w" id="upiPay" href="#">🙏 প্রথমে UPI-তে পেমেন্ট করুন</a>
+<div class="payalt">
+<p>UPI অ্যাপ না খুললে: নিচের QR স্ক্যান করুন, অথবা UPI ID কপি করে PhonePe / Google Pay / Paytm-এ পেমেন্ট করুন।</p>
+<img id="qrImg" alt="পেমেন্ট QR কোড" hidden>
+<div class="upi upiC">UPI: <span class="upiT"></span> 📋 কপি</div>
 </div>
+<p class="note">পেমেন্ট করার পর নিচের ফর্মটি পূরণ করুন, রসিদ ও নিশ্চিতকরণ WhatsApp-এ পাঠানো হবে।</p>
+<form id="spForm" novalidate>
+<input id="fName" placeholder="আপনার নাম" autocomplete="name">
+<input id="fPhone" placeholder="ফোন নম্বর" inputmode="numeric" maxlength="13" autocomplete="tel">
+<input id="fAmt" placeholder="পরিমাণ (₹)" inputmode="numeric">
+<div class="err" id="fErr"></div>
+<a class="btn w" id="spSend" href="#" target="_blank" rel="noopener">✅ নিশ্চিত করুন</a>
+</form>
+</div></section>
 
-<div id="camera-overlay">
-  <video id="camera-video" autoplay playsinline></video>
-  <canvas id="camera-canvas" style="display:none;"></canvas>
-  <div class="camera-controls">
-    <button type="button" class="cam-capture" id="cam-capture-btn">📸 ক্যাপচার করুন</button>
-    <button type="button" class="cam-cancel" id="cam-cancel-btn">বাতিল</button>
-  </div>
+<section id="gallery"><div class="card" style="--c:#1e88e5">
+<h2>📸 ছবি গ্যালারি</h2>
+<p class="s">আপনি যদি আমাদের কোনো কর্মসূচিতে অংশ নিয়ে থাকেন বা দান করে থাকেন, তাহলে আপনার ছবি ও অনুভূতি আমাদের সাথে শেয়ার করুন। যাচাই করে গ্যালারিতে যুক্ত করা হবে।</p>
+<a class="btn" target="_blank" rel="noopener" id="galForm" href="#">📤 ছবি ও মতামত জমা দিন</a>
 </div>
-<iframe name="member-upload-frame" style="display:none;"></iframe>
+<div class="gal" id="gal"></div>
+</section>
 
+<section id="membership"><div class="card" style="--c:#8e24aa">
+<h2>সদস্য হোন</h2>
+<p class="s">T.I.G.E.R The Charitable Trust-এর মানবতার পরিবারের সদস্য হয়ে নিয়মিত সেবাকাজে অংশ নিন।</p>
+<div class="btn p" style="cursor:default">💰 সদস্য ফি ₹১,০০০</div>
+<p class="note">প্রথমে পেমেন্ট করুন, তারপর সদস্য আবেদন ফর্ম পূরণ করুন।</p>
+<div class="upi upiC" title="কপি করতে চাপুন">UPI: <span class="upiT"></span> 📋 কপি</div>
+<div class="btns" style="flex-direction:column;align-items:center">
+<a class="btn" id="memPay" href="#">💳 ₹১০০০ পেমেন্ট করুন</a>
+<a class="btn o" id="memForm" target="_blank" rel="noopener" href="#">📝 সদস্য আবেদন করুন</a>
+</div>
+</div></section>
+
+<section id="whatsapp"><div class="card" style="--c:#2e7d32">
+<h2>WhatsApp Community</h2>
+<p class="s">আমাদের মানবতার পরিবারের সাথে যুক্ত থাকুন এবং সকল আপডেট পান।</p>
+<a class="btn" id="waGroup" target="_blank" rel="noopener" href="#">💬 WhatsApp গ্রুপে যোগ দিন</a>
+</div></section>
+
+<section id="contact"><div class="card" style="--c:#0288d1">
+<h2>যোগাযোগ</h2>
+<p style="font-weight:700;font-size:19px">পার্থ সারথি দাস</p>
+<p class="s">📍 বেণীমাধব মোড় সংলগ্ন, সিউড়ি, বীরভূম</p>
+<div class="btns">
+<a class="btn" id="cCall" href="#">📞 Call</a>
+<a class="btn" id="cWa" target="_blank" rel="noopener" href="#" style="background:linear-gradient(90deg,#2e7d32,#43a047)">💬 WhatsApp</a>
+<a class="btn o" id="cMail" href="#">📧 Email</a>
+</div>
+</div></section>
+
+<section id="social"><div class="card" style="--c:#8e24aa">
+<h2>আমাদের সাথে যুক্ত থাকুন</h2>
+<div class="soc">
+<a class="btn" id="sFb" target="_blank" rel="noopener" href="#" style="background:#1877f2">Facebook</a>
+<a class="btn" id="sYt" target="_blank" rel="noopener" href="#" style="background:#e53935">YouTube</a>
+<a class="btn" id="sIg" target="_blank" rel="noopener" href="#" style="background:linear-gradient(45deg,#f58529,#dd2a7b,#8134af)">Instagram</a>
+</div>
+</div></section>
+
+<div class="trust">
+<h2>স্বচ্ছতার প্রতিশ্রুতি</h2>
+<p>প্রতিটি দানের হিসাব আমরা নিয়মিত প্রকাশ করি — আপনার বিশ্বাসই আমাদের কাজের ভিত্তি।</p>
+</div>
 <footer>
-  <p><b>T.I.G.E.R The Charitable Trust</b> — মানুষের পাশে, মানুষের জন্য</p>
-  <p>© 2026 T.I.G.E.R The Charitable Trust</p>
+<p><b>T.I.G.E.R The Charitable Trust</b> — মানুষের পাশে, মানুষের জন্য</p>
+<p>© 2026 T.I.G.E.R The Charitable Trust</p>
 </footer>
+<div class="toast" id="toast"></div>
 
 <script>
-function toggleTeam(){
-  document.getElementById('team-details').classList.toggle('open');
-}
-function toggleService(){
-  document.getElementById('service-details').classList.toggle('open');
-}
-
-/* ---------- Sponsor a Meal ---------- */
-var SPONSOR_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzhqqKEAc5eNKE5o_18NM3AAEy_MA8na0Qsmsgx9TC6JFdGduVkzEqsAyCcUGP18t2cXA/exec";
-
-function bnMoney(n){
-  return "₹" + Number(n).toLocaleString('en-IN');
-}
-
-function toEnglishDigits(str){
-  var bn = "০১২৩৪৫৬৭৮৯";
-  return str.toString().replace(/[০-৯]/g, function(ch){ return bn.indexOf(ch); });
-}
-
-function jsonp(url, params){
-  return new Promise(function(resolve, reject){
-    var callbackName = 'jsonp_cb_' + Math.random().toString(36).substr(2, 9);
-    var timeoutId;
-    function cleanup(){
-      delete window[callbackName];
-      if(script.parentNode) script.parentNode.removeChild(script);
-      clearTimeout(timeoutId);
-    }
-    window[callbackName] = function(data){
-      resolve(data);
-      cleanup();
-    };
-    var query = Object.keys(params).map(function(k){
-      return encodeURIComponent(k) + '=' + encodeURIComponent(params[k]);
-    }).join('&');
-    var script = document.createElement('script');
-    script.src = url + '?' + query + '&callback=' + callbackName;
-    script.onerror = function(){
-      reject(new Error('Request failed'));
-      cleanup();
-    };
-    document.body.appendChild(script);
-    timeoutId = setTimeout(function(){
-      reject(new Error('Timeout'));
-      cleanup();
-    }, 15000);
-  });
-}
-
-// দুর্বল নেটওয়ার্কে প্রথমবার ব্যর্থ হলে স্বয়ংক্রিয়ভাবে আরও কয়েকবার চেষ্টা করে
-function jsonpRetry(url, params, retriesLeft){
-  if(retriesLeft === undefined) retriesLeft = 2;
-  return jsonp(url, params).catch(function(err){
-    if(retriesLeft > 0){
-      return new Promise(function(resolve){ setTimeout(resolve, 1200); })
-        .then(function(){ return jsonpRetry(url, params, retriesLeft - 1); });
-    }
-    throw err;
-  });
-}
-
-function loadSponsorStats(){
-  document.getElementById('sp-progress-note').textContent = "লোড হচ্ছে...";
-  jsonp(SPONSOR_WEBAPP_URL, { action: 'stats' })
-    .then(function(data){
-      if(data.success){
-        var target = Number(data.target) || 0;
-        var collected = Number(data.weekTotal) || 0;
-        var remaining = Math.max(target - collected, 0);
-        var pct = target > 0 ? Math.min((collected / target) * 100, 100) : 0;
-        document.getElementById('sp-target').textContent = bnMoney(target);
-        document.getElementById('sp-collected').textContent = bnMoney(collected);
-        document.getElementById('sp-remaining').textContent = bnMoney(remaining);
-        document.getElementById('sp-progress-fill').style.width = pct + "%";
-        document.getElementById('sp-progress-note').textContent =
-          remaining > 0 ? (bnMoney(remaining) + " বাকি আছে লক্ষ্যপূরণে") : "🎉 লক্ষ্যমাত্রা পূরণ হয়েছে!";
-      } else {
-        document.getElementById('sp-progress-note').textContent = "তথ্য লোড করা যায়নি";
-      }
-    })
-    .catch(function(err){
-      document.getElementById('sp-progress-note').textContent = "তথ্য লোড করা যায়নি: " + err.message;
-    });
-}
-loadSponsorStats();
-
-function renderGalleryItems(items){
-  var grid = document.querySelector('.gallery-grid');
-  grid.innerHTML = "";
-  var total = items.length;
-  var reversed = items.slice().reverse(); // নতুন ছবি সবার আগে
-  reversed.forEach(function(item, i){
-    var num = total - i; // নতুন = সর্বোচ্চ সংখ্যা, পুরনো = ১
-    var dateLine = '';
-    if(item.timestamp){
-      var d = new Date(item.timestamp);
-      if(!isNaN(d.getTime())){
-        var dd = ('0'+d.getDate()).slice(-2);
-        var mm = ('0'+(d.getMonth()+1)).slice(-2);
-        var yyyy = d.getFullYear();
-        var hh = d.getHours(); var min = ('0'+d.getMinutes()).slice(-2);
-        var ampm = hh >= 12 ? 'PM' : 'AM';
-        var hh12 = hh % 12; if(hh12 === 0) hh12 = 12;
-        dateLine = '<span style="display:block;font-size:.75rem;color:var(--ink-soft);margin-top:2px;">' +
-          dd+'/'+mm+'/'+yyyy+' &middot; '+hh12+':'+min+' '+ampm + '</span>';
-      }
-    }
-    var div = document.createElement('div');
-    div.className = 'gallery-item';
-    div.innerHTML =
-      '<img loading="lazy" src="' + item.imageUrl + '" alt="' + (item.name || '') + '">' +
-      '<div class="gallery-caption"><b>#' + num + ' &middot; ' + (item.name || '') + '</b>' + dateLine + '<p>' + (item.comment || '') + '</p></div>';
-    grid.appendChild(div);
-  });
-}
-
-function loadApprovedGallery(){
-  // আগে একবার লোড হয়ে থাকলে সাথে সাথেই সেটা দেখানো হবে
-  try{
-    var cached = localStorage.getItem('cachedGalleryItems');
-    if(cached) renderGalleryItems(JSON.parse(cached));
-  }catch(e){}
-  // ব্যাকগ্রাউন্ডে নতুন কিছু আছে কিনা যাচাই করে আপডেট করা হবে
-  jsonpRetry(SPONSOR_WEBAPP_URL, { action: 'gallery' })
-  .then(function(items){
-    if(!items || !items.length) return;
-    renderGalleryItems(items);
-    try{ localStorage.setItem('cachedGalleryItems', JSON.stringify(items)); }catch(e){}
-  })
-  .catch(function(){});
-}
-loadApprovedGallery();
-
-document.getElementById('sp-gear').addEventListener('click', function(){
-  var passcode = prompt("পাসওয়ার্ড দিন:");
-  if(passcode === null) return;
-  var newTarget = prompt("নতুন টার্গেট (₹) বসান:");
-  if(newTarget === null || newTarget.trim() === "") return;
-  newTarget = toEnglishDigits(newTarget).replace(/[^0-9]/g, "");
-  if(!newTarget){ alert("সঠিক সংখ্যা দিন।"); return; }
-
-  jsonp(SPONSOR_WEBAPP_URL, { action: 'setTarget', passcode: passcode, target: newTarget })
-  .then(function(data){
-    if(data.success){
-      alert("টার্গেট আপডেট হয়েছে ✅");
-      loadSponsorStats();
-    } else {
-      alert(data.error || "পাসওয়ার্ড ভুল।");
-    }
-    })
-  .catch(function(){
-    alert("নেটওয়ার্ক সমস্যা হয়েছে, আবার চেষ্টা করুন।");
-  });
-});
-
-document.querySelectorAll('.amount-btn').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    document.querySelectorAll('.amount-btn').forEach(function(b){ b.classList.remove('selected'); });
-    btn.classList.add('selected');
-    var amt = btn.getAttribute('data-amount');
-    document.getElementById('sp-amount').value = amt;
-    document.getElementById('sp-pay-btn').href =
-      "upi://pay?pa=9832899309@ybl&pn=TIGER%20The%20Charitable%20Trust&cu=INR&tn=Sponsor%20a%20Meal&am=" + amt;
-  });
-});
-
-document.getElementById('sponsor-form').addEventListener('submit', function(e){
-  e.preventDefault();
-  var name = document.getElementById('sp-name').value.trim();
-  var phone = document.getElementById('sp-phone').value.trim();
-  var amount = document.getElementById('sp-amount').value.trim();
-  var msgBox = document.getElementById('sponsor-msg');
-  var submitBtn = e.target.querySelector('button[type="submit"]');
-
-  if(!name || !phone || !amount){ return; }
-
-  submitBtn.disabled = true;
-  submitBtn.textContent = "পাঠানো হচ্ছে...";
-  msgBox.className = "";
-  msgBox.textContent = "";
-
-  jsonp(SPONSOR_WEBAPP_URL, {
-    action: 'donate',
-    donorName: name,
-    phone: phone,
-    amount: amount,
-    address: "",
-    paymentMode: "Website Donation"
-  })
-  .then(function(data){
-    submitBtn.disabled = false;
-    submitBtn.textContent = "✅ নিশ্চিত করুন";
-    if(data.success){
-      msgBox.className = "ok";
-      msgBox.textContent = "ধন্যবাদ! আপনার রসিদ WhatsApp-এ পাঠানো হয়েছে 🙏";
-      document.getElementById('sponsor-form').reset();
-      document.querySelectorAll('.amount-btn').forEach(function(b){ b.classList.remove('selected'); });
-      loadSponsorStats();
-    } else {
-      msgBox.className = "err";
-      msgBox.textContent = "দুঃখিত, একটি সমস্যা হয়েছে। আবার চেষ্টা করুন।";
-    }
-  })
-  .catch(function(){
-    submitBtn.disabled = false;
-    submitBtn.textContent = "✅ নিশ্চিত করুন";
-    msgBox.className = "err";
-    msgBox.textContent = "দুঃখিত, নেটওয়ার্ক সমস্যা হয়েছে। আবার চেষ্টা করুন।";
-  });
-});
-
-/* ---------- সদস্য রেজিস্ট্রেশন (সম্পূর্ণ আলাদা, নতুন Apps Script প্রজেক্ট) ---------- */
-// নিচের লিংকটা বদলে আপনার নতুন MembersBackend Web App ডিপ্লয়মেন্টের লিংক বসান
-var MEMBERS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwLBJdaSTNMnyGSztJuTL8pV3L9LtzXDvWBqElWVR5l8Xx0u7mFifLz0KPxiWrJsfYS-A/exec";
-
-var memberPasscode = null;
-
-function driveThumb(url){
-  if(!url) return '';
-  var m = url.match(/id=([a-zA-Z0-9_-]+)/);
-  return m ? ('https://drive.google.com/thumbnail?id=' + m[1] + '&sz=w800') : url;
-}
-
-function renderPublicMembers(members){
-  var grid = document.getElementById('members-grid');
-  grid.innerHTML = "";
-  var total = members.length;
-  var reversed = members.slice().reverse(); // নতুন সদস্য সবার আগে
-  reversed.forEach(function(m, i){
-    var num = total - i; // নতুন = সর্বোচ্চ সংখ্যা, পুরনো = ১
-    var div = document.createElement('div');
-    div.className = 'member-card';
-    div.innerHTML = '<img loading="lazy" src="'+driveThumb(m.photoUrl)+'" alt="'+m.name+'"><b>#'+num+' &middot; '+m.name+'</b>';
-    grid.appendChild(div);
-  });
-}
-
-function loadPublicMembers(){
-  // আগে একবার লোড হয়ে থাকলে সাথে সাথেই সেটা দেখানো হবে
-  try{
-    var cached = localStorage.getItem('cachedPublicMembers');
-    if(cached) renderPublicMembers(JSON.parse(cached));
-  }catch(e){}
-  // ব্যাকগ্রাউন্ডে নতুন কিছু আছে কিনা যাচাই করে আপডেট করা হবে
-  jsonpRetry(MEMBERS_WEBAPP_URL, { action: 'listMembers' })
-  .then(function(data){
-    if(!data.success) return;
-    renderPublicMembers(data.members);
-    try{ localStorage.setItem('cachedPublicMembers', JSON.stringify(data.members)); }catch(e){}
-  })
-  .catch(function(){});
-}
-loadPublicMembers();
-
-document.getElementById('members-show-btn').addEventListener('click', function(){
-  document.getElementById('members-grid').style.display = 'grid';
-  document.getElementById('members-show-btn').style.display = 'none';
-  document.getElementById('members-hide-btn').style.display = 'inline-block';
-});
-document.getElementById('members-hide-btn').addEventListener('click', function(){
-  document.getElementById('members-grid').style.display = 'none';
-  document.getElementById('members-hide-btn').style.display = 'none';
-  document.getElementById('members-show-btn').style.display = 'inline-block';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-});
-
-document.getElementById('member-gear').addEventListener('click', function(){
-  var pass = prompt("পাসওয়ার্ড দিন:");
-  if(pass === null) return;
-  memberPasscode = pass;
-  document.getElementById('member-modal-overlay').classList.add('open');
-  loadAdminMemberList();
-  try{
-    sessionStorage.setItem('memberModalOpen', '1');
-    sessionStorage.setItem('memberPasscode', pass);
-  }catch(e){}
-});
-document.getElementById('member-modal-close').addEventListener('click', function(){
-  document.getElementById('member-modal-overlay').classList.remove('open');
-  try{
-    sessionStorage.removeItem('memberModalOpen');
-    sessionStorage.removeItem('memberPasscode');
-  }catch(e){}
-});
-
-document.getElementById('member-edit-close').addEventListener('click', function(){
-  document.getElementById('member-edit-overlay').style.display = 'none';
-});
-
-document.getElementById('edit-save-btn').addEventListener('click', function(){
-  var id = this.getAttribute('data-editing-id');
-  var name = document.getElementById('edit-name').value.trim();
-  var phone = document.getElementById('edit-phone').value.trim();
-  var address = document.getElementById('edit-address').value.trim();
-  var aadhaarNumber = document.getElementById('edit-aadhaar-number').value.trim();
-  var gender = document.getElementById('edit-gender').value;
-  var msg = document.getElementById('edit-msg');
-  if(!name || !phone){
-    msg.style.color = 'var(--clay)';
-    msg.textContent = 'নাম ও ফোন নাম্বার আবশ্যক।';
-    return;
-  }
-  msg.style.color = 'var(--ink-soft)';
-  msg.textContent = 'সংরক্ষণ হচ্ছে...';
-  jsonp(MEMBERS_WEBAPP_URL, {
-    action: 'editMember', passcode: memberPasscode, id: id,
-    name: name, phone: phone, address: address, aadhaarNumber: aadhaarNumber, gender: gender
-  })
-  .then(function(res){
-    if(res.success){
-      document.getElementById('member-edit-overlay').style.display = 'none';
-      loadAdminMemberList();
-      loadPublicMembers();
-    } else {
-      msg.style.color = 'var(--clay)';
-      msg.textContent = res.error || 'সমস্যা হয়েছে।';
-    }
-  })
-  .catch(function(){
-    msg.style.color = 'var(--clay)';
-    msg.textContent = 'নেটওয়ার্ক সমস্যা।';
-  });
-});
-
-/* ফোন ক্যামেরা/ফাইল-পিকার থেকে ফিরলে পেজ রিলোড হয়ে গেলেও মডাল আবার খুলে যাবে */
-(function(){
-  try{
-    if(sessionStorage.getItem('memberModalOpen') === '1'){
-      var savedPass = sessionStorage.getItem('memberPasscode');
-      if(savedPass){
-        memberPasscode = savedPass;
-        document.getElementById('member-modal-overlay').classList.add('open');
-        loadAdminMemberList();
-      }
-    }
-    var savedName = sessionStorage.getItem('memberFormName');
-    var savedPhone = sessionStorage.getItem('memberFormPhone');
-    var savedAddress = sessionStorage.getItem('memberFormAddress');
-    var savedAadhaarNum = sessionStorage.getItem('memberFormAadhaarNum');
-    var savedGender = sessionStorage.getItem('memberFormGender');
-    if(savedName) document.getElementById('mem-name').value = savedName;
-    if(savedPhone) document.getElementById('mem-phone').value = savedPhone;
-    if(savedAddress) document.getElementById('mem-address').value = savedAddress;
-    if(savedAadhaarNum) document.getElementById('mem-aadhaar-number').value = savedAadhaarNum;
-    if(savedGender) document.getElementById('mem-gender').value = savedGender;
-  }catch(e){}
-})();
-
-['mem-name','mem-phone','mem-address','mem-aadhaar-number'].forEach(function(id){
-  var storeKey = { 'mem-name':'memberFormName', 'mem-phone':'memberFormPhone', 'mem-address':'memberFormAddress', 'mem-aadhaar-number':'memberFormAadhaarNum' }[id];
-  document.getElementById(id).addEventListener('input', function(){
-    try{ sessionStorage.setItem(storeKey, this.value); }catch(e){}
-  });
-});
-document.getElementById('mem-gender').addEventListener('change', function(){
-  try{ sessionStorage.setItem('memberFormGender', this.value); }catch(e){}
-});
-
-var lastAdminMembers = [];
-var memberViewMode = 'active'; // 'active' অথবা 'removed'
-
-function updateGenderSummary(){
-  var activeList = lastAdminMembers.filter(function(m){ return m.status === 'active'; });
-  var male = activeList.filter(function(m){ return m.gender === 'পুরুষ'; }).length;
-  var female = activeList.filter(function(m){ return m.gender === 'মহিলা'; }).length;
-  document.getElementById('member-gender-summary').textContent =
-    'মোট সক্রিয় সদস্য: ' + activeList.length + ' জন (পুরুষ: ' + male + ', মহিলা: ' + female + ')';
-}
-
-function renderAdminMemberList(filterText){
-  var box = document.getElementById('member-admin-list');
-  var q = (filterText || '').trim().toLowerCase();
-
-  var matches = function(m){
-    return (m.name && String(m.name).toLowerCase().indexOf(q) !== -1) ||
-           (m.phone && String(m.phone).toLowerCase().indexOf(q) !== -1) ||
-           (m.aadhaarNumber && String(m.aadhaarNumber).toLowerCase().indexOf(q) !== -1);
-  };
-
-  var activeChrono = lastAdminMembers.filter(function(m){ return m.status === 'active'; });
-  activeChrono.forEach(function(m, idx){ m.__num = idx + 1; }); // পুরনো=১, নতুন=সর্বোচ্চ সংখ্যা
-
-  var list, matchedIds = {};
-  if(q){
-    // সার্চ করলে সক্রিয় ও বাদ দেওয়া — দুটো থেকেই ফলাফল দেখাবে
-    var allNewestFirst = lastAdminMembers.slice().reverse();
-    var matched = allNewestFirst.filter(matches);
-    var rest = allNewestFirst.filter(function(m){ return !matches(m); });
-    list = matched.concat(rest);
-    matched.forEach(function(m){ matchedIds[m.id] = true; });
-  } else if(memberViewMode === 'removed'){
-    list = lastAdminMembers.filter(function(m){ return m.status === 'removed'; }).slice().reverse();
-  } else {
-    list = activeChrono.slice().reverse(); // নতুন সদস্য সবার আগে
-  }
-
-  box.innerHTML = "";
-  if(!list.length){
-    box.innerHTML = '<p style="color:var(--ink-soft);text-align:center;">কোনো সদস্য পাওয়া যায়নি।</p>';
-    return;
-  }
-  list.forEach(function(m){
-    var row = document.createElement('div');
-    row.className = 'member-admin-row';
-    if(matchedIds[m.id]) row.style.background = 'var(--rice-deep)';
-    var numLabel = m.status === 'active' ? ('#'+m.__num+' &middot; ') : '';
-    var statusLabel = q ? (m.status === 'active' ? ' · সক্রিয়' : ' · বাদ দেওয়া') : '';
-    var actionBtn = m.status === 'active'
-      ? '<button class="btn-mini-danger" data-id="'+m.id+'">বাদ দিন</button>'
-      : '<button class="btn-mini" data-restore-id="'+m.id+'" style="background:var(--leaf);color:#fff;">ফিরিয়ে আনুন</button>' +
-        '<button class="btn-mini-danger" data-delete-id="'+m.id+'" style="background:#7a0000;">স্থায়ীভাবে মুছুন</button>';
-    row.innerHTML =
-      '<img loading="lazy" src="'+driveThumb(m.photoUrl)+'">' +
-      '<div class="grow"><b>'+numLabel+m.name+'</b><br>'+m.phone+(m.address ? ' · '+m.address : '')+(m.gender ? ' · '+m.gender : '')+(m.aadhaarNumber ? ' · আধার: '+m.aadhaarNumber : '')+statusLabel+'</div>' +
-      actionBtn +
-      '<button class="btn-mini" data-edit-id="'+m.id+'" data-edit-name="'+encodeURIComponent(m.name||'')+'" data-edit-phone="'+encodeURIComponent(m.phone||'')+'" data-edit-address="'+encodeURIComponent(m.address||'')+'" data-edit-aadhaar="'+encodeURIComponent(m.aadhaarNumber||'')+'" data-edit-gender="'+encodeURIComponent(m.gender||'')+'">সম্পাদনা</button>' +
-      '<button class="btn-mini" data-aadhaar-id="'+m.id+'">আধার দেখুন</button>';
-    box.appendChild(row);
-  });
-  box.querySelectorAll('.btn-mini-danger').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      if(!confirm("সত্যিই বাদ দিতে চান?")) return;
-      jsonp(MEMBERS_WEBAPP_URL, { action:'removeMember', passcode: memberPasscode, id: btn.getAttribute('data-id') })
-      .then(function(res){
-        if(res.success){ loadAdminMemberList(); loadPublicMembers(); }
-        else alert(res.error || "সমস্যা হয়েছে।");
-      })
-      .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
-    });
-  });
-  box.querySelectorAll('[data-restore-id]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      if(!confirm("এই সদস্যকে আবার সক্রিয় করতে চান?")) return;
-      jsonp(MEMBERS_WEBAPP_URL, { action:'restoreMember', passcode: memberPasscode, id: btn.getAttribute('data-restore-id') })
-      .then(function(res){
-        if(res.success){ loadAdminMemberList(); loadPublicMembers(); }
-        else alert(res.error || "সমস্যা হয়েছে।");
-      })
-      .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
-    });
-  });
-  box.querySelectorAll('[data-delete-id]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      if(!confirm("⚠️ এই সদস্যের নাম, ফোন, ছবি ও আধারের ছবি — সবকিছু চিরতরে মুছে যাবে। এটা আর ফিরিয়ে আনা যাবে না। আপনি কি একদম নিশ্চিত?")) return;
-      jsonp(MEMBERS_WEBAPP_URL, { action:'deleteMemberPermanently', passcode: memberPasscode, id: btn.getAttribute('data-delete-id') })
-      .then(function(res){
-        if(res.success){ loadAdminMemberList(); loadPublicMembers(); }
-        else alert(res.error || "সমস্যা হয়েছে।");
-      })
-      .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
-    });
-  });
-  box.querySelectorAll('[data-edit-id]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      document.getElementById('edit-name').value = decodeURIComponent(btn.getAttribute('data-edit-name') || '');
-      document.getElementById('edit-phone').value = decodeURIComponent(btn.getAttribute('data-edit-phone') || '');
-      document.getElementById('edit-address').value = decodeURIComponent(btn.getAttribute('data-edit-address') || '');
-      document.getElementById('edit-aadhaar-number').value = decodeURIComponent(btn.getAttribute('data-edit-aadhaar') || '');
-      document.getElementById('edit-gender').value = decodeURIComponent(btn.getAttribute('data-edit-gender') || '');
-      document.getElementById('edit-save-btn').setAttribute('data-editing-id', btn.getAttribute('data-edit-id'));
-      document.getElementById('edit-msg').textContent = '';
-      document.getElementById('member-edit-overlay').style.display = 'flex';
-    });
-  });
-  box.querySelectorAll('[data-aadhaar-id]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      var id = btn.getAttribute('data-aadhaar-id');
-      jsonp(MEMBERS_WEBAPP_URL, { action:'getAadhaarImage', passcode: memberPasscode, id: id })
-      .then(function(res){
-        if(!res.success){ alert(res.error || "দেখা যাচ্ছে না।"); return; }
-        var w = window.open('');
-        var html = '<h3>আধার — সামনের পাশ</h3><img src="data:'+res.front.mime+';base64,'+res.front.base64+'" style="max-width:100%">';
-        if(res.back){
-          html += '<h3>আধার — পিছনের পাশ</h3><img src="data:'+res.back.mime+';base64,'+res.back.base64+'" style="max-width:100%">';
-        }
-        w.document.write(html);
-      })
-      .catch(function(){ alert("নেটওয়ার্ক সমস্যা।"); });
-    });
-    });
-}
-
-document.getElementById('member-view-active').addEventListener('click', function(){
-  memberViewMode = 'active';
-  document.getElementById('member-view-active').style.background = 'var(--marigold)';
-  document.getElementById('member-view-active').style.color = '#fff';
-  document.getElementById('member-view-removed').style.background = 'var(--rice-deep)';
-  document.getElementById('member-view-removed').style.color = 'var(--ink)';
-  document.getElementById('member-search-input').value = '';
-  renderAdminMemberList('');
-});
-document.getElementById('member-view-removed').addEventListener('click', function(){
-  memberViewMode = 'removed';
-  document.getElementById('member-view-removed').style.background = 'var(--marigold)';
-  document.getElementById('member-view-removed').style.color = '#fff';
-  document.getElementById('member-view-active').style.background = 'var(--rice-deep)';
-  document.getElementById('member-view-active').style.color = 'var(--ink)';
-  document.getElementById('member-search-input').value = '';
-  renderAdminMemberList('');
-});
-document.getElementById('member-view-active').style.background = 'var(--marigold)';
-document.getElementById('member-view-active').style.color = '#fff';
-
-function loadAdminMemberList(){
-  var box = document.getElementById('member-admin-list');
-  // ক্যাশ শুধু তখনই দেখানো হবে যদি এবারের পাসওয়ার্ড, আগে যেই পাসওয়ার্ড দিয়ে ডেটা আনা হয়েছিল তার সাথে মিলে যায়
-  // (ভুল পাসওয়ার্ড দিলে যেন পুরনো সংবেদনশীল তথ্য দেখা না যায়)
-  var hadCache = false;
-  try{
-    var cachedRaw = localStorage.getItem('cachedAdminMembers');
-    if(cachedRaw){
-      var cachedObj = JSON.parse(cachedRaw);
-      if(cachedObj.passcode === memberPasscode){
-        lastAdminMembers = cachedObj.members;
-        hadCache = true;
-        updateGenderSummary();
-        renderAdminMemberList(document.getElementById('member-search-input').value);
-      }
-    }
-  }catch(e){}
-  if(!hadCache) box.innerHTML = "লোড হচ্ছে...";
-  // ব্যাকগ্রাউন্ডে নতুন কিছু আছে কিনা যাচাই করে আপডেট করা হবে
-  jsonpRetry(MEMBERS_WEBAPP_URL, { action:'listMembersAdmin', passcode: memberPasscode })
-  .then(function(data){
-    if(!data.success){
-      if(!hadCache) box.innerHTML = '<p style="color:var(--clay)">'+(data.error||"পাসওয়ার্ড ভুল")+'</p>';
-      try{ localStorage.removeItem('cachedAdminMembers'); }catch(e){} // ভুল পাসওয়ার্ড হলে পুরনো ক্যাশও মুছে দেওয়া হলো
-      return;
-    }
-    lastAdminMembers = data.members;
-    try{ localStorage.setItem('cachedAdminMembers', JSON.stringify({ passcode: memberPasscode, members: data.members })); }catch(e){}
-    updateGenderSummary();
-    renderAdminMemberList(document.getElementById('member-search-input').value);
-  })
-  .catch(function(){ if(!hadCache) box.innerHTML = '<p style="color:var(--clay)">নেটওয়ার্ক সমস্যা</p>'; });
-}
-
-document.getElementById('member-search-input').addEventListener('input', function(){
-  renderAdminMemberList(this.value);
-});
-
-function fileToBase64(file){
-  return new Promise(function(resolve, reject){
-    var reader = new FileReader();
-    reader.onload = function(){ resolve(reader.result.split(',')[1]); };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-/* ---------- ইন-পেজ ক্যামেরা ---------- */
-var cameraTargetField = null;
-var cameraStream = null;
-var capturedPhoto = null;
-var capturedAadhaarFront = null;
-var capturedAadhaarBack = null;
-
-function openCamera(field){
-  cameraTargetField = field;
-  document.getElementById('camera-overlay').classList.add('open');
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-  .then(function(stream){
-    cameraStream = stream;
-    document.getElementById('camera-video').srcObject = stream;
-  })
-  .catch(function(err){
-    alert('ক্যামেরা চালু করা যাচ্ছে না: ' + err.message);
-    closeCamera();
-  });
-}
-
-function closeCamera(){
-  if(cameraStream){
-    cameraStream.getTracks().forEach(function(t){ t.stop(); });
-    cameraStream = null;
-  }
-  document.getElementById('camera-overlay').classList.remove('open');
-}
-
-document.querySelectorAll('[data-cam-target]').forEach(function(btn){
-  btn.addEventListener('click', function(){
-    openCamera(btn.getAttribute('data-cam-target'));
-  });
-});
-
-document.getElementById('cam-cancel-btn').addEventListener('click', closeCamera);
-
-document.getElementById('cam-capture-btn').addEventListener('click', function(){
-  var video = document.getElementById('camera-video');
-  var canvas = document.getElementById('camera-canvas');
-  canvas.width = video.videoWidth;
-  canvas.height = video.videoHeight;
-  canvas.getContext('2d').drawImage(video, 0, 0);
-  var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
-  var base64 = dataUrl.split(',')[1];
-  var result = { base64: base64, mime: 'image/jpeg' };
-  if(cameraTargetField === 'photo'){
-    capturedPhoto = result;
-    var prev = document.getElementById('mem-photo-preview');
-    prev.src = dataUrl; prev.style.display = 'block';
-    document.getElementById('mem-photo').value = '';
-  } else if(cameraTargetField === 'aadhaarFront'){
-    capturedAadhaarFront = result;
-    var prevF = document.getElementById('mem-aadhaar-front-preview');
-    prevF.src = dataUrl; prevF.style.display = 'block';
-    document.getElementById('mem-aadhaar-front').value = '';
-  } else if(cameraTargetField === 'aadhaarBack'){
-    capturedAadhaarBack = result;
-    var prevB = document.getElementById('mem-aadhaar-back-preview');
-    prevB.src = dataUrl; prevB.style.display = 'block';
-    document.getElementById('mem-aadhaar-back').value = '';
-  }
-  closeCamera();
-});
-
-function getImageData(file, captured){
-  if(captured) return Promise.resolve(captured);
-  if(file) return fileToBase64(file).then(function(b64){ return { base64: b64, mime: file.type }; });
-  return Promise.resolve(null);
-}
-
-function pollOcrResult(requestId, attemptsLeft, ocrMsg){
-  if(attemptsLeft <= 0){
-    ocrMsg.style.color = 'var(--clay)';
-    ocrMsg.textContent = 'অনেকক্ষণ সময় লাগছে, আবার চেষ্টা করুন।';
-    return;
-  }
-  jsonp(MEMBERS_WEBAPP_URL, { action: 'ocrAadhaarResult', passcode: memberPasscode, requestId: requestId })
-  .then(function(data){
-    if(data.pending){
-      setTimeout(function(){ pollOcrResult(requestId, attemptsLeft - 1, ocrMsg); }, 2000);
-      return;
-    }
-    if(!data.success){
-      ocrMsg.style.color = 'var(--clay)';
-      ocrMsg.textContent = data.error || 'পড়া যায়নি, ম্যানুয়ালি লিখুন।';
-      return;
-    }
-    if(data.name) document.getElementById('mem-name').value = data.name;
-    if(data.address) document.getElementById('mem-address').value = data.address;
-    if(data.gender === 'পুরুষ' || data.gender === 'মহিলা') document.getElementById('mem-gender').value = data.gender;
-    if(data.aadhaarNumber) document.getElementById('mem-aadhaar-number').value = data.aadhaarNumber;
-    ocrMsg.style.color = 'var(--leaf)';
-    ocrMsg.textContent = '✅ তথ্য বসানো হয়েছে, দেখে নিশ্চিত করুন।';
-  })
-  .catch(function(){
-    setTimeout(function(){ pollOcrResult(requestId, attemptsLeft - 1, ocrMsg); }, 2000);
-  });
-}
-
-document.getElementById('ocr-fill-btn').addEventListener('click', function(){
-  var frontFile = document.getElementById('mem-aadhaar-front').files[0];
-  var backFile = document.getElementById('mem-aadhaar-back').files[0];
-  var ocrMsg = document.getElementById('ocr-msg');
-  if(!frontFile && !capturedAadhaarFront){
-    ocrMsg.style.color = 'var(--clay)';
-    ocrMsg.textContent = 'আগে আধার কার্ডের সামনের পাশের ছবি দিন।';
-    return;
-  }
-  ocrMsg.style.color = 'var(--ink-soft)';
-  ocrMsg.textContent = 'পড়া হচ্ছে, একটু অপেক্ষা করুন...';
-  Promise.all([getImageData(frontFile, capturedAadhaarFront), getImageData(backFile, capturedAadhaarBack)])
-  .then(function(results){
-    var requestId = 'ocr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = MEMBERS_WEBAPP_URL;
-    form.target = 'member-upload-frame';
-    function addField(k, v){
-      var inp = document.createElement('input');
-      inp.type = 'hidden'; inp.name = k; inp.value = v;
-      form.appendChild(inp);
-    }
-    addField('action', 'ocrAadhaarStart');
-    addField('requestId', requestId);
-    addField('passcode', memberPasscode);
-    addField('frontBase64', results[0].base64);
-    addField('frontMime', results[0].mime);
-    if(results[1]){
-      addField('backBase64', results[1].base64);
-      addField('backMime', results[1].mime);
-    }
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-
-    setTimeout(function(){ pollOcrResult(requestId, 8, ocrMsg); }, 3000);
-  });
-});
-
-function pollAddMemberResult(requestId, attemptsLeft, msg, submitBtn){
-  if(attemptsLeft <= 0){
-    msg.style.color = 'var(--clay)';
-    msg.textContent = 'অনেকক্ষণ সময় লাগছে — তালিকায় দেখে নিশ্চিত করুন সদস্য যোগ হয়েছে কিনা, নাহলে আবার চেষ্টা করুন।';
-    submitBtn.disabled = false;
-    return;
-  }
-  jsonp(MEMBERS_WEBAPP_URL, { action: 'addMemberResult', requestId: requestId })
-  .then(function(data){
-    if(data.pending){
-      setTimeout(function(){ pollAddMemberResult(requestId, attemptsLeft - 1, msg, submitBtn); }, 1500);
-      return;
-    }
-    submitBtn.disabled = false;
-    if(!data.success){
-      msg.style.color = 'var(--clay)';
-      msg.textContent = data.error || 'সমস্যা হয়েছে, আবার চেষ্টা করুন।';
-      return;
-    }
-    msg.style.color = 'var(--leaf)';
-    msg.textContent = "✅ সম্পন্ন! নিচের তালিকায় দেখুন।";
-    document.getElementById('member-add-form').reset();
-    capturedPhoto = null;
-    capturedAadhaarFront = null;
-    capturedAadhaarBack = null;
-    document.getElementById('mem-photo-preview').style.display = 'none';
-    document.getElementById('mem-aadhaar-front-preview').style.display = 'none';
-    document.getElementById('mem-aadhaar-back-preview').style.display = 'none';
-    document.getElementById('ocr-msg').textContent = '';
-    try{
-      sessionStorage.removeItem('memberFormName');
-      sessionStorage.removeItem('memberFormPhone');
-      sessionStorage.removeItem('memberFormAddress');
-      sessionStorage.removeItem('memberFormAadhaarNum');
-      sessionStorage.removeItem('memberFormGender');
-    }catch(e){}
-    loadAdminMemberList();
-    loadPublicMembers();
-  })
-  .catch(function(){
-    setTimeout(function(){ pollAddMemberResult(requestId, attemptsLeft - 1, msg, submitBtn); }, 1500);
-  });
-}
-
-document.getElementById('member-add-form').addEventListener('submit', function(e){
-  e.preventDefault();
-  var name = document.getElementById('mem-name').value.trim();
-  var phone = document.getElementById('mem-phone').value.trim();
-  var address = document.getElementById('mem-address').value.trim();
-  var aadhaarNumber = document.getElementById('mem-aadhaar-number').value.trim();
-  var gender = document.getElementById('mem-gender').value;
-  var photoFile = document.getElementById('mem-photo').files[0];
-  var aadhaarFrontFile = document.getElementById('mem-aadhaar-front').files[0];
-  var aadhaarBackFile = document.getElementById('mem-aadhaar-back').files[0];
-  var msg = document.getElementById('member-add-msg');
-  var submitBtn = e.target.querySelector('button[type="submit"]');
-  if(!name || !phone || (!photoFile && !capturedPhoto) || (!aadhaarFrontFile && !capturedAadhaarFront)) return;
-
-  submitBtn.disabled = true;
-  msg.style.color = 'var(--ink-soft)';
-  msg.textContent = "আপলোড হচ্ছে...";
-
-  Promise.all([
-    getImageData(photoFile, capturedPhoto),
-    getImageData(aadhaarFrontFile, capturedAadhaarFront),
-    getImageData(aadhaarBackFile, capturedAadhaarBack)
-  ])
-  .then(function(results){
-    var requestId = 'add_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    var form = document.createElement('form');
-    form.method = 'POST';
-    form.action = MEMBERS_WEBAPP_URL;
-    form.target = 'member-upload-frame';
-    function addField(k,v){
-      var inp = document.createElement('input');
-      inp.type = 'hidden'; inp.name = k; inp.value = v;
-      form.appendChild(inp);
-    }
-    addField('action','addMember');
-    addField('requestId', requestId);
-    addField('passcode', memberPasscode);
-    addField('name', name);
-    addField('phone', phone);
-    addField('address', address);
-    addField('aadhaarNumber', aadhaarNumber);
-    addField('gender', gender);
-    addField('photoBase64', results[0].base64);
-    addField('photoMime', results[0].mime);
-    addField('aadhaarFrontBase64', results[1].base64);
-    addField('aadhaarFrontMime', results[1].mime);
-    if(results[2]){
-      addField('aadhaarBackBase64', results[2].base64);
-      addField('aadhaarBackMime', results[2].mime);
-    }
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-
-    msg.textContent = "পাঠানো হয়েছে, সেভ হচ্ছে...";
-    setTimeout(function(){ pollAddMemberResult(requestId, 12, msg, submitBtn); }, 2500);
-  });
-});
-</script>
-
-</body>
-</html>
+/* ============ এখানে সব তথ্য বদলানো যাবে ============ */
+var CFG = {
+  phone: "9832899309",                 // কল ও WhatsApp বার্তা এই নাম্বারে যাবে
+  upi: "9832899309@ybl",
+  upiName: "TIGER The Charitable Trust",
+  email: "abirkusum1920@gmail.com",
+  facebook: "https://www.facebook.com/share/1D7GQfyKv1/",
+  youtube: "https://youtube.com/@t.i.g.e.r-group8881?si=5JCZgDuMhdHoiMHz",
+  instagram: "https://www.instagram.com/das412641?igsh=MXhpdDB2djI2ODh2OA==",
+  waGroup: "https://chat.whatsapp.com/DwZzhOGhPKvIpRmRmwgntF?s=cl&p=a&ilr=2",
+  galleryForm: "https://docs.google.com/forms/d/e/1FAIpQLSc-4AEjAnFt5stfLcRLM22_DSLKJJde7H7Ak9WxuONOOh5OrQ/viewform",
+  memberForm: "https://form.svhrt.com/6a4108bfa1ff98e3452915b4",
+  logo: "data:image/jpeg;base64,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
