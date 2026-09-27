@@ -88,6 +88,8 @@ function tigerCall(params, tries, url){
 }
 function galJsonp(tries){ return tigerCall({ action: "gallery" }, tries); }
 
+function driveThumb(u){ var m = String(u || "").match(/id=([a-zA-Z0-9_-]+)/); return m ? "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w800" : (u || ""); }
+
 function galDate(ts){
   var d = new Date(ts); if(!ts || isNaN(d.getTime())) return "";
   var h = d.getHours(), m = ("0" + d.getMinutes()).slice(-2), ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12;
@@ -101,7 +103,7 @@ function galRender(items){
     return '<div class="gi">' + (it.imageUrl ? '<img loading="lazy" decoding="async" src="' + esc(driveThumb(it.imageUrl)) + '" alt="' + esc(it.name || "") + '" onerror="this.remove()">' : '') +
       '<div><h3>#' + (n - i) + ' · ' + esc(it.name || "") + '</h3>' +
       (dt ? '<small style="display:block;color:#5b4d3e;margin:-4px 0 6px">' + dt + '</small>' : '') +
-      '<p>' + esc(it.comment || "") + '</p></div></div>';
+      '<p style="white-space:pre-line">' + esc(it.comment || "") + '</p></div></div>';
   }).join("");
 }
 
@@ -162,4 +164,3 @@ document.addEventListener("DOMContentLoaded", function(){
   if(btn){ var a = document.createElement("a"); a.className = btn.className; a.href = "sadasya/"; a.textContent = "তালিকা দেখুন"; btn.parentNode.replaceChild(a, btn); }
   var s = document.createElement("script"); s.src = "list.js?v=" + Date.now().toString().slice(0, 7); document.body.appendChild(s);
 });
-    
