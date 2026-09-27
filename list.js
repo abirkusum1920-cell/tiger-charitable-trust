@@ -26,8 +26,7 @@
       }).join("") + '</div>';
     }
     h += '<div class="pu">সর্বশেষ আপডেট: ' + esc(P.updated || "") + '</div>' +
-      '<button class="btn" id="pShow">তালিকা দেখুন</button><div id="pList" hidden></div>' +
-      '<p class="pmore"><a href="sadasya/" style="font-size:14px;color:#5b4d3e;text-decoration:underline">অ্যাডমিন: সদস্য খাতা খুলুন</a></p>';
+      '<button class="btn" id="pShow">তালিকা দেখুন</button><div id="pList" hidden></div>';
     box.innerHTML = h;
     var old = card.querySelector('[data-toggle="benList"]'); if(old) old.remove();
     var oldL = document.getElementById("benList"); if(oldL) oldL.remove();
@@ -73,4 +72,3 @@
     };
   }
 })();
-      
