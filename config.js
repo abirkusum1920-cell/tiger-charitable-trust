@@ -71,7 +71,7 @@ var CFG = {
 /* ===== গ্যালারি: Google Sheet-এ YES দেওয়া ছবিগুলো নিজে থেকেই দেখাবে ===== */
 var GALLERY_URL = "https://script.google.com/macros/s/AKfycbzhqqKEAc5eNKE5o_18NM3AAEy_MA8na0Qsmsgx9TC6JFdGduVkzEqsAyCcUGP18t2cXA/exec";
 
-function tigerCall(params, tries){
+function tigerCall(params, tries, url){
   return new Promise(function(ok, bad){
     var cb = "tg_cb_" + Math.random().toString(36).slice(2), s = document.createElement("script"), t;
     function done(){ delete window[cb]; if(s.parentNode) s.parentNode.removeChild(s); clearTimeout(t); }
@@ -79,10 +79,10 @@ function tigerCall(params, tries){
     s.onerror = function(){ done(); bad(); };
     t = setTimeout(function(){ done(); bad(); }, 15000);
     var q = Object.keys(params).map(function(k){ return encodeURIComponent(k) + "=" + encodeURIComponent(params[k]); }).join("&");
-    s.src = GALLERY_URL + "?" + q + "&callback=" + cb;
+    s.src = (url || GALLERY_URL) + "?" + q + "&callback=" + cb;
     document.body.appendChild(s);
   }).catch(function(){
-    if(tries > 0) return new Promise(function(r){ setTimeout(r, 1200); }).then(function(){ return tigerCall(params, tries - 1); });
+    if(tries > 0) return new Promise(function(r){ setTimeout(r, 1200); }).then(function(){ return tigerCall(params, tries - 1, url); });
     throw new Error("fail");
   });
 }
@@ -98,7 +98,7 @@ function galRender(items){
   var box = document.getElementById("gal"), n = items.length;
   box.innerHTML = items.slice().reverse().map(function(it, i){   // নতুন ছবি সবার আগে
     var dt = galDate(it.timestamp);
-    return '<div class="gi">' + (it.imageUrl ? '<img loading="lazy" decoding="async" src="' + esc(it.imageUrl) + '" alt="' + esc(it.name || "") + '" onerror="this.remove()">' : '') +
+    return '<div class="gi">' + (it.imageUrl ? '<img loading="lazy" decoding="async" src="' + esc(driveThumb(it.imageUrl)) + '" alt="' + esc(it.name || "") + '" onerror="this.remove()">' : '') +
       '<div><h3>#' + (n - i) + ' · ' + esc(it.name || "") + '</h3>' +
       (dt ? '<small style="display:block;color:#5b4d3e;margin:-4px 0 6px">' + dt + '</small>' : '') +
       '<p>' + esc(it.comment || "") + '</p></div></div>';
@@ -155,3 +155,27 @@ document.addEventListener("DOMContentLoaded", function(){
     }).catch(function(){ msg.textContent = "নেট সমস্যা — আবার চেষ্টা করুন"; });
   };
 });
+
+/* ===== সেবাগ্রহীতাদের তালিকা (সদস্য রেজিস্ট্রেশনের আলাদা Apps Script থেকে) ===== */
+var MEMBERS_URL = "https://script.google.com/macros/s/AKfycbwLBJdaSTNMnyGSztJuTL8pV3L9LtzXDvWBqElWVR5l8Xx0u7mFifLz0KPxiWrJsfYS-A/exec";
+function driveThumb(u){ var m = String(u || "").match(/id=([a-zA-Z0-9_-]+)/); return m ? "https://drive.google.com/thumbnail?id=" + m[1] + "&sz=w600" : (u || ""); }
+function benRender(list){
+  var box = document.getElementById("benList"), n = list.length;
+  if(!n) return;
+  box.innerHTML = '<div class="bg">' + list.slice().reverse().map(function(m, i){   // নতুন সদস্য সবার আগে
+    return '<div class="bc">' + (m.photoUrl ? '<img loading="lazy" decoding="async" src="' + esc(driveThumb(m.photoUrl)) + '" alt="' + esc(m.name || "") + '" onerror="this.remove()">' : '') +
+      '<b>#' + (n - i) + ' · ' + esc(m.name || "") + '</b></div>';
+  }).join("") + '</div>';
+}
+document.addEventListener("DOMContentLoaded", function(){
+  var st = document.createElement("style");
+  st.textContent = "#benList .bg{display:grid;grid-template-columns:1fr 1fr;gap:10px}#benList .bc{background:#fff;border:1px solid #e8dcc4;border-radius:16px;overflow:hidden;text-align:center}#benList .bc img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#ffe3b3}#benList .bc b{display:block;padding:8px 6px;font-size:15px}";
+  document.head.appendChild(st);
+  try { var c = localStorage.getItem("tigerMembers"); if(c) benRender(JSON.parse(c)); } catch(e){}
+  tigerCall({ action: "listMembers" }, 2, MEMBERS_URL).then(function(d){
+    if(!d || !d.success || !d.members) return;
+    benRender(d.members);
+    try { localStorage.setItem("tigerMembers", JSON.stringify(d.members)); } catch(e){}
+  }).catch(function(){});
+});
+    
