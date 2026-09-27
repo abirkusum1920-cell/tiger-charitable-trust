@@ -107,11 +107,24 @@ function galRender(items){
   }).join("");
 }
 
+function galCount(n){ var b = document.getElementById("galShow"); if(b && document.getElementById("gal").hidden) b.textContent = "🖼️ ছবি ও মতামত দেখুন" + (n ? " (" + n + ")" : ""); }
 document.addEventListener("DOMContentLoaded", function(){
-  try { var c = localStorage.getItem("tigerGallery"); if(c) galRender(JSON.parse(c)); } catch(e){}
+  // গ্যালারি শুরুতে লুকানো থাকে — বোতাম টিপলে তবেই ছবি ও মতামত দেখায় (ছবিও তখনই ডাউনলোড হয়)
+  var gal = document.getElementById("gal"), form = document.getElementById("galForm");
+  gal.hidden = true;
+  var b = document.createElement("button"); b.id = "galShow"; b.className = "btn o"; b.style.marginTop = "12px"; b.textContent = "🖼️ ছবি ও মতামত দেখুন";
+  form.parentNode.insertBefore(b, form.nextSibling);
+  form.parentNode.insertBefore(document.createElement("br"), b);
+  b.onclick = function(){
+    gal.hidden = !gal.hidden;
+    if(gal.hidden){ galCount(gal.querySelectorAll(".gi").length); document.getElementById("gallery").scrollIntoView(); }
+    else b.textContent = "বন্ধ করুন ✕";
+  };
+  try { var c = localStorage.getItem("tigerGallery"); if(c){ galRender(JSON.parse(c)); } } catch(e){}
+  galCount(gal.querySelectorAll(".gi").length);
   galJsonp(2).then(function(items){
     if(!items || !items.length) return;
-    galRender(items);
+    galRender(items); galCount(items.length);
     try { localStorage.setItem("tigerGallery", JSON.stringify(items)); } catch(e){}
   }).catch(function(){});
 });
@@ -164,3 +177,4 @@ document.addEventListener("DOMContentLoaded", function(){
   if(btn){ var a = document.createElement("a"); a.className = btn.className; a.href = "sadasya/"; a.textContent = "তালিকা দেখুন"; btn.parentNode.replaceChild(a, btn); }
   var s = document.createElement("script"); s.src = "list.js?v=" + Date.now().toString().slice(0, 7); document.body.appendChild(s);
 });
+    
