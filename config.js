@@ -67,3 +67,47 @@ var CFG = {
   ]
 };
 /* ================================================= */
+
+/* ===== গ্যালারি: Google Sheet-এ YES দেওয়া ছবিগুলো নিজে থেকেই দেখাবে ===== */
+var GALLERY_URL = "https://script.google.com/macros/s/AKfycbzhqqKEAc5eNKE5o_18NM3AAEy_MA8na0Qsmsgx9TC6JFdGduVkzEqsAyCcUGP18t2cXA/exec";
+
+function galJsonp(tries){
+  return new Promise(function(ok, bad){
+    var cb = "gal_cb_" + Math.random().toString(36).slice(2), s = document.createElement("script"), t;
+    function done(){ delete window[cb]; if(s.parentNode) s.parentNode.removeChild(s); clearTimeout(t); }
+    window[cb] = function(d){ done(); ok(d); };
+    s.onerror = function(){ done(); bad(); };
+    t = setTimeout(function(){ done(); bad(); }, 15000);
+    s.src = GALLERY_URL + "?action=gallery&callback=" + cb;
+    document.body.appendChild(s);
+  }).catch(function(){
+    if(tries > 0) return new Promise(function(r){ setTimeout(r, 1200); }).then(function(){ return galJsonp(tries - 1); });
+    throw new Error("fail");
+  });
+}
+
+function galDate(ts){
+  var d = new Date(ts); if(!ts || isNaN(d.getTime())) return "";
+  var h = d.getHours(), m = ("0" + d.getMinutes()).slice(-2), ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12;
+  return ("0" + d.getDate()).slice(-2) + "/" + ("0" + (d.getMonth() + 1)).slice(-2) + "/" + d.getFullYear() + " · " + h + ":" + m + " " + ap;
+}
+
+function galRender(items){
+  var box = document.getElementById("gal"), n = items.length;
+  box.innerHTML = items.slice().reverse().map(function(it, i){   // নতুন ছবি সবার আগে
+    var dt = galDate(it.timestamp);
+    return '<div class="gi">' + (it.imageUrl ? '<img loading="lazy" decoding="async" src="' + esc(it.imageUrl) + '" alt="' + esc(it.name || "") + '" onerror="this.remove()">' : '') +
+      '<div><h3>#' + (n - i) + ' · ' + esc(it.name || "") + '</h3>' +
+      (dt ? '<small style="display:block;color:#5b4d3e;margin:-4px 0 6px">' + dt + '</small>' : '') +
+      '<p>' + esc(it.comment || "") + '</p></div></div>';
+  }).join("");
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+  try { var c = localStorage.getItem("tigerGallery"); if(c) galRender(JSON.parse(c)); } catch(e){}
+  galJsonp(2).then(function(items){
+    if(!items || !items.length) return;
+    galRender(items);
+    try { localStorage.setItem("tigerGallery", JSON.stringify(items)); } catch(e){}
+  }).catch(function(){});
+});
