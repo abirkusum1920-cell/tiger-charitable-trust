@@ -71,20 +71,22 @@ var CFG = {
 /* ===== গ্যালারি: Google Sheet-এ YES দেওয়া ছবিগুলো নিজে থেকেই দেখাবে ===== */
 var GALLERY_URL = "https://script.google.com/macros/s/AKfycbzhqqKEAc5eNKE5o_18NM3AAEy_MA8na0Qsmsgx9TC6JFdGduVkzEqsAyCcUGP18t2cXA/exec";
 
-function galJsonp(tries){
+function tigerCall(params, tries){
   return new Promise(function(ok, bad){
-    var cb = "gal_cb_" + Math.random().toString(36).slice(2), s = document.createElement("script"), t;
+    var cb = "tg_cb_" + Math.random().toString(36).slice(2), s = document.createElement("script"), t;
     function done(){ delete window[cb]; if(s.parentNode) s.parentNode.removeChild(s); clearTimeout(t); }
     window[cb] = function(d){ done(); ok(d); };
     s.onerror = function(){ done(); bad(); };
     t = setTimeout(function(){ done(); bad(); }, 15000);
-    s.src = GALLERY_URL + "?action=gallery&callback=" + cb;
+    var q = Object.keys(params).map(function(k){ return encodeURIComponent(k) + "=" + encodeURIComponent(params[k]); }).join("&");
+    s.src = GALLERY_URL + "?" + q + "&callback=" + cb;
     document.body.appendChild(s);
   }).catch(function(){
-    if(tries > 0) return new Promise(function(r){ setTimeout(r, 1200); }).then(function(){ return galJsonp(tries - 1); });
+    if(tries > 0) return new Promise(function(r){ setTimeout(r, 1200); }).then(function(){ return tigerCall(params, tries - 1); });
     throw new Error("fail");
   });
 }
+function galJsonp(tries){ return tigerCall({ action: "gallery" }, tries); }
 
 function galDate(ts){
   var d = new Date(ts); if(!ts || isNaN(d.getTime())) return "";
@@ -110,4 +112,46 @@ document.addEventListener("DOMContentLoaded", function(){
     galRender(items);
     try { localStorage.setItem("tigerGallery", JSON.stringify(items)); } catch(e){}
   }).catch(function(){});
+});
+
+/* ===== সাপ্তাহিক লক্ষ্যমাত্রা: শুধু দেখায়, ওয়েবসাইটের ফর্ম থেকে কোনো টাকা যোগ হয় না ===== */
+function tkMoney(n){ return "₹" + Number(n || 0).toLocaleString("en-IN"); }
+function tkShow(d){
+  var target = Number(d.target) || 0, got = Number(d.weekTotal) || 0, left = Math.max(target - got, 0);
+  var pct = target > 0 ? Math.min(got / target * 100, 100) : 0;
+  document.getElementById("tkGot").textContent = tkMoney(got);
+  document.getElementById("tkTarget").textContent = tkMoney(target);
+  document.getElementById("tkLeft").textContent = tkMoney(left);
+  document.getElementById("tkFill").style.width = pct + "%";
+  document.getElementById("tkNote").textContent = left > 0 ? tkMoney(left) + " বাকি আছে লক্ষ্যপূরণে" : "🎉 এই সপ্তাহের লক্ষ্যমাত্রা পূরণ হয়েছে!";
+}
+function tkLoad(){
+  tigerCall({ action: "stats" }, 2).then(function(d){
+    if(d && d.success){ tkShow(d); try { localStorage.setItem("tigerStats", JSON.stringify(d)); } catch(e){} }
+    else document.getElementById("tkNote").textContent = "তথ্য লোড করা যায়নি";
+  }).catch(function(){ document.getElementById("tkNote").textContent = "নেট দুর্বল — পরে আবার চেষ্টা করুন"; });
+}
+document.addEventListener("DOMContentLoaded", function(){
+  var amts = document.querySelector("#sponsor .amts"); if(!amts) return;
+  var st = document.createElement("style");
+  st.textContent = ".tk{position:relative;margin:4px 0 20px}.tk .g{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.tk b{display:block;color:#e65100;font-size:22px;font-family:Georgia,serif}.tk span{font-size:14px;color:#5b4d3e}.tk .bar{height:14px;background:#fff;border:1px solid #e8dcc4;border-radius:10px;overflow:hidden;margin:14px 0 6px}.tk .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#fb8c00,#e53935);transition:width .6s}.tk .nt{font-size:15px;color:#5b4d3e}.tk .gear{position:absolute;top:44px;right:-10px;background:none;border:0;font-size:20px;opacity:.35;cursor:pointer;padding:6px}.tk .adm{margin-top:12px;background:#fff;border:1px dashed #e0c9a0;border-radius:16px;padding:12px}.tk .adm button{font:inherit;font-weight:700;border:0;border-radius:20px;padding:10px 20px;color:#fff;background:#2e7d32;cursor:pointer}";
+  document.head.appendChild(st);
+  var box = document.createElement("div"); box.className = "tk";
+  box.innerHTML = '<button class="gear" id="tkGear" aria-label="লক্ষ্যমাত্রা বদলান">⚙</button>' +
+    '<div class="g"><div><b id="tkGot">₹0</b><span>এই সপ্তাহে জমা</span></div><div><b id="tkTarget">₹0</b><span>লক্ষ্যমাত্রা</span></div><div><b id="tkLeft">₹0</b><span>বাকি আছে</span></div></div>' +
+    '<div class="bar"><i id="tkFill"></i></div><div class="nt" id="tkNote">লোড হচ্ছে...</div>' +
+    '<div class="adm" id="tkAdm" hidden><input id="tkPass" type="password" placeholder="পাসওয়ার্ড"><input id="tkNew" inputmode="numeric" placeholder="নতুন লক্ষ্যমাত্রা (₹)"><button id="tkSave">সংরক্ষণ করুন</button><div class="nt" id="tkMsg"></div></div>';
+  amts.parentNode.insertBefore(box, amts);
+  try { var c = localStorage.getItem("tigerStats"); if(c) tkShow(JSON.parse(c)); } catch(e){}
+  tkLoad();
+  document.getElementById("tkGear").onclick = function(){ var a = document.getElementById("tkAdm"); a.hidden = !a.hidden; };
+  document.getElementById("tkSave").onclick = function(){
+    var pass = document.getElementById("tkPass").value, val = toEn(document.getElementById("tkNew").value).replace(/\D/g, ""), msg = document.getElementById("tkMsg");
+    if(!pass || !val){ msg.textContent = "পাসওয়ার্ড আর লক্ষ্যমাত্রা দুটোই লিখুন"; return; }
+    msg.textContent = "সংরক্ষণ হচ্ছে...";
+    tigerCall({ action: "setTarget", passcode: pass, target: val }, 1).then(function(d){
+      if(d && d.success){ msg.textContent = "✅ লক্ষ্যমাত্রা আপডেট হয়েছে"; document.getElementById("tkPass").value = ""; tkLoad(); }
+      else msg.textContent = (d && d.error) || "পাসওয়ার্ড ভুল";
+    }).catch(function(){ msg.textContent = "নেট সমস্যা — আবার চেষ্টা করুন"; });
+  };
 });
