@@ -1,0 +1,3 @@
+window.TIGER_PHOTOS = {
+
+};
