@@ -27,5 +27,6 @@ members: [
 [23,"অন্যাথ বাগী","M",[]],
 [24,"BASANTI MUKHERJEE","F",[]],
 [25,"Presante Mukherjee","M",[]],
-[26,"KHELA BAGDI","F",[]]
+[26,"KHELA BAGDI","F",[]],
+[27,"চন্ডী অঙ্কুর","M",[]]
 ]};
