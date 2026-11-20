@@ -3,5 +3,6 @@ updated: "20/11/2026",
 items: [],
 members: [
 [1,"বাসন্তী দাস","F",[]],
-[2,"BENUDHAR BAGDI","M",[]]
+[2,"BENUDHAR BAGDI","M",[]],
+[3,"ভারতী দাস","F",[]]
 ]};
