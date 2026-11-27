@@ -68,5 +68,6 @@ members: [
 [64,"ঝুমা ডোম","F",[]],
 [65,"Mala Bauri","F",[]],
 [66,"জ্যোৎস্নাহাজরা","F",[]],
-[67,"Nirmala Ankur","F",[]]
+[67,"Nirmala Ankur","F",[]],
+[68,"SUMITRA BAURI","F",[]]
 ]};
