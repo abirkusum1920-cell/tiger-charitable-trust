@@ -70,5 +70,6 @@ members: [
 [66,"জ্যোৎস্নাহাজরা","F",[]],
 [67,"Nirmala Ankur","F",[]],
 [68,"SUMITRA BAURI","F",[]],
-[69,"Kalo Manik Mahara","M",[]]
+[69,"Kalo Manik Mahara","M",[]],
+[70,"Rita Mahara","F",[]]
 ]};
