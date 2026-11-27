@@ -72,5 +72,6 @@ members: [
 [68,"SUMITRA BAURI","F",[]],
 [69,"Kalo Manik Mahara","M",[]],
 [70,"Rita Mahara","F",[]],
-[71,"ARATI GHOSH","F",[]]
+[71,"ARATI GHOSH","F",[]],
+[72,"Rahul Ghosh","M",[]]
 ]};
